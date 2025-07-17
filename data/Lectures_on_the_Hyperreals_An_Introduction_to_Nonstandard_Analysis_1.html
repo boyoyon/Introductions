@@ -1,0 +1,1147 @@
+<!doctype html>
+<html lang="ja">
+    <head>
+        <script type="text/javascript" id="MathJax-script" async
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+        <meta charset="utf-8" />
+        <title>1章</title>
+        <style type="text/css">
+            p
+            {
+                padding-left: 2em;
+            }
+            .margin-medium
+            {
+                margin-left: 30px;
+            }
+           .margin-large {
+               margin-left: 60px; /* 左マージンを広くする */
+               margin-right: 60px; /* 右マージンを広くする */
+           }
+        </style>
+    <style>
+        .two-columns {
+            display: flex;
+            flex-direction: row;
+            gap: 20px; /* 列間のスペース */
+        }
+        .column {
+            flex: 1; /* 各列が均等に幅を取る */
+        }
+    </style>
+<style>
+.three-columns {
+  display: flex;
+  gap: 10px; /* 列間の余白を設定 */
+}
+.column {
+  flex: 1; /* 各列の幅を均等にする */
+  padding: 10px; /* 内側の余白を設定 */
+}
+</style>
+    <style>
+        .styleRef { 
+            text-indent: -40px; /* 最初の行の字下げを逆方向に */
+            margin-left: 10px; /* 2行目以降の字下げを調整 */
+            ul {
+                  list-style-type: none; /* 箇条書き記号を非表示 */
+                  padding-left: 40px; /* 全体の左余白 */
+            }
+            li {
+            }
+        }
+    </style>
+    <style>
+        .styleBullet { 
+            text-indent: -20px; /* 最初の行の字下げを逆方向に */
+            margin-left: 30px; /* 2行目以降の字下げを調整 */
+            ul {
+                  list-style-type: none; /* 箇条書き記号を非表示 */
+                  padding-left: 0px; /* 全体の左余白 */
+            }
+            li {
+            }
+        }
+    </style>
+    <style>
+            ol
+            {
+                margin-left: 30px;
+            }
+            ul
+            {
+                margin-left: 30px;
+            }
+    </style>
+    <style>
+        .thin-line {
+            margin: 0; 
+            margin-left:2em;
+            border: 0;
+            height: 1px;
+            background-color: gray;
+        }
+
+        .thick-line {
+            margin: 0; 
+            margin-left:2em;
+            border: 0;
+            height: 2px;
+            background-color: black;
+        }
+    </style>
+    <style>
+        .highlight {
+            color: red; /* 好きな色に変更してください */
+        }
+    </style>
+    </head>
+    <body>
+<h1><center>Part I<br>Foundations <span style="color:blue;">基礎</span></center></h1>
+<h2>1 What Are the Hyperreals?　<span style="color:blue;">超実数とは何か?</span></h2> 
+<h3>1.1 Infinitely Small and Large　<span style="color:blue;">無限に小さい、そして無限に大きい</span></h3>
+
+<p> 
+
+A nonzero number \(\varepsilon\) is defined to be infinitely small, or infinitesimal, if 
+
+<br><span style="color:blue;">
+非ゼロ数 \(\varepsilon\) は、次の場合、無限に小さい、または無限小であると定義されます。
+</span>
+
+\[
+|\varepsilon| < \frac{1}{n}\; for\; all\; n = 1,2,3, .... 
+\]
+
+In this case the reciprocal \(\omega = \frac{1}{\varepsilon}\) will be infinitely large, or simply infinite, 
+meaning that 
+
+<br><span style="color:blue;">
+この場合、逆数 \(\omega = \frac{1}{\varepsilon}\) は無限に大きい、つまり単純に無限大となり、
+</span>
+
+\[
+|\omega| > n\; for\; all\; n = 1,2,3, ....
+\]
+
+Conversely, if a number \(\omega\) has this last property, then\(\frac{1}{\omega}\)will be a nonzero infinitesimal. 
+
+<br><span style="color:blue;">
+逆に、数 \(\omega\) がこの最後の特性を持つ場合、\(\frac{1}{\omega}\) は非ゼロの無限小になります。
+</span>
+
+</p><p>
+
+However, in the real number system \(\mathbb{R}\) there are no such things as nonzero 
+infinitesimals and infinitely large numbers. Our aim here is to study a larger 
+system, the hyperreals, which form an ordered field \({}^*\mathbb{R}\) that contains \(\mathbb{R}\) as 
+a subfield, but also contains infinitely large and small numbers according 
+to these definitions. The new entities in \({}^*\mathbb{R}\), and the relationship between 
+\({}^*\mathbb{R}\) and \(\mathbb{R}\), provide an intuitively appealing alternative approach to real 
+analysis and topology, and indeed to many other branches of pure and 
+applied mathematics. 
+
+<br><span style="color:blue;">
+しかし、実数系 \(\mathbb{R}\) には、非零の無限小数や無限大数といったものは存在しません。ここでの私たちの目的は、より大きな系である超実数を研究することです。超実数は、\(\mathbb{R}\) を部分体として含む順序体 \({}^*\mathbb{R}\) を形成しますが、これらの定義によれば、無限大数や無限小数も含みます。\({}^*\mathbb{R}\) の新しい実体、および \({}^*\mathbb{R}\) と \(\mathbb{R}\) の関係は、実解析学や位相幾何学、そして純粋数学や応用数学の多くの分野に対して、直感的に魅力的な代替アプローチを提供します。
+</span>
+
+</p>
+
+<h3>1.2 Historical Background  <span style="color:blue;">歴史的背景</span></h3>
+
+<p>
+
+Our mathematical heritage owes much to the creative endeavours of people 
+who found it natural to think in terms of the infinite and the·infinitesimal. 
+By examining the words with which they expressed their ideas we can 
+learn much about the origins of our twentieth-century perspective, even if 
+that perspective itself makes it difficult, perhaps impossible, to recapture 
+faithfully the "mind-set" of the past. 
+
+<br><span style="color:blue;">
+私たちの数学の遺産は、無限と無限小という観点から考えることを自然に受け入れた人々の創造的な努力に大きく負っています。彼らが自らの考えを表現した言葉を検証することで、20世紀の視点の起源について多くを学ぶことができます。たとえ、その視点自体が過去の「考え方」を忠実に再現することを困難にし、おそらくは不可能にしているとしてもです。
+</span>
+
+</p>
+
+<h4>Archimedes  <span style="color:blue;">アルキメデス</span></h4>
+
+<p>
+
+An old idea that has never lost its potency is to think of a geometric 
+object as made up of an "unlimited" number of "indivisible" elements. 
+Thus a curve might be regarded as a polygon with infinitely many sides 
+of infinitesimal length, a plane figure as made up of parallel straight line 
+segments viewed as strips of infinitesimal width, and a solid as composed 
+of infinitely thin plane laminas. 
+
+<br><span style="color:blue;">
+古くからある考え方で、その効力を失っていないのは、幾何学的物体を「無限の」数の「分割不可能な」要素から構成されると考えることです。
+例えば、曲線は無限に多くの辺を持ち、無限に微小な長さを持つ多角形とみなされ、平面図形は無限に微小な幅の帯として捉えられた平行直線部分から構成されるものとみなされ、立体は無限に薄い平面の薄板から構成されるものとみなされます。
+</span>
+
+</p><p>
+
+The formula \(A= \frac{1}{2}rC\) for the area of a circle in terms of its radius and 
+circumference was very likely discovered by regarding the circle as made 
+up of infinitely many segments consisting of isosceles triangles of height r 
+with infinitesimal bases, these bases collectively forming the circle itself. In 
+the third century Be., Archimedes gave a proof of this formula using the 
+method of exhaustion that had been developed by Eudoxus more than a 
+century earlier. This involved approximating the area arbitrarily closely by 
+regular polygons. From the modern point of view we would say that as the 
+number of sides increases, the sequence of areas of the polygons converges 
+to the area of the circle, but the Greek mathematicians did not develop 
+the idea of taking the limit of an infinite sequence. Instead, they used an 
+indirect reductio ad absurdum argument, showing that if the area was not 
+equal to \(A= \frac{1}{2}rC\), then by taking polygons with sufficiently many sides a 
+contradiction would follow. 
+
+<br><span style="color:blue;">
+円の面積を半径と円周で表す公式 \(A = \frac{1}{2}rC\) は、円が、高さ r で無限小の底辺を持つ二等辺三角形からなる無限個の線分から成り、これらの底辺が集まって円を形成するとみなすことで発見された可能性が高い。紀元前3世紀、アルキメデスは、1世紀以上前にエウドクソスによって開発された網羅的方法を用いてこの公式の証明を与えた。これは、面積を正多角形で任意に近似するという方法であった。現代の観点から言えば、辺の数が増えるにつれて、多角形の面積の列は円の面積に収束すると言えるが、ギリシャの数学者たちは無限列の極限を求めるという発想は持たなかった。代わりに、彼らは間接的な背理法を用いて、面積が \(A = \frac{1}{2}rC\) に等しくない場合、十分な辺を持つ多角形を取ると矛盾が生じることを示しました。
+</span>
+
+</p><p>
+
+
+Archimedes applied this approach to give proofs of many formulae for 
+areas and volumes involving circles, parabolas, ellipses, spirals, spheres, 
+cylinders, and solids of revolution. He wrote a treatise called The Method 
+of Mechanical Theorems in which he explained how he discovered these 
+formulae. His method was to imagine geometrical figures as being connected 
+by a lever that is held in balance as the elements of one figure whose 
+magnitude (area or volume) and centre of gravity is known are weighed 
+against the elements of another whose magnitude is to be determined. These 
+elements are as above: line segments in the case of plane figures, with 
+length as the comparative "weight"; and plane laminas in the case of solids, 
+weighted according to area.<sup>1</sup> Archimedes did not regard this procedure as 
+providing a proof, but said of a result obtained in this way that 
+
+<br><span style="color:blue;">
+アルキメデスはこの手法を用いて、円、放物線、楕円、螺旋、球、円柱、回転体などを含む面積と体積に関する多くの公式の証明を行った。彼は『力学的定理の方法』という論文を著し、これらの公式の発見方法を説明した。彼の方法は、幾何学的図形がてこで繋がれていると仮定し、てこは、大きさ（面積または体積）と重心が分かっている一方の図形の要素と、大きさを求めるもう一方の図形の要素とを秤で秤量し、バランスをとるというものだった。これらの要素は前述の通りである。平面図形の場合は線分で、長さが比較対象となる「重さ」となる。立体の場合は平面の薄片で、面積に応じて重みが付けられる。<sup>1</sup> アルキメデスはこの手順を証明とは考えていなかったが、この方法で得られた結果について次のように述べている。
+</span>
+
+</p><p class="margin-medium">
+<sup>1</sup>
+
+A lucid illustration of the "Method" is given on pages 69-70 of the book 
+
+<br><span style="color:blue;">
+「方法」の分かりやすい説明は本書の69～70ページに掲載されている。
+</span>
+
+</p><p class="margin-large">
+
+this has not therefore been proved, but a certain impression has 
+been created that the conclusion is true. 
+
+<br><span style="color:blue;">
+したがって、これは証明されたわけではありませんが、結論が真実であるというある種の印象が生み出されました。
+</span>
+
+</p><p>
+
+The demonstration of its truth was then to be supplied by the method of 
+exhaustion. The lesson of history is that the way in which a mathematical 
+fact is discovered may be very different from the way that it is proven. 
+Indeed Archimedes' treatise, along with all knowledge of his "method", 
+was lost for many centuries and found again only in 1906. 
+
+<br><span style="color:blue;">
+その真実性の証明は、徹底的な方法によってなされることになりました。歴史の教訓は、数学的事実が発見される方法と、それが証明される方法が大きく異なる場合があるということです。実際、アルキメデスの論文は、彼の「方法」に関するあらゆる知識とともに、何世紀にもわたって失われ、1906年にようやく発見されました。
+</span>
+</p>
+
+<h4>Newton and Leibniz  <span style="color:blue;">ニュートンとライプニッツ</span></h4>
+<p>
+
+In the latter part of the seventeenth century the differential and integral 
+calculus was discovered by Isaac Newton and Gottfried Leibniz, independently. 
+Leibniz created the notation \(dx\) for the difference in successive values 
+of a variable \(x\), thinking of this difference as infinitely small or "less than 
+any assignable quantity". He also introduced the integral sign \(\int\), an elongated 
+"S" for "sum", and wrote the expression \(\int y dx\) to mean the sum of 
+all the infinitely thin rectangles of size \(y \times dx\). He expressed what we now 
+know as Leibniz's rule for the differential of a product \(xy\) in the form 
+
+<br><span style="color:blue;">
+17世紀後半、微分積分学はアイザック・ニュートンとゴットフリート・ライプニッツによってそれぞれ独立に発見されました。ライプニッツは、変数\(x\)の連続する値の差を表す記法\(dx\)を考案し、この差は無限に小さい、つまり「いかなる代入可能な量よりも小さい」と考えました。また、彼は積分記号\(\int\)（「和(sum)」を表す細長い「S」）を導入し、\(\int y dx\)という式を、サイズ\(y \times dx\)の無限に細い長方形すべての和を表すものとして書きました。彼は、現在では積\(xy\)の微分に関するライプニッツの法則として知られているものを、次の形で表現しました。
+</span>
+
+\[
+d\,xy = x\,dy + y\,dx. 
+\]
+
+To demonstrate this he first observed that 
+
+<br><span style="color:blue;">
+これを実証するために、彼はまず
+</span>
+
+</p><p class="margin-large">
+
+\(dxy\) is the same thing as the difference between two successive 
+\(xy\) 's; let one of these be \(xy\), and the other \(x + dx\) into \(y + dy\).
+<br><span style="color:blue;">
+\(dxy\) は、連続する 2 つの \(xy\) の差と同じです。つまり、1 つを \(xy\) とし、もう 1 つを \(x + dx\) から \(y + dy\) に変換します。 
+</p><p>
+
+
+Then calculating 
+<br><span style="color:blue;">
+そして計算すると
+</span>
+
+\[
+\begin{align}
+dxy &= (x + dx)(y + dy)-xy \\
+\\ 
+&= x dy + y dx + dx dy
+\end{align}
+\] 
+
+he stated that the desired result follows by 
+
+<br><span style="color:blue;">
+彼は、望ましい結果は
+</span>
+
+</p><p class=margin-large">
+
+the omission of the quantity \(dx\,dy\), which is infinitely small in 
+comparison with the rest, for it is supposed that dx and dy are 
+infinitely small. 
+
+<br><span style="color:blue;">
+dxとdyが無限に小さいと仮定されているため、他の量と比較して無限に小さい量\(dx\,dy\)を省略しています。
+</span>
+
+</p><p>
+
+
+Leibniz's views on the actual existence of infinitesimals make interesting 
+reading. In response to certain criticisms, he drew attention to the fact that 
+Archimedes and others 
+<br><span style="color:blue;">
+ライプニッツの微小物体の実在に関する見解は興味深い読み物である。彼はいくつかの批判に対し、アルキメデスらが
+
+</p><p class="margin-medium">
+
+by C.H. Edwards cited in Section 1.4, showing how it yields the area under the 
+graph of \(y = x^2\) between 0 and 1. 
+<br><span style="color:blue;">
+1.4節で引用したC.H. Edwardsによる式を用いて、\(y = x^2\)のグラフの下の0から1の間の面積がどのように求められるかを示します。
+
+</p><p class="margin-large">
+
+found out their wonderfully elegant theorems by the help of such 
+ideas; these theorems they completed with reductio ad absurdum 
+proofs, by which they at the same time provided rigorous demonstrations 
+and also concealed their methods, 
+<br><span style="color:blue;">
+彼らはそのようなアイデアの助けを借りて、素晴らしく優雅な定理を発見しました。そして、これらの定理を背理法による証明で完成させ、それによって厳密な証明を提供すると同時に、その手法を隠蔽しました。
+
+</p><p>
+
+and went on to write: 
+<br><span style="color:blue;">
+そしてこう書いている。
+</p><p class="margin-large">
+
+
+It will be sufficient if, when we speak of infinitely great (or more 
+strictly unlimited}, or of infinitely small quantities (i.e., the very 
+least of those within our knowledge), it is understood that we 
+mean quantities that are indefinitely great or indefinitely small, 
+i.e., as great as you please, or as small as you please, so that 
+the error that one may assign may be less than a certain assigned 
+quantity ... by infinitely great and infinitely small we understand 
+something indefinitely great, or something indefinitely 
+small, so that each conducts itself as a sort of class, and not 
+merely as the last thing of a class ... it will be sufficient simply 
+to make use of them as a tool that has advantages for the 
+purpose of calculation, just as the algebraists retain imaginary 
+roots with great profit. 
+<br><span style="color:blue;">
+無限に大きな量（より厳密には無制限）や無限に小さな量（すなわち、我々の知る限りの最小の量）について語るとき、それは無限に大きな量、あるいは無限に小さな量、すなわち、好きなだけ大きく、あるいは好きなだけ小さく、ある誤差が所定の量よりも小さくなるような量を意味すると理解されれば十分であろう。…無限に大きな量と無限に小さな量とは、無限に大きなもの、あるいは無限に小さなもの、つまり、それぞれが一種のクラスとして振る舞い、単にクラスの最後のものとして振る舞うわけではない、という意味であると理解されれば十分であろう。…代数学者が虚根を大きな利益のために保持しているのと同じように、それらを計算の目的に利点のある道具として利用するだけで十分であろう。
+
+</p><p>
+
+Further indication of this attitude is found in the following passage from 
+an argument in one of his manuscripts: 
+<br><span style="color:blue;">
+この態度をさらに示すのは、彼の原稿の一つにある議論からの次の一節です。
+
+<p><p class="margin-large">
+
+If \(dx, ddx ...\) are by a certain fiction imagined to remain, even 
+when they become evanescent, as if they were infinitely small 
+quantities (and in this there is no danger, since <strong>the whole 
+matter can be always referred back to assignable quantities</strong>), 
+then ... 
+<br><span style="color:blue;">
+もし \(dx, ddx ...\) が、ある虚構によって、消滅した後も、あたかも無限に小さな量であるかのように残ると想像されるならば（そして、これには危険はない。なぜなら、<strong>問題全体は常に割り当て可能な量に還元できる</strong>からである）、すると…
+</p><p>
+
+Newton's formulation of the calculus used a different language and had a 
+more dynamic conception of the phenomena under discussion. He considered 
+fluents \(x, y,...\) as quantities varying in a spatial or temporal sense, 
+and their fluxions \(\dot{x},\dot{y}, ...\) as 
+<br><span style="color:blue;">
+ニュートンの微積分の定式化は異なる言語を用いており、議論の対象となっている現象をより動的な概念で捉えていた。彼は、流束\(x, y,...\)を空間的または時間的に変化する量とみなし、その流束\(\dot{x},\dot{y},...\)を次のように考えていた。
+
+</p><p class="margin-abstracr">
+
+the speeds with which they flow and are increased by their generating 
+motion. 
+<br><span style="color:blue;">
+流れの速度は、その発生運動によって増加します。
+</p><p>
+
+In modern parlance, the fluxion \(\dot{x}\) is the derivative \(\frac{dx}{dt}\) of \(x\) with respect to 
+timet (or the velocity of \(x\)). Newton wrote (1671): 
+<br><span style="color:blue;">
+現代の用語では、流束\(\dot{x}\)は、\(x\)の\(\frac{dx}{dt}\)を時間t（または\(x\)の速度）に関して微分したものです。ニュートンは(1671)次のように書いています。
+</p><p class="margin-large">
+
+The moments of the fluent quantities (that is, their indefinitely 
+small parts, by addition of which they increase during each infinitely 
+small period of time} are as their speeds of flow ... if 
+the moment of any particular one, say \(x\), be expressed by the 
+product of its speed \(\dot{x}\) and an infinitely small quantity \(o\) (that is by \(\dot{x}o\)) ... it follows that quantities \(x\) and \(y\) after an infinitely 
+small interval of time will become \(x + \dot{x}o\) and \(y + \dot{y}o\). Consequently, 
+an equation which expresses a relationship of fluent 
+quantities without variance at all times will express that relationship 
+equally between \(x + \dot{x}o\) and \(y + \dot{y}o\) as between x and 
+y; and so x + xo and y + yo may be substituted in place of the 
+latter quantities, x andoy, in the said equation. 
+<br><span style="color:blue;">
+流動量のモーメント（つまり、無限に小さい各期間に加算されることによって増加する、無限に小さい部分）は、その流れの速度と同じです。特定の量、たとえば \(x\) のモーメントを、その速度 \(\dot{x}\) と無限に小さい量 \(o\) の積（つまり \(\dot{x}o\)）で表すとします。したがって、無限に小さい時間間隔後の量 \(x\) と \(y\) は、\(x + \dot{x}o\) と \(y + \dot{y}o\) になります。したがって、流動量の関係を常に変化なく表す方程式は、その関係を \(x + \dot{x}o\) と \(y + xとyの間には\dot{y}o\)が成り立ち、したがってx + xoとy + yoは、前述の式において後者の量xとoyの代わりに代入することができる。
+</p><p>
+
+In other words, if \((x, y)\) is a point on the curve defined by an equation in 
+\(x\) and \(y\), then \((x + \dot{x}o, y + \dot{y}o)\) is also on the curve. But this does not seem 
+right: surely \((x + \dot{x}o, y +\dot{y}o)\) should lie on the tangent to the curve, the line 
+through \((x, y)\) of slope \(\dot{y}/\dot{x}\), rather than on the curve itself? Moreover, in 
+making the proposed substitution and carrying out algebraic calculations, 
+Newton permitted himself to divide by the infinitely small quantity o while 
+at the same time stating that 
+<br><span style="color:blue;">
+言い換えれば、\((x, y)\) が \(x\) と \(y\) の方程式で定義された曲線上の点である場合、\((x + \dot{x}o, y + \dot{y}o)\) も曲線上にあります。しかし、これは正しくないように思えます。\((x + \dot{x}o, y + \dot{y}o)\) は、曲線自体上ではなく、\((x, y)\) を通る傾き \(\dot{y}/\dot{x}\) の曲線の接線上に位置するべきではないでしょうか。さらに、ニュートンは、提案された置き換えを行い代数計算を実行する際に、無限小量 o で割ることを許しながら、同時に次のように述べました。
+
+</p><p class="margin-large">
+
+since \(o\) is supposed to be infinitely small so that it be able to express 
+the moments of quantities, terms which have it as a factor 
+will be equivalent to nothing in respect of others. I therefore cast 
+them out ... 
+<br><span style="color:blue;">
+\(o\) は量のモーメントを表現できるように無限に小さいと想定されているので、それを因子として持つ項は、他の項に関して無意味になります。したがって、私はそれらを除外します...
+</p><p>
+
+which seems to amount to equating \(o\) to zero. 
+<br><span style="color:blue;">
+これは \(o\) をゼロとみなすことになるようです。
+</p><p>
+
+Such perplexities are typical of the confusions caused by the concepts of 
+infinitesimal calculus. In later writing Newton himself tried to explain his 
+theory of fluxions in terms of limits of ratios of quantities. He wrote that 
+he did not (unlike Leibniz) 
+<br><span style="color:blue;">
+このような当惑は、微積分学の概念によって引き起こされる混乱の典型です。ニュートン自身も後年の著作で、流数理論を量の比の極限で説明しようとしました。彼は、（ライプニッツとは異なり）
+</p><p class="margin-large">
+
+consider Mathematical Quantities as composed of Parts <strong> extreamly 
+small</strong>, but as <strong>generated by a continual motion</strong>, 
+<br><span style="color:blue;">
+数学的量は<strong>極めて小さな</strong>部分から構成され、<strong>継続的な運動によって生成される</strong>ものと考える。
+</p><p>
+
+and that 
+<br><span style="color:blue;">
+そして
+</p><p class="margin-large">
+
+fluxions are very nearly as the <strong>Augments of the Fluents</strong>. 
+<br><span style="color:blue;">
+フラクションとは、<strong>フルエントの拡張</strong>とほぼ同じです。
+</p><p>
+
+His conception of limits is conveyed by the following passages: 
+<br><span style="color:blue;">
+彼の限界についての考え方は次の文章に表れています。
+</p><p class="margin-large">
+
+Quantities, and the ratios of quantities, which in any finite time 
+converge continually to equality, and before the end of time approach 
+nearer to each other than by any given difference, become 
+ultimately equal ... Those ultimate ratios with which quantities 
+vanish are not truly the ratios of ultimate quantities, but limits 
+towards which the ratios of quantities decreasing without limit 
+do always converge; and to which they approach nearer than by 
+any given difference, but never go beyond, nor in effect attain 
+to, till the quantities are diminished ad infinitum. 
+<br><span style="color:blue;">
+量、および量の比は、有限の時間において、絶えず等しさへと収束し、時の終わりの前には、いかなる与えられた差よりも互いに近づき、究極的には等しくなります。… 量が消滅する究極の比率は、実際には究極の量の比率ではなく、限りなく減少する量の比率が常に収束する限界です。そして、量はいかなる与えられた差よりも近くに近づきますが、量が無限に減少するまで、それを超えることはなく、実際に到達することもありません。
+</p><p>
+
+Newton considered that the use of limits of ratios provided an adequate 
+basis for his calculus, without ultimately depending on indivisibles: 
+<br><span style="color:blue;">
+ニュートンは、比の極限の使用が、最終的には不可分なものに依存せずに、彼の微積分学に十分な基礎を提供すると考えました。
+</p><p class="margin-large">
+
+In Finite Quantities so to frame a Calculus, and thus to investigate 
+the Prime and Ultimate Ratios of Nascent or Evanescent 
+Finite Quantities, is agreeable to the Ancients; and I was willing 
+to shew, that in the Method of Fluxions there's no need of introducing 
+Figures infinitely small into Geometry. For this Analysis 
+may be performed in any Figures whatsoever, whether finite or 
+infinitely small, so they are but imagined to be similar to the 
+Evanescent Figures ... 
+<br><span style="color:blue;">
+有限量において、このように微積分学を構築し、それによって発生的あるいは消滅的有限量の素比と極限比を調査することは、古代人にとっても容認できるものでした。そして私は、流数法においては、無限に小さい図形を幾何学に導入する必要がないことを示そうとしました。この解析は、有限であろうと無限に小さいであろうと、どのような図形でも実行できるため、それらは消滅的図形に類似していると想像されるだけです…
+</p>
+
+<h4>Euler　<span style="color:blue;">オイラー</span></h4>
+
+<p>
+
+The greatest champion of infinitely small and large numbers was Leonhard 
+Euler, said to be the most prolific of all mathematicians. He simply assumed 
+that such things exist and behave like finite numbers. A good illustration 
+of his approach is to be found in the book Introduction to the Analysis 
+of the Infinite (1748), where he developed infinite series for logarithmic, 
+exponential, and trigonometric functions from the following basis: 
+
+<br><span style="color:blue;">
+無限に小さい数と無限に大きい数の最大の擁護者は、数学者の中で最も多作な人物と言われているレオンハルト・オイラーでした。彼は、そのような数が存在し、有限数のように振る舞うと単純に仮定しました。彼のアプローチの良い例は、著書『無限の解析入門』（1748年）に見ることができます。そこで彼は、対数関数、指数関数、三角関数の無限級数を次の基底から導き出しました。
+</span>
+
+</p><p class="margin-large">
+
+Let \(\omega\) be an infinitely small number, or a fraction so small that, 
+although not equal to zero, still \(a^\omega = 1 + \psi\), where \(\psi\) is also 
+an infinitely small number ... we let \(\psi= k\omega\). Then we have 
+\(a^\omega = 1 + k\omega\), and with a as the base for the logarithms, we 
+have \(\omega = \log(1 + k\omega)\) ... If now we let \(j = \frac{z}{\omega}\), where \(z\) denotes 
+any finite number, since \(\omega\) is infinitely small, then j is infinitely 
+large. Then we have \(\omega\frac{z}{j}\), where \(\omega\) is represented by a fraction 
+with an infinite denominator, so that \(\omega\) is infinitely small, as it 
+should be. 
+
+<br><span style="color:blue;">
+\(\omega\) を無限に小さい数、または 0 ではないものの \(a^\omega = 1 + \psi\) となるほど小さい分数とします。ここで \(\psi\) も無限に小さい数です。… \(\psi= k\omega\) とします。すると \(a^\omega = 1 + k\omega\) となり、対数の底を \(a\) とすると \(\omega = \log(1 + k\omega)\) となります。… ここで \(j = \frac{z}{\omega}\) とします。ここで \(z\) は任意の有限数を表します。\(\omega\) は無限に小さいので、\(j\) は無限に大きくなります。すると、\(\omega\frac{z}{j}\) が得られます。ここで、\(\omega\) は無限大の分母を持つ分数で表されるため、\(\omega\) は当然ながら無限に小さくなります。
+</span>
+
+</p><p>
+
+Euler took it for granted that Newton's formula for the binomial series 
+works for his numbers, and applied it to the expansion of \(a^z = a^{\omega j} = 
+(1 + k\omega)^j\) to deduce that 
+
+<br><span style="color:blue;">
+オイラーは、ニュートンの二項級数の公式が彼の数に対して成り立つことを当然のこととして受け入れ、それを\(a^z = a^{\omega j} =
+(1 + k\omega)^j\)の展開に適用して、
+</span>
+
+\[
+a^z=1+\frac{kz}{1!}+\frac{k^2z^2}{2!}+\frac{k^3z^3}{3!}+\cdots
+\]
+
+and hence when \(z = 1\) that 
+
+<br><span style="color:blue;">
+そして\(z = 1\)のとき、
+</span>
+
+\[
+a=1+\frac{k}{1!}+\frac{k^2}{2!}+\frac{k^3}{3!}+\cdots
+\]
+
+In fact, since \(k\omega = \frac{kz}{j}\), the general term \(\begin{pmatrix}j \\ n\end{pmatrix}(k\omega)^n\) of the binomial series for 
+\(a^z\) should be 
+
+<br><span style="color:blue;">
+実際、\(k\omega = \frac{kz}{j}\) なので、\(a^z\) の二項級数の一般項 \(\begin{pmatrix}j \\ n\end{pmatrix}(k\omega)^n\) は、
+</span>
+
+\[
+\frac{j(j-1)(j-2)\cdots(j-n+1)}{n!}･\frac{k^nz^n}{j^n}
+\]
+
+but Euler reduced this to \(\frac{k^nz^n}{n!}\) by the following extraordinary reasoning: 
+
+<br><span style="color:blue;">
+しかしオイラーは次のような驚くべき推論によってこれを \(\frac{k^nz^n}{n!}\) に簡約しました。
+</span>
+
+</p><p class="margin-large">
+
+
+Since \(j\) is infinitely large, \(\frac{j-1}{j}= 1\), and the larger the number we 
+substitute for \(j\), the closer the value of the fraction \(\frac{j-1}{j}\) comes 
+to 1. Therefore, if \(j\) is a number larger than any assignable 
+number, then \(\frac{j-1}{j}\) is equal to 1. For the same reason \(\frac{j-2}{j}= 1, 
+\frac{j-3}{j} = 1\), and so forth. 
+
+<br><span style="color:blue;">
+\(j\) は無限に大きいので、\(\frac{j-1}{j}= 1\) となり、\(j\) に代入する数が大きくなるほど、分数 \(\frac{j-1}{j}\) の値は 1 に近づきます。したがって、\(j\) が代入可能な任意の数よりも大きい数である場合、\(\frac{j-1}{j}\) は 1 になります。同じ理由で、\(\frac{j-2}{j}= 1、\frac{j-3}{j} = 1\) などとなります。
+</span>
+
+</p><p>
+
+His next step was a natural one: 
+
+<br><span style="color:blue;">
+彼の次のステップは自然なものでした。
+</span>
+
+</p><p class="margin-large">
+
+Since we are free to choose the base a for the system of logarithms, we now choose a in such a way that \(k = 1...\) we obtain the value for 
+
+<br><span style="color:blue;">
+対数系の底 \(a\) は自由に選べるので、\(k = 1...\)となるように \(a\) を選ぶと、
+</span>
+
+\[
+a= 2.71828182845904523536028. 
+\]
+
+When this base is chosen, the logarithms are called natural or 
+hyperbolic. The latter name is used since the quadrature of a 
+hyperbola can be expressed through these logarithms. For the 
+sake of brevity for this number 2. 718281828459･･･ we will use 
+the symbol \(e\) ･･･ 
+
+<br><span style="color:blue;">
+この底を選んだ場合、対数は自然対数または双曲線対数と呼ばれます。後者の名称が使われるのは、双曲線の求積法がこれらの対数で表せるためです。この数 2. 718281828459･･･ については、簡潔にするために、記号 \(e\) を使用します。
+</span>
+
+</p><p>
+
+
+Whereas the modern view is that 
+
+<br><span style="color:blue;">
+一方、現代の見方では
+</span>
+
+\[
+e=\lim\limits_{n\rightarrow\infty}\left(1+\frac{1}{n}\right)^n
+\]
+
+Euler had obtained it by stipulating that \(e = (1 +\frac{1}{j})^j\), and indeed \(e^z =(1 + \frac{z}{j})^j\), for infinitely large \(j\). In this way he "proved" that 
+
+<br><span style="color:blue;">
+オイラーは、\(e = (1 + \frac{1}{j})^j\)、そして無限大の \(j\) に対しては \(e^z =(1 + \frac{z}{j})^j\) と規定することで、この式を得ました。このようにして、彼は次のことを「証明」しました。
+</span>
+
+\[
+\begin{align}
+e^z &=1+\frac{z}{1!}+\frac{z^2}{2!}+\frac{z^3}{3!}+\cdots \\
+\\
+log(1 + x)&=x-\frac{x^2}{2}+\frac{x^3}{3}-\frac{x^4}{4}+\cdots
+\end{align}
+\]
+
+and also showed that 
+
+<br><span style="color:blue;">
+そしてまた、
+</span>
+
+\[
+\begin{align}
+\cos x &= 1-\frac{x^2}{2!}+\frac{x^4}{4!}\cdots = \frac{e^{ix}+e^{^ix}}{2} \\
+\\
+\sin x &= x - \frac{x^3}{3!}+\frac{x^5}{5!}\cdots=\frac{e^{ix}-e^{-ix}}{2i}
+\end{align}
+\]
+
+by using the equations \(\cos \omega = 1, \sin \omega = \omega\), and \(j = j-1 = j-2 =\cdots\)  
+with \(\omega\) infinitely small and j infinitely large. 
+
+<br><span style="color:blue;">
+\(\cos \omega = 1, \sin \omega = \omega\)、\(j = j-1 = j-2 =\cdots\) という方程式を用います。\(\omega\) は無限に小さく、j は無限に大きいものとします。
+</span>
+</p><p>
+
+Euler's demonstration that the function \(e^x\) is equal to its own derivative 
+employed the practice, which, as we saw, was adopted by Leibniz and Newton, 
+of "casting out" higher-order infinitesimals like \(dx\; dy, (dx)^2,(dx)^3\), etc. 
+Applying his series expansion for the exponential function to edx he argued 
+that 
+
+<br><span style="color:blue;">
+オイラーは、関数 \(e^x\) がその導関数に等しいことを証明する際に、\(dx\; dy, (dx)^2,(dx)^3\) などの高階の無限小を「排除する」という手法を用いていました。これは既に述べたように、ライプニッツとニュートンによって採用されました。
+指数関数の級数展開を edx に適用して、彼は次のように主張しました。
+</span>
+
+\[
+\begin{align}
+d(e^x) &= e^{x+dx}-e^x \\
+\\
+&= e^x(e^{dx}-1) \\
+\\
+&= e^x(dx+\frac{(dx)^2}{2!}+\frac{(dx)^3}{3!}+\cdots) \\
+\\
+&= e^xdx
+\end{align}
+\]
+<h4>Demise of Infinitesimals　<span style="color:blue;">無限小の終焉</span></h4>
+
+<p>
+
+The conceptual foundations of the calculus continued to be controversial 
+and to attract criticism, the most famous being that of Berkeley, who wrote 
+(1734) in opposition to the ideas of Newton and his followers: 
+
+<br><span style="color:blue;">
+微積分の概念的基礎は論争を巻き起こし、批判を集め続けました。最も有名なのは、ニュートンとその追随者たちの考えに反対してバークリーが書いた（1734年）ものです。
+</span>
+
+</p><p class="margin-large">
+
+And what are these fluxions? The velocities of evanescent increments? 
+And what are these same evanescent increments? They 
+are neither finite quantities, nor quantities infinitely small, nor 
+yet nothing. May we not call them the ghosts of departed quantities? 
+
+<br><span style="color:blue;">
+では、これらのフラクションとは何でしょうか？ 消えゆく増分の速度でしょうか？
+そして、これらの同じ消えゆく増分とは何でしょうか？ それらは
+有限量でも、無限に小さい量でもなく、
+それでも無ではありません。過ぎ去った量の亡霊と呼べるのではないでしょうか？
+</span>
+
+</p><p>
+
+
+Eventually infinitesimals were expunged from analysis, along with the dependence 
+on intuitive geometric concepts and diagrams. The subject was 
+"arithmetised" by the explicit construction of the real numbers out of 
+the rational number system by the work of Dedekind, Cantor, and others 
+around 1872. Weierstrass provided the purely arithmetical formulation 
+of limits that we use today, defining \(\lim_{x\rightarrow a} f(x) = L\) to mean that 
+
+<br><span style="color:blue;">
+最終的に、無限小は解析から排除され、直感的な幾何学的概念や図への依存も排除されました。この分野は、1872年頃、デデキント、カントールらの研究によって、有理数体系から実数を明示的に構築することで「算術化」されました。ワイエルシュトラスは、今日私たちが使用している極限の純粋に算術的な定式化を提供し、\(\lim_{x\rightarrow a} f(x) = L\) を次のように定義しました。
+</span>
+
+\[
+(\forall\varepsilon\gt 0)(\exists\delta\gt 0)\; such\; that\; 0 <|x-1|<\delta\; implies\; |f(x)-L|\lt \varepsilon
+\]
+</p> 
+
+<h4>Robinson　<span style="color:blue;">ロビンソン</span></h4>
+
+<p>
+
+Three centuries after the seminal discoveries of Newton and Leibniz, infinitesimals 
+were restored with a vengeance by Abraham Robinson, who 
+wrote in the preface to his 1966 book Non-standard Analysis: 
+<br><span style="color:blue;">
+ニュートンとライプニッツの画期的な発見から3世紀後、無限小はアブラハム・ロビンソンによって猛烈な勢いで復活しました。彼は1966年の著書『非標準解析』の序文で次のように書いています。
+</p><p class="margin-large">
+
+In the fall of 1960 it occurred to me that the concepts and methods 
+of contemporary Mathematical Logic are capable of providing 
+a suitable framework for the development of the Differential 
+and Integral Calculus by means of infinitely small and infinitely 
+large numbers. 
+<br><span style="color:blue;">
+1960年の秋、私は現代の数理論理学の概念と方法が、無限に小さい数と無限に大きな数を用いた微分積分学の発展に適した枠組みを提供できるのではないかと考えました。
+</p><p>
+
+The progress of symbolic logic in the twentieth century had produced an 
+exact formulation of the syntax of mathematical statements; an account 
+of what it is for a statement to be true of a mathematical system or 
+structure-i.e. for the structure to be a model of the statement; and methods 
+for obtaining models of prescribed statements. One such method comes 
+from the compactness theorem: 
+<br><span style="color:blue;">
+20世紀における記号論理の進歩は、数学的命題の統語論の正確な定式化、数学的体系または構造について命題が真であるということ、すなわちその構造が命題のモデルであるということの説明、そして、規定された命題のモデルを得るための方法を生み出した。そのような方法の一つは、コンパクト性定理に由来する。
+
+<div class="styleBullet">
+<ul><li>
+
+● If a set \(\Sigma\) of statements (of an appropriate kind) has the property 
+that each finite subset \(\Sigma^\prime\) of \(\Sigma\) has a model (a structure of which all 
+members of \(\Sigma^\prime\) are true), then there must be a single structure that 
+is a model of \(\Sigma\) itself.
+
+<br><span style="color:blue;">
+適切な種類のステートメントの集合 \(\Sigma\) が、\(\Sigma\) の各有限部分集合 \(\Sigma^\prime\) にモデル（\(\Sigma^\prime\) のすべてのメンバーが真である構造）が存在するという性質を持つ場合、\(\Sigma\) 自体のモデルである単一の構造が存在する必要があります。
+</span>
+
+</li></ul></div>
+</p><p>
+
+Now suppose that we take \(\Sigma_{\mathbb{R}}\) to consist of all appropriate statements true 
+of \(\mathbb{R}\). (including the axioms for ordered fields amongst other things) together 
+with the infinitely many statements 
+<br><span style="color:blue;">
+ここで、\(\Sigma_{\mathbb{R}}\) が \(\mathbb{R}\) について成り立つすべての適切なステートメント（とりわけ順序体の公理を含む）と、無限個のステートメントから構成されると仮定する。
+</span>
+
+\[
+0 < \varepsilon,　\varepsilon < 1,　\varepsilon < \frac{1}{2},　\varepsilon < \frac{1}{3},\cdots,　　\varepsilon < \frac{1}{n},\cdots
+\]
+
+
+Using the compactness theorem it can be deduced that \(\Sigma_{\mathbb{R}}\) has a model 
+\({}^*\mathbb{R}\), which will be an ordered field in which the element \(\varepsilon\) is a positive 
+infinitesimal. Moreover, this model will satisfy the transfer principle: 
+
+<br><span style="color:blue;">
+コンパクト性定理を用いると、\(\Sigma_{\mathbb{R}}\) にはモデル \({}^*\mathbb{R}\) が存在することが示され、これは元 \(\varepsilon\) が正の無限小である順序体となる。さらに、このモデルは移行原理を満たす。
+</span>
+
+<div class="styleBullet">
+<ul><li>
+
+
+●  Any appropriately formulated statement is true of \(\Sigma_{\mathbb{R}}\) if and only if 
+it is true of \(\mathbb{R}\). 
+
+<br><span style="color:blue;">
+適切に定式化された任意のステートメントが \(\Sigma_{\mathbb{R}}\) について真であるのは、それが \(\mathbb{R}\) について真である場合に限ります。
+</span>
+
+</li></ul></div>
+</p><p>
+
+
+This is reminiscent of Leibniz's above-quoted remark that 
+
+<br><span style="color:blue;">
+これは、ライプニッツが上で引用した次の発言を彷彿とさせる。
+</span>
+
+</p><p class="margin-large">
+
+the whole matter can be always referred back to assignable quantities, 
+
+<br><span style="color:blue;">
+全体の事柄は常に割り当て可能な量に遡ることができる。
+</span>
+
+</p><p>
+
+and might even suggest that there is no point in considering \({}^*\mathbb{R}\), since it 
+satisfies the same theorems as \(\mathbb{R}\). But on the contrary, what it offers is a 
+new methodology for real analysis, because the availability of infinitesimals 
+allows for easier and more intuitively natural proofs in \({}^*\mathbb{R}\) of some theorems 
+that can then immediately be inferred to hold of \(\mathbb{R}\) by transfer. 
+
+<br><span style="color:blue;">
+また、\({}^*\mathbb{R}\) は \(\mathbb{R}\) と同じ定理を満たすので、\({}^*\mathbb{R}\) を考慮する意味がないとさえ示唆するかもしれません。しかしそれどころか、\({}^*\mathbb{R}\) は実解析のための新しい方法論を提供します。なぜなら、無限小を利用できることで、\({}^*\mathbb{R}\) におけるいくつかの定理の証明がより容易かつ直感的に自然になり、それらの証明は移行によって \(\mathbb{R}\) にも成り立つと直ちに推論できるからです。
+</span>
+
+</p><p>
+
+Of course for this to work, the theorems in question must be "appropri.,. 
+ately formulated", and explaining what this means is one of our major goals. 
+As we shall see, \({}^*\mathbb{R}\) fails to satisfy Dedekind's completeness axiom stipulating 
+that any nonempty set with an upper bound must have a least upper 
+bound, so this is not the sort of assertion to which transfer applies. In order 
+to determine which statements are subject to it we will need the "concepts 
+and methods of contemporary Mathematical Logic" that were available to 
+Robinson, but not to Leibniz, nor indeed to those in the intervening period 
+who tried to work with infinitesimals or construct non-Archimedean extensions 
+of the real number system. Robinson's great achievement was to turn 
+the transfer principle into a working tool of mathematical reasoning. In 
+the last few decades it has been applied to many areas, including analysis, 
+topology, algebra, number theory, mathematical physics, probability and 
+stochastic processes, and mathematical economics. 
+
+<br><span style="color:blue;">
+もちろん、これが機能するためには、問題の定理が「適切に、正確に定式化」されていなければなりません。そして、これが何を意味するのかを説明することが、私たちの主要な目標の一つです。
+後で見るように、\({}^*\mathbb{R}\) は、上界を持つ任意の空でない集合は必ず最小の上界を持つというデデキントの完全性公理を満たさないため、これは移行原理が適用される種類の主張ではありません。どの命題が移行原理の対象となるかを判断するには、「当時の数理論理学の概念と方法」が必要になりますが、それはロビンソンには利用可能でしたが、ライプニッツや、その中間の時代に無限小数を扱ったり、実数系の非アルキメデス的拡張を構築しようとした人々には利用できませんでした。ロビンソンの偉大な功績は、移行原理を数学的推論の実用的なツールに変えたことです。過去数十年間にわたり、解析学、位相幾何学、代数学、数論、数理物理学、確率過程、数理経済学など、多くの分野に応用されてきました。
+</span>
+
+</p><p>
+
+To those unfamiliar with formal logic, the use of compactness may seem 
+like a kind of sleight of hand. A model of \(\Sigma_{\mathbb{R}}\) is produced, but we do not see 
+where it came from. However, the compactness theorem itself has a proof, 
+and one way to prove it is to use the notion of an ultraproduct, an algebraic 
+construction that takes all the assumed models of the finite subsets of E 
+and builds a model of \(\sigma\) out of them. We can apply this construction 
+directly to the structure \(\mathbb{R}\) to build \({}^*\mathbb{R}\) as a special kind of ultraproduct 
+called an ultrapower. This will be our first main task.
+
+<br><span style="color:blue;">
+形式論理に馴染みのない人にとって、コンパクト性の利用は一種の手品のように見えるかもしれません。\(\Sigma_{\mathbb{R}}\) のモデルは生成されますが、それがどこから来たのかは分かりません。しかし、コンパクト性定理自体には証明があり、それを証明する一つの方法は、超積の概念を用いることです。超積とは、E の有限部分集合のすべての想定モデルを取り、それらから \(\sigma\) のモデルを構築する代数的構成です。この構成を構造 \(\mathbb{R}\) に直接適用することで、\({}^*\mathbb{R}\) を超冪と呼ばれる特別な種類の超積として構築することができます。これが私たちの最初の主要な課題となります。 
+</span>
+
+</p>
+
+<h3>1.3 What Is a Real Number?　<span style="color:blue;">実数とは何か?</span></h3>
+
+<p>
+
+Consideration of this question provides motivation for the definition of the 
+hyperreal number system. Here are some standard answers. 
+
+<br><span style="color:blue;">
+この問いの考察は、超実数系の定義の動機付けとなる。以下に標準的な解答を示す。
+</span>
+
+<div class="styleBullet">
+<ul><li>
+
+
+(1) A real number is an infinite decimal expression, such as 
+
+<br><span style="color:blue;">
+実数とは、例えば
+</span>
+
+\[
+\sqrt{2} = 1.4142135623731\cdots
+\] 
+
+
+that identifies \(\sqrt{2}\) as the sum of the infinite power series 
+
+<br><span style="color:blue;">
+これは\(\sqrt{2}\)を無限冪級数の和として識別する。
+</span>
+
+\[
+1+\frac{4}{10}+\frac{1}{10^2}+\frac{4}{10^3}+\frac{2}{10^4}+\frac{1}{10^5}+\cdots
+\]
+
+</li><br><li>
+
+(2) A real number is an element of a complete ordered field. Here "complete", 
+often called Dedekind complete, means that any nonempty 
+set with an upper bound must have a least upper bound. Any two 
+complete ordered fields are isomorphic, so this notion uniquely characterises 
+\(\mathbb{R}\). 
+
+<br><span style="color:blue;">
+実数は完全順序体の元である。ここで「完全」とは、しばしばデデキント完全とも呼ばれ、上界を持つ任意の空でない集合は必ず最小の上界を持つことを意味する。任意の2つの完全順序体は同型であるため、この概念は\(\mathbb{R}\)を一意に特徴付ける。
+</span>
+
+</li><br><li>
+
+(3) A real number is a Dedekind cut in the set \(\mathbb{Q}\) of rational numbers: a 
+partition of \(\mathbb{Q}\) into a pair \(\langle L, U\rangle\) of nonempty disjoint subsets with 
+every element of \(L\) less than every element of \(U\) and \(L\) having no 
+largest member. Thus \(\sqrt{2}\) can be identified with the cut 
+
+<br><span style="color:blue;">
+実数は有理数の集合 \(\mathbb{Q}\) におけるデデキント切断である。これは、\(\mathbb{Q}\) を、空でない互いに素な部分集合のペア \(\langle L, U\rangle\) に分割したもので、\(L\) のすべての要素は \(U\) のすべての要素より小さく、\(L\) には最大要素がない。したがって、\(\sqrt{2}\) は次の切断と同一視できる。
+</span>
+
+\[
+L = \{ q\in\mathbb{Q}: q^2 <2\},　U = \{ q\in\mathbb{Q}: q^2 > 2\}
+\] 
+
+
+The set of all Dedekind cuts of \(\mathbb{Q}\) can be made into a complete ordered 
+field. 
+
+<br><span style="color:blue;">
+\(\mathbb{Q}\) のすべてのデデキントカットの集合は、完全な順序付き体にすることができます。
+</span>
+
+</li><br><li>
+
+(4) A real number is an equivalence class of Cauchy sequences of rational 
+numbers. A sequence \(\langle r_1,r_2,r_3, ... \rangle\) is Cauchy if its terms get 
+arbitrarily close to each other as we move along the sequence, i.e., 
+
+<br><span style="color:blue;">
+実数は有理数のコーシー列の同値類である。列 \(\langle r_1,r_2,r_3, ... \rangle\) がコーシー列であるとは、列を進むにつれて各項が互いに任意に近づくこと、すなわち、
+</span>
+
+\[
+\lim\limits_{n,m\rightarrow\infty} |r_n -r_m| = 0
+\]
+
+
+Thus \(\sqrt{2}\) is the limit of the rational Cauchy sequence 
+
+<br><span style="color:blue;">
+したがって\(\sqrt{2}\)は有理コーシー列の極限である。
+</span>
+
+\[
+1, 1.4, 1.41, 1.414, 1.4142, 1.41421, 1.414213,\cdots 
+\]
+
+
+as well as being the limit of any of the subsequences of this sequence, 
+and of other rational sequences besides. 
+
+<br><span style="color:blue;">
+この数列の任意の部分列の極限、および他の有理数列の極限でもあります。
+</span>
+<br>
+<br>
+
+Two Cauchy sequences \(\langle r_1, r_2, r_3, ... \rangle\) and \(\langle s_1, s_2, s_3, . 
+..\rangle\) are equivalent 
+if their corresponding terms approach each other arbitrarily 
+closely: 
+
+<br><span style="color:blue;">
+2つのコーシー数列 \(\langle r_1, r_2, r_3, ... \rangle\) と \(\langle s_1, s_2, s_3, .
+..\rangle\) は、対応する項が互いに任意に接近する場合、同値です。
+</span>
+
+\[
+\lim\limits_{n\rightarrow\infty} |r_n -s_n| = 0
+\]
+
+
+This defines an equivalence relation on the set of rational-valued 
+Cauchy sequences, and the resulting set of equivalence classes forms 
+a complete ordered field. Any two equivalent Cauchy sequences will 
+have the same limit, and so represent the same real number. For example, 
+\(\sqrt{2}\) corresponds to the equivalence class of the above sequence. 
+
+<br><span style="color:blue;">
+これは有理数値コーシー列の集合に同値関係を定義し、結果として得られる同値類の集合は完全な順序体を形成します。任意の2つの同値なコーシー列は
+同じ極限を持ち、したがって同じ実数を表します。例えば、\(\sqrt{2}\) は上記の列の同値類に対応します。
+</span>
+
+</li></ul></div>
+</p><p>
+
+Answer (2) provides the basis for the axiomatic or descriptive approach 
+to the analysis of \(\mathbb{R}\). The object of study is simply described as being a 
+complete ordered field, since all its properties derive from that fact. The 
+axioms for a complete ordered field are listed, and everything follows from 
+that. This is by far the favoured approach in introductory texts on real 
+analysis. 
+
+<br><span style="color:blue;">
+答え(2)は、\(\mathbb{R}\)の解析に対する公理的あるいは記述的アプローチの基礎を提供する。研究対象は、そのすべての性質がその事実から導かれるため、単に完全順序体であると記述される。完全順序体の公理が列挙されており、すべてはそこから導かれる。これは、実解析の入門書において圧倒的に好まれているアプローチである。
+</span>
+
+</p><p>
+
+The constructive approach takes as given only the rational number system 
+and proceeds to construct \(\mathbb{R}\) explicitly. There are at least two ways 
+to do this, due respectively to Dedekind (answer (3)) and Cantor (answer (4)). 
+
+<br><span style="color:blue;">
+構成的アプローチでは、有理数系のみを与えられたものとして取り、\(\mathbb{R}\) を明示的に構成します。これを行うには、少なくとも2つの方法があり、それぞれデデキント（解答(3)）とカントール（解答(4)）によるものです。
+</span>
+
+</p><p>
+
+It would be possible to develop an axiomatic approach to the hyperreals 
+\({}^*\mathbb{R}\) by assuming that we are dealing with an ordered field containing \(\mathbb{R}\) as 
+well as infinitesimals and satisfying the transfer principle "appropriately 
+formulated"n. However, in view of the controversial history of the notion 
+of infinitesimal, one could be forgiven for wondering whether this is an 
+exercise in fantasy, or whether there does exist a number system satisfying 
+the proposed axioms. The constructive approach is needed to resolve this 
+issue. We will be discussing a construction of \({}^*\mathbb{R}\) out of \(\mathbb{R}\) that is analogous 
+to Cantor's construction of \(\mathbb{R}\) out of \(\mathbb{Q}\). Hyperreal numbers will arise as 
+equivalence classes of real-valued sequences, and the challenge will be to 
+find an equivalence relation on such sequences that produces the desired 
+outcome.
+
+<br><span style="color:blue;">
+\({}^*\mathbb{R}\) と無限小数を含む順序体を対象とし、「適切に定式化された」n の移行原理を満たすと仮定すれば、超実数 \({}^*\mathbb{R}\) への公理的アプローチを展開することが可能です。しかし、無限小数の概念をめぐる論争の歴史を考えると、これは単なる空想の産物なのか、それとも提案された公理を満たす数体系が実際に存在するのか疑問に思うのも無理はありません。この問題を解決するには、構成的アプローチが必要です。ここでは、カントールが \(\mathbb{Q}\) から \(\mathbb{R}\) を構築した方法に類似した、\(\mathbb{R}\) から \({}^*\mathbb{R}\) を構築する方法について議論します。超実数は実数値列の同値類として出現し、課題はそのような列上で望ましい結果を生み出す同値関係を見つけることです。 
+</span>
+
+</p><p>
+
+To conclude this introduction to our subject, let us examine another 
+putative answer to the question "what is a real number?"-namely, that a 
+real number is a point on the number line: 
+
+<br><span style="color:blue;">
+このテーマの導入を締めくくるにあたり、「実数とは何か？」という問いに対するもう一つの想定される答え、すなわち、実数は数直線上の点であるという答えを検討してみましょう。
+</span>
+
+</p><p>
+
+Now, the intuitive geometric idea of a line is an ancient one, much older 
+than the notion of a set of points, let alone an infinite set. The identification 
+of a line with the set of points lying on that line is a perspective that belongs 
+to modern times. For Euclid a line was simply " length without breadth"n, 
+and his diagrams and arguments involved lines with a finite number of 
+points marked on them. By applying the field operations and taking limits 
+of converging sequences we can assign a point to each real number, but the 
+claim that this exhausts all the points on the line is just that: a claim. One 
+could seek to justify it by invoking a principle such as the one attributed 
+to Eudoxus and Archimedes that any two magnitudes are such that 
+
+<br><span style="color:blue;">
+さて、直線という直感的な幾何学的概念は古代のものであり、点の集合という概念よりもはるかに古く、ましてや無限集合という概念は存在しません。直線とその直線上にある点の集合を同一視する考え方は、近代に生まれたものです。ユークリッドにとって直線とは単に「幅のない長さ」であり、彼の図や議論は有限個の点が記された直線を対象としていました。体演算を適用し、収束する数列の極限をとることで、各実数に点を割り当てることができますが、これで直線上のすべての点が網羅されるという主張は、単なる主張に過ぎません。エウドクソスとアルキメデスに帰せられる原理、すなわち任意の2つの大きさは
+</span>
+
+</p><p class="margin-large">
+
+the less can be multiplied so as to exceed the other. 
+
+<br><span style="color:blue;">
+より少ないものを、他を上回るように増やすことができる。
+</span>
+
+</p><p>
+
+This entails that for each real number r there is an integer n > r, and that 
+precludes there being any infinitely large or small numbers in \(\mathbb{R}\). But then 
+one could say that the Eudoxus-Archimedes principle is just a property 
+of those points on the line that correspond to "assignable" numbers. The 
+hyperreal point of view is that the geometric line is capable of sustaining 
+a much richer and more intricate number set than the real line. 
+
+<br><span style="color:blue;">
+これは、任意の実数rに対して整数n > rが存在することを意味し、\(\mathbb{R}\)内に無限に大きい数や無限に小さい数が存在することを排除します。しかし、エウドクソス-アルキメデスの原理は、直線上の「割り当て可能な」数に対応する点の特性にすぎないと言うこともできます。超実数的な観点からは、幾何学的な直線は実数直線よりもはるかに豊かで複雑な数集合を維持できるということです。
+</span>
+
+</p>
+
+<h3>1.4 Historical References　 <span style="color:blue;">歴史関連参照文献</span></h3>
+
+<p>
+
+Amongst the numerous books available, the following are worth consulting 
+for more details on the historical background we have been discussing. 
+
+<br><span style="color:blue;">
+数多くの書籍がありますが、私たちが議論してきた歴史的背景の詳細​​については、以下の書籍を参照する価値があります。
+</span>
+
+<div class="styleBullet">
+<ul><li>
+
+M. E. BARON AND H. J. M. Bos. Newton and Leibniz<span style="color:blue;">『ニュートンとライプニッツ』</span>. Open University 
+Press, 1974. 
+
+</li><br><li>
+
+J. M. CHILD. The Early Mathematical Manuscripts of Leibniz<span style="color:blue;">『ライプニッツ初期数学草稿集』</span> Open 
+Court Publishing Co., 1920. 
+
+</li><br><li>
+
+E. J. DIJKSTERHUIS. Archimedes<span style="color:blue;">『アルキメデス』</span> Princeton University Press, 1987. 
+
+</li><br><li>
+
+C. H. EDWARDS. The Historical Development of the Calculus<span style="color:blue;">『微積分の歴史的発展』</span> Springer, 
+1979. 
+
+</li><br><li>
+
+LEONHARD EULER. Introduction to the Analysis of the Infinite<span style="color:blue;">『無限の解析入門』</span> Book 
+I, translated by John D. Blanton. Springer, 1988. 
+
+</li></ul></div>
+</p>
+    </body>
+</html>

@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="ja">
+    <head>
+        <script type="text/javascript" id="MathJax-script" async
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+        <meta charset="utf-8" />
+        <title>序文</title>
+        <style type="text/css">
+            p
+            {
+                padding-left: 2em;
+            }
+            .margin-large
+            {
+                margin-left: 30px;
+            }
+           .margin-abstract {
+               margin-left: 60px; /* 左マージンを広くする */
+               margin-right: 60px; /* 右マージンを広くする */
+           }
+        </style>
+    <style>
+        .two-columns {
+            display: flex;
+            flex-direction: row;
+            gap: 20px; /* 列間のスペース */
+        }
+        .column {
+            flex: 1; /* 各列が均等に幅を取る */
+        }
+    </style>
+<style>
+.three-columns {
+  display: flex;
+  gap: 10px; /* 列間の余白を設定 */
+}
+.column {
+  flex: 1; /* 各列の幅を均等にする */
+  padding: 10px; /* 内側の余白を設定 */
+}
+</style>
+    <style>
+        .styleRef { 
+            text-indent: -40px; /* 最初の行の字下げを逆方向に */
+            margin-left: 10px; /* 2行目以降の字下げを調整 */
+            ul {
+                  list-style-type: none; /* 箇条書き記号を非表示 */
+                  padding-left: 40px; /* 全体の左余白 */
+            }
+            li {
+            }
+        }
+    </style>
+    <style>
+        .styleBullet { 
+            text-indent: -20px; /* 最初の行の字下げを逆方向に */
+            margin-left: 30px; /* 2行目以降の字下げを調整 */
+            ul {
+                  list-style-type: none; /* 箇条書き記号を非表示 */
+                  padding-left: 0px; /* 全体の左余白 */
+            }
+            li {
+            }
+        }
+    </style>
+    <style>
+            ol
+            {
+                margin-left: 30px;
+            }
+            ul
+            {
+                margin-left: 30px;
+            }
+    </style>
+    <style>
+        .thin-line {
+            margin: 0; 
+            margin-left:2em;
+            border: 0;
+            height: 1px;
+            background-color: gray;
+        }
+
+        .thick-line {
+            margin: 0; 
+            margin-left:2em;
+            border: 0;
+            height: 2px;
+            background-color: black;
+        }
+    </style>
+    <style>
+        .highlight {
+            color: red; /* 好きな色に変更してください */
+        }
+    </style>
+    </head>
+    <body>
+<h1>Preface <span style="color:blue;">序文</span></h1>
+<p style="text-align: right;">
+There are good reasons to believe that<br>
+nonstandard analysis, in some version<br>
+or other, will be the analysis of<br>
+the future.
+<br><span style="color:blue;">
+超準解析が、何らかの形で、<br>
+将来の解析手法となるであろうと<br>
+信じるに足る十分な理由があります。</span><br>
+
+<br>
+KURT G&Ouml;DEL
+<p> 
+This book is a compilation and development of lecture notes written for
+a course on nonstandard analysis that I have now taught several times.
+Students taking the course have typically received previous introductions
+to standard real analysis and abstract algebra, but few have studied formal
+logic. Most of the notes have been used several times in class and revised
+in the light of that experience. The earlier chapters could be used as the
+basis of a course at the upper undergraduate level, but the work as a
+whole, including the later applications, may be more suited to a beginning
+graduate course.
+
+<br><span style="color:blue;">
+本書は、私がこれまで数回にわたり担当した超準解析の講義のために執筆した講義ノートを集大成し、発展させたものです。この講義を受講する学生は、標準的な実解析と抽象代数の入門書を既に受講していることが多いものの、形式論理を学んだ学生はほとんどいません。このノートのほとんどは授業で何度も使用され、その経験を踏まえて改訂されています。最初の章は上級学部レベルの講義の基礎として使用できますが、後半の応用部分を含め、全体としては大学院の初級レベルの講義に適しているかもしれません。
+</span>
+</p><p>
+This preface describes my motivations and objectives in writing the book.
+For the most part, these remarks are addressed to the potential instructor.
+
+<br><span style="color:blue;">
+この序文では、本書を執筆した動機と目的について述べます。
+これらの記述の大部分は、本書を指導する可能性のある方に向けたものです。
+</span>
+</p><p>
+Mathematical understanding develops by a mysterious interplay between
+intuitive insight and symbolic manipulation. Nonstandard analysis requires
+an enhanced sensitivity to the particular symbolic form that is used to express
+our intuitions, and so the subject poses some unique and challenging
+pedagogical issues. The most fundamental of these is how to turn the transfer
+principle into a working tool of mathematical practice. I have found it
+unproductive to try to give a proof of this principle by introducing the
+formal Tarskian semantics for first-order languages and working through
+the proof of Los's theorem. That has the effect of making the subject seem
+more difficult and can create an artifical barrier to understanding. But the
+practical use of transfer is more readily explained informally, and typically
+involves statements that are no more complicated than the "epsilon-delta"
+statements used in standard analysis. My approach then has been to illustrate
+transfer by many examples, with demonstrations of why those examples
+work, leading eventually to a situation in which its formulation as a
+general principle appears quite credible.
+
+<br><span style="color:blue;">
+数学的理解は、直観的洞察と記号操作の間の不思議な相互作用によって発達します。超準的な解析は、私たちの直観を表現するために用いられる特定の記号形式に対する高度な感受性を必要とするため、この分野は独特で難しい教育的課題を提起します。その中で最も根本的な課題は、移行原理を数学実践の実用的なツールへとどのように転換するかということです。この原理の証明を、一階言語に対する形式的タルスキアン意味論を導入し、ロスの定理の証明を試みることで行おうとするのは、非生産的であることが分かりました。そのような試みは、この分野をより難解に見せ、理解への人為的な障壁を作り出す可能性があります。しかし、移行の実際的な使用法は、より非公式に説明しやすく、典型的には、標準的な解析で使用される「イプシロン-デルタ」ステートメントよりも複雑ではないステートメントで済みます。そこで私のアプローチは、多くの例を挙げて移行を説明し、それらの例がなぜ機能するのかを実証し、最終的に、移行を一般原則として定式化することが非常に信頼できるように見える状況に導くことでした。
+</span>
+</p><p>
+There is an obvious analogy with standard laws of thought, such as
+induction. It would be an unwise teacher who attempted to introduce this
+to the novice by deriving the principle of induction as a theorem from
+the axioms of set theory. Of course one attempts to describe induction,
+and explain how it is applied. Eventually after practice with examples the
+student gets used to using it. So too with transfer.
+
+<br><span style="color:blue;">
+帰納法のような標準的な思考法則との明らかな類似点があります。集合論の公理から定理として帰納法の原理を導き出すことで、初心者にこれを導入しようとする教師は賢明ではありません。もちろん、帰納法を説明し、どのように適用されるかを説明しようとします。例題を用いて練習すれば、最終的には学生はそれに慣れます。移行についても同様です。
+</span>
+</p><p>
+It is sensible to use this approach in many areas of mathematics, for
+instance beginning a course on standard analysis with a description of the
+real number system \(\mathbb{R}\) as a complete ordered field. The student already
+has well-developed intuitions about real numbers, and the axioms serve to
+summarise the essential information needed to proceed. It is rare these days
+to find a text that begins by explicitly constructing \(\mathbb{R}\) out of the rationals
+via Dedekind cuts or Cauchy sequences, before embarking on the theory of
+limits, convergence, continuity, etc.
+
+<br><span style="color:blue;">
+このアプローチは数学の多くの分野で理にかなっています。例えば、標準的な解析学の講義を始める際に、実数系 \(\mathbb{R}\) を完備な順序体として記述することから始めるのが賢明です。学生はすでに実数について十分に発達した直観力を持っており、公理は学習を進めるために必要な基本的な情報を要約するのに役立ちます。今日では、極限、収束、連続性などの理論に進む前に、デデキント切断やコーシー列を用いて有理数から \(\mathbb{R}\) を明示的に構築することから始める教科書を見つけることは稀です。
+</span>
+</p><p>
+On the other hand, it is not so clear that such a methodology is adequate
+for the introduction of the hyperreal field \({}^*\mathbb{R}\) itself. In view of the
+controversial history of infinitesimals, and the student's lack of familiarity
+with them, there is a plausibility problem about simply introducing \({}^*\mathbb{R}\)
+axiomatically as an ordered field that extends \(\mathbb{R}\), contains infinitesimals,
+and has various other properties. I hope that such a descriptive approach
+will eventually become the norm, but here I have opted to use the foundational,
+or constructive, method of presenting an ultrapower construction of
+the ordered field structure of \({}^*\mathbb{R}\), and of enlargements of elementary sets,
+relations, and functions on \(\mathbb{R}\), leading to a development of the calculus,
+analysis, and topology of functions of a single variable. At that point (Part
+III) the exposition departs from some others by making an early introduction
+of the notions of internal, external, and hyperfinite subsets of \({}^*\mathbb{R}\), and
+internal functions from \({}^*\mathbb{R}\) to \({}^*\mathbb{R}\), along with the notions of overflow, underflow,
+and saturation. It is natural and helpful to develop these important
+and radically new ideas in this simpler context, rather than waiting to apply
+them to the more complex objects produced by constructions based on
+superstructures.
+
+<br><span style="color:blue;">
+一方で、そのような方法論が超実体 \({}^*\mathbb{R}\) 自体の導入に適切であるかどうかは、必ずしも明らかではありません。無限小数に関する論争の歴史と、学生が無限小数にあまり精通していないことを考慮すると、\(\mathbb{R}\) を拡張し、無限小数を含み、その他様々な性質を持つ順序体として \({}^*\mathbb{R}\) を公理的に導入するだけでは、妥当性に問題があります。このような記述的アプローチが最終的には標準となることを願っていますが、ここでは、\({}^*\mathbb{R}\) の順序体構造の超冪構成、および \(\mathbb{R}\) 上の基本集合、関係、関数の拡大を提示し、一変数関数の微積分、解析、位相の発展へと導くという基礎的、あるいは構成的な方法を用いることにしました。その時点 (パート III) では、\({}^*\mathbb{R}\) の内部部分集合、外部部分集合、超有限部分集合の概念、そして \({}^*\mathbb{R}\) から \({}^*\mathbb{R}\) への内部関数、そしてオーバーフロー、アンダーフロー、飽和の概念を早期に導入することで、解説は他のものとは一線を画しています。これらの重要かつ根本的に新しいアイデアを、上部構造に基づく構築によって生み出されるより複雑なオブジェクトに適用するまで待つのではなく、このより単純な文脈で展開することは自然であり、有益です。
+</span>
+</p><p>
+
+As to the use of superstructures themselves, again I have taken a slightly
+different tack and followed (in Part IV) a more axiomatic path by positing
+the existence of a universe \(\mathbb{U}\) containing all the entities (sets, tuples, rela
+tions, functions, sets of sets of functions, etc. , etc.) that might be needed in
+pursuing a particular piece of mathematical analysis. \(\mathbb{U}\) is described by settheoretic
+closure properties (pairs, unions, powersets, transitive closures) .
+The role of the superstructure construction then becomes the foundational
+one of showing that universes exist. From the point of view of mathematical
+practice, enlargements of superstructures seem somewhat artificial (a
+"gruesome formalism" , accord!ng to one author) , and the approach taken
+here is intended to make it clearer as to what exactly is the ontology that
+we need in order to apply nonstandard methods. Looking to the future,
+if (one would like to say when) nonstandard analysis becomes as widely
+recognised as its standard "shadow" , so that a descriptive approach without
+any need for ultrapowers is more amenable, then the kind of axiomatic
+account developed here on the basis of universes would, I believe, provide
+an effective and accessible style of exposition of the subject.
+
+<br><span style="color:blue;">
+上部構造自体の使用に関しては、ここでも私は少し異なるアプローチを取り、（第4部では）より公理的な道をたどり、特定の数学的分析を追求する際に必要となる可能性のあるすべての実体（集合、組、関係、関数、関数の集合の集合など）を含む宇宙 \(\mathbb{U}\) の存在を仮定しました。\(\mathbb{U}\) は、集合論的な閉包特性（ペア、和集合、冪集合、推移的閉包）によって記述されます。したがって、上部構造の構築の役割は、宇宙が存在することを示すという基本的な役割になります。数学の実践の観点から見ると、上部構造の拡大はいくぶん人為的（ある著者によれば「恐ろしい形式主義」）に思われ、ここで採用したアプローチは、超準的な手法を適用するために必要なオントロジーとは一体何なのかをより明確にすることを意図している。将来を見据えると、超準的な解析がその標準的な「影」と同じくらい広く認知され、超能力を必要としない記述的アプローチがより受け入れやすくなれば（いつになるかは言いたくないが）、ここで宇宙に基づいて展開されたような公理的な説明は、この主題を効果的かつ分かりやすく説明するスタイルを提供するだろうと私は信じる。
+</span>
+</p><p>
+
+What does nonstandard analysis offer to our understanding of mathematics?
+In writing these notes I have tried to convey that the answer
+includes the following five features.
+
+<br><span style="color:blue;">
+超準解析は数学の理解に何をもたらすのでしょうか？
+このメモを書くにあたり、その答えには以下の5つの特徴が含まれることを伝えようと努めました。
+</span>
+<div class="styleBullet">
+<ul><li>
+
+(1) New definitions of familiar concepts, often simpler and more intuitively
+natural
+
+<br><span style="color:blue;">
+よく知られた概念の新しい定義。多くの場合、より単純で直感的に自然なもの。
+</span>
+<br>
+<br>
+Examples to be found here include the definitions of convergence,
+boundedness, and Cauchy-ness of sequences; continuity, uniform continuity,
+and differentiability of functions; topological notions of interior,
+closure, and limit points; and compactness.
+
+<br><span style="color:blue;">
+ここで挙げられる例としては、数列の収束性、有界性、コーシー性、関数の連続性、一様連続性、微分可能性、内部点、閉包点、極限点といった位相的な概念、コンパクト性などが挙げられます。
+</span>
+
+</li><br><li>
+
+(2) New and insightful (often simpler} proofs of familiar theorems
+
+<br><span style="color:blue;">
+よく知られた定理の、新しく洞察に満ちた（しばしばより単純な）証明
+</span>
+
+<br>
+<br>
+In addition to many theorems of basic analysis about convergence and
+limits of sequences and functions, intermediate and extreme values
+and fixed points of continuous functions, critical points and inverses
+of differentiable functions, the Bolzano-Weierstrass and Heine-Borel
+theorems, the topology of sets of reals, etc. , we will see nonstandard
+proofs of Ramsey's theorem, the Stone representation theorem for
+Boolean algebras, and the Hahn-Banach extension theorem on linear
+functionals.
+
+<br><span style="color:blue;">
+数列と関数の収束と極限、連続関数の中間値と極値と不動点、微分可能関数の臨界点と逆関数、ボルツァーノ-ワイエルシュトラス定理とハイネ-ボレル定理、実数集合の位相などに関する多くの基礎解析定理に加えて、ラムゼーの定理、ブール代数のストーン表現定理、線型関数のハーン-バナッハ拡大定理の超準的な証明についても見ていきます。
+</span>
+
+</li><br><li>
+
+(3) New and insightful constructions of familiar objects
+
+<br><span style="color:blue;">
+身近な対象に対する新しく洞察に満ちた構成
+</span>
+
+<br>
+<br>
+For instance, we will obtain integrals as hyperfinite sums; the reals
+\(\mathbb{R}\) themselves as a quotient of the hyperrationals \({}^*\mathbb{Q}\); other completions,
+including the p-adic numbers and standard power series rings
+as quotients of nonstandard objects; and Lebesgue measure on \(\mathbb{R}\) by
+a nonstandard counting process with infinitesimal weights.
+
+<br><span style="color:blue;">
+例えば、積分は超有限和として、実数\(\mathbb{R}\) 自体は超有理数 \({}^*\mathbb{Q}\) の商として、その他の完備化（p進数や標準冪級数環を含む）は超準的対象の商として、そして\(\mathbb{R}\) 上のルベーグ測度は無限小の重みを持つ超準的計数過程によって得られる。
+</span>
+
+</li><br><li>
+(4) New objects of mathematical interest
+
+<br><span style="color:blue;">
+数学的に興味深い新しい対象
+</span>
+
+<br>
+<br>
+Here we will exhibit new kinds of number (limited, unlimited, infinitesimal,
+appreciable); internal and external sets and functions;
+shadows; halos; hyperfinite sets; nonstandard hulls; and Loeb measures.
+
+<br><span style="color:blue;">
+ここでは、新しい種類の数（有限数、無限数、無限小数、認識可能数）、内部集合と外部集合、関数、影、ハロー、超有限集合、超準包、ローブ測度について紹介します。
+</span>
+
+</li><br><li>
+(5) Powerful new properties and principles of reasoning
+
+<br><span style="color:blue;">
+強力な新しい推論特性と原理
+</span>
+
+<br>
+<br>
+These include transfer; internal versions of induction, the least number
+principle and Dedekind completeness; overflow, underflow, and
+other principles of permanence; Robinson's sequential lemma; saturation;
+internal set definition; concurrence; enlargement; hyperfinite
+approximation; and comprehensiveness.
+
+<br><span style="color:blue;">
+これらには、移行、帰納法の内部バージョン、最小数原理とデデキント完全性、オーバーフロー、アンダーフロー、その他の永続性原理、ロビンソンの逐次補題、飽和、内部集合定義、同時性、拡大、超有限近似、そして包括性が含まれます。
+</span>
+
+</li></ul></div>
+</p><p>
+
+In short, nonstandard analysis provides us with an enlarged view of the
+mathematical landscape. It represents yet another stage in the emergence of
+new number systems, which is a significant theme in mathematical history.
+Its rich conceptual framework will be built on to reveal new systems and
+new understandings, so its development will itself influence the course of
+that history.
+
+<br><span style="color:blue;">
+要するに、超準解析は数学の展望を拡大して提示してくれる。それは、数学史における重要なテーマである新しい数体系の出現における新たな段階を象徴している。その豊かな概念的枠組みは、新たな体系や新たな理解を明らかにするために構築され、その発展自体が数学史の行方に影響を与えるであろう。
+</span>
+</p>
+    </body>
+</html>
