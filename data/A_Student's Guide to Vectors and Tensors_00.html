@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="ja">
+    <head>
+        <script type="text/javascript" id="MathJax-script" async
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+        <meta charset="utf-8" />
+        <title>序文</title>
+        <style type="text/css">
+            p
+            {
+                padding-left: 2em;
+            }
+            .margin-large
+            {
+                margin-left: 30px;
+            }
+            .margin-large-blue
+            {
+                margin-left: 30px;
+                color: blue;
+            }
+           .margin-abstract {
+               margin-left: 60px; /* 左マージンを広くする */
+               margin-right: 60px; /* 右マージンを広くする */
+           }
+        </style>
+    <style>
+        .two-columns {
+            display: flex;
+            flex-direction: row;
+            gap: 20px; /* 列間のスペース */
+        }
+        .column {
+            flex: 1; /* 各列が均等に幅を取る */
+        }
+    </style>
+<style>
+.three-columns {
+  display: flex;
+  gap: 10px; /* 列間の余白を設定 */
+}
+.column {
+  flex: 1; /* 各列の幅を均等にする */
+  padding: 10px; /* 内側の余白を設定 */
+}
+</style>
+    <style>
+        .styleRef { 
+            text-indent: -40px; /* 最初の行の字下げを逆方向に */
+            margin-left: 10px; /* 2行目以降の字下げを調整 */
+            ul {
+                  list-style-type: none; /* 箇条書き記号を非表示 */
+                  padding-left: 40px; /* 全体の左余白 */
+            }
+            li {
+            }
+        }
+    </style>
+    <style>
+        .styleBullet { 
+            text-indent: -20px; /* 最初の行の字下げを逆方向に */
+            margin-left: 30px; /* 2行目以降の字下げを調整 */
+            ul {
+                  list-style-type: none; /* 箇条書き記号を非表示 */
+                  padding-left: 0px; /* 全体の左余白 */
+            }
+            li {
+            }
+        }
+    </style>
+    <style>
+            ol
+            {
+                margin-left: 30px;
+            }
+            ul
+            {
+                margin-left: 30px;
+            }
+    </style>
+    <style>
+        .thin-line {
+            margin: 0; 
+            margin-left:2em;
+            border: 0;
+            height: 1px;
+            background-color: gray;
+        }
+
+        .thick-line {
+            margin: 0; 
+            margin-left:2em;
+            border: 0;
+            height: 2px;
+            background-color: black;
+        }
+    </style>
+    <style>
+        .blue {
+            color: blue; /* 好きな色に変更してください */
+        }
+    </style>
+    </head>
+    <body>
+        <h1><center>Preface <span style="color:blue;">序文</span></center></h1>
+<p>
+
+This book has one purpose: to help you understand vectors and tensors so that you can use them to solve problems. If you’re like most students, you first encountered vectors when you took a course dealing with mechanics in high school or college. At that level, you almost certainly learned that vectors are mathematical representations of quantities that have both magnitude and direction, such as velocity and force. You may also have learned how to add vectors graphically and by using their components in the x-, y- and z-directions. 
+
+<br><span style="color:blue;">
+この本には、ベクトルとテンソルを理解し、問題解決に活用できるようにするという目的があります。多くの学生と同じように、高校や大学で力学の授業を受けた時に初めてベクトルに触れたのではないでしょうか。その段階で、ベクトルとは速度や力など、大きさと方向を持つ量の数学的表現であることをほぼ確実に学んだはずです。また、ベクトルをグラフ上で、あるいはx、y、z方向の成分を使って足し算する方法も学んだかもしれません。
+</span>
+
+</p><p>
+That’s a fine place to start, but it turns out that such treatments only scratch the surface of the power of vectors. You can harness that power and make it work for you if you’re willing to delve a bit deeper – to see vectors not just as objects with magnitude and direction, but rather as objects that behave in very predictable ways when viewed from different reference frames. That’s because vectors are a subset of a larger class of objects called “tensors,” which most students encounter much later in their academic careers, and which have been called “the facts of the Universe.” It is no exaggeration to say that our understanding of the fundamental structure of the universe was changed forever when Albert Einstein succeeded in expressing his theory of gravity in terms of tensors. 
+
+<br><span style="color:blue;">
+これは出発点としては良いのですが、このような扱いはベクトルの力の表面に触れたに過ぎないことが分かります。もう少し深く掘り下げて、ベクトルを単なる大きさと方向を持つオブジェクトとしてではなく、異なる参照フレームから見たときに非常に予測可能な方法で動作するオブジェクトとして見ることができれば、その力を利用して自分のために働かせることができます。これは、ベクトルが「テンソル」と呼ばれるより大きなクラスのオブジェクトのサブセットであるためです。テンソルはほとんどの学生が学業のずっと後になってから遭遇し、「宇宙の事実」と呼ばれています。アルバート・アインシュタインが重力理論をテンソルの観点から表現することに成功したとき、宇宙の基本構造に関する私たちの理解は永遠に変わったと言っても過言ではありません。
+</span>
+
+</p><p>
+I believe, and I hope you’ll agree, that tensors are far easier to understand if you first establish a stronger foundation in vectors, one that can help you cross the bridge between the “magnitude and direction” level and the “facts of the Universe” level. That’s why the first three chapters of this book deal with vectors, the fourth chapter discusses coordinate transformations, and the last two chapters discuss higher-order tensors and some of their applications. 
+
+<br><span style="color:blue;">
+テンソルを理解するには、まずベクトルの基礎をしっかり固めておくことがはるかに容易だと私は信じています。そして皆さんもそう思ってくれることを願っています。ベクトルの基礎は、「大きさと方向」のレベルと「宇宙の事実」のレベルをつなぐ橋渡しとなるからです。だからこそ本書の最初の3章はベクトルを、第4章は座標変換を、そして最後の2章は高階テンソルとその応用例を解説しています。
+</span>
+
+</p><p>
+One reason you may find this book helpful is that if you spend a few hours looking through the published literature and on-line resources for vectors and tensors in physics and engineering, you’re likely to come across statements such 
+as these: 
+
+<br><span style="color:blue;">
+この本が役に立つ理由の一つは、物理学や工学におけるベクトルとテンソルに関する出版文献やオンラインリソースを数時間かけて調べれば、次のような記述に出会う可能性が高いからです。
+</span>
+
+</p><p>
+<div class="styleBullet">
+<ul><li>
+“A vector is a mathematical representation of a physical entity characterized by magnitude and direction.” 
+
+<br><span style="color:blue;">
+「ベクトルとは、大きさと方向によって特徴付けられる物理的実体の数学的表現です。」
+</span>
+
+</li><br><li>
+“A vector is an ordered sequence of values.” 
+
+<br><span style="color:blue;">
+「ベクトルは順序付けられた値のシーケンスです。」
+</span>
+
+</li><br><li>
+“A vector is a mathematical object that transforms between coordinate systems in certain ways.” 
+
+<br><span style="color:blue;">
+「ベクトルは、特定の方法で座標系間を変換する数学的オブジェクトです。」
+</span>
+
+</li><br><li>
+“A vector is a tensor of rank one.” 
+
+<br><span style="color:blue;">
+「ベクトルは階数1のテンソルです。」
+</span>
+
+</li><br><li>
+“A vector is an operator that turns a one-form into a scalar.” 
+
+<br><span style="color:blue;">
+「ベクトルは、1 形式をスカラーに変換する演算子です。」
+</span>
+
+</li></ul></div>
+</p><p>
+You should understand that every one of these definitions is correct, but whether it’s useful to you depends on the problem you’re trying to solve. And being able to see the relationship between statements like these should prove very helpful when you begin an in-depth study of subjects that use advanced vector and tensor concepts. Those subjects include Mechanics, Electromagnetism, General Relativity, and others. 
+
+<br><span style="color:blue;">
+これらの定義はどれも正しいものですが、それがあなたにとって役立つかどうかは、あなたが解決しようとしている問題によって異なります。そして、これらの定義間の関係性を理解することは、高度なベクトルとテンソルの概念を用いる分野を深く学び始める際に非常に役立つはずです。そのような分野には、力学、電磁気学、一般相対性理論などがあります。
+</span>
+
+</p><p>
+As with most projects, a good first step is to make sure you understand the terminology that will be used to attack the problem. For that reason, Chapter 1 provides the basic definitions you’ll need to begin understanding vectors and tensors. And if you’re ready for more-advanced definitions, you can find those at the beginning of Chapter 5. 
+
+<br><span style="color:blue;">
+ほとんどのプロジェクトと同様に、最初のステップとして、問題に取り組む際に使用する用語を確実に理解しておくことが重要です。そのため、第1章では、ベクトルとテンソルを理解するために必要な基本的な定義を提供しています。より高度な定義を学習したい場合は、第5章の冒頭をご覧ください。
+</span>
+
+</p><p>
+You may be wondering how this book differs from other texts that deal with vectors and/or tensors. Perhaps the most important difference is that approximately equal weight is given to vector and tensor concepts, with one entire chapter (Chapter 3) devoted to selected vector applications and another chapter (Chapter 6) dedicated to example tensor applications. 
+
+<br><span style="color:blue;">
+本書がベクトルやテンソルを扱う他の教科書とどう違うのか疑問に思われるかもしれません。おそらく最も重要な違いは、ベクトルとテンソルの概念にほぼ同等の重みが与えられていることです。第3章ではベクトルの応用例を、第6章ではテンソルの応用例をそれぞれ取り上げています。
+</span>
+
+</p><p>
+You’ll also find the presentation to be very different from that of other books. The explanations in this book are written in an informal style in which mathematical rigor is maintained only insofar as it doesn’t obscure the underlying physics. If you feel you already have a good understanding of vectors and may need only a quick review, you should be able to skim through Chapters 1 through 3 very quickly. But if you’re a bit unclear on some aspects of vectors and how to apply them to problems, you may find these early chapters quite helpful. And if you’ve already seen tensors but are unsure of exactly what they are or how to apply them, then Chapters 4 through 6 may provide some insight. 
+
+<br><span style="color:blue;">
+また、本書の表現も他の書籍とは大きく異なることに気づくでしょう。本書の説明は、数学的な厳密さは、基礎となる物理法則を曖昧にしない程度に抑えた、くだけたスタイルで書かれています。ベクトルについて既に十分に理解していて、簡単な復習だけで十分だと感じる場合は、第1章から第3章までをざっと読み飛ばすだけで済むでしょう。しかし、ベクトルの一部の側面や、それを問題にどのように適用するかについて、まだよく分かっていないという場合は、これらの章が非常に役立つでしょう。また、テンソルについては既に知っているものの、それが何なのか、どのように適用するのかがよく分からないという場合は、第4章から第6章が役立つかもしれません。
+</span>
+
+</p><p>
+As a student’s guide, this book comes with two additional resources designed to help you understand and apply vectors and tensors: an interactive website and a series of audio podcasts. On the website, you’ll find the complete solution to every problem presented in the text in interactive format – that means you’ll be able to view the entire solution at once, or ask for a series of helpful hints that will guide you to the final answer. So when you see a statement in the text 
+saying that you can learn more about something by looking at the end-of-chapter problems, remember that the full solution to every one of those problems is available to you. And if you’re the kind of learner who benefits from hearing spoken words rather than just reading text, the audio podcasts are for you. These MP3 files walk you through each chapter of the book, pointing out important details and providing further explanations of key concepts. 
+
+<br><span style="color:blue;">
+学生向けのガイドとして、本書にはベクトルとテンソルの理解と応用を支援するための2つの追加リソースが付属しています。インタラクティブなウェブサイトと一連の音声ポッドキャストです。ウェブサイトでは、テキストに掲載されているすべての問題の完全な解答をインタラクティブな形式で見つけることができます。つまり、解答全体を一度に閲覧したり、最終的な答えに導く一連の役立つヒントを求めたりすることができます。テキストに「章末の問題を見ればより深く理解できる」という記述があった場合、すべての問題の完全な解答が利用可能であることを思い出してください。また、テキストを読むだけでなく、音声を聞くことで理解を深めたい学習者には、音声ポッドキャストが最適です。これらのMP3ファイルは、本書の各章を順を追って解説し、重要な詳細を指摘し、主要な概念をさらに詳しく説明します。
+</span>
+
+</p><p>
+Is this book right for you? It is if you’re a science or engineering student and have encountered vectors or tensors in one of your classes, but you’re not confident in your ability to apply them. In that case, you should read the book, listen to the accompanying podcasts, and work through the examples and problems before taking additional classes or a standardized exam in which vectors or tensors may appear. Or perhaps you’re a graduate student struggling to make the transition from undergraduate courses and textbooks to the more- advanced material you’re seeing in graduate school – this book may help you make that step. 
+
+<br><span style="color:blue;">
+この本はあなたにぴったりでしょうか？理系または工学系の学生で、授業でベクトルやテンソルに触れたものの、応用力に自信がないという方にぴったりです。その場合は、ベクトルやテンソルが登場する可能性のある追加授業や標準試験を受ける前に、本書を読み、付属のポッドキャストを聴き、例題や問題を解いてみてください。あるいは、学部課程や教科書から大学院で学ぶより高度な内容への移行に苦労している大学院生の方にも、本書はきっと役立つでしょう。
+</span>
+
+</p><p>
+And if you’re neither an undergraduate nor a graduate student, but a curious young person or a lifelong learner who wants to know more about vectors, tensors, or their applications in Mechanics, Electromagnetics, and General Relativity, welcome aboard. I commend your initiative, and I hope this book helps you in your journey. 
+
+<br><span style="color:blue;">
+学部生でも大学院生でもない、ベクトル、テンソル、あるいはそれらの力学、電磁気学、一般相対性理論への応用についてもっと知りたい、好奇心旺盛な若者、あるいは生涯学習者であるなら、ぜひご参加ください。あなたの意欲を称賛します。この本が、あなたの学習の道のりに役立つことを願っています。
+</span>
+
+</p>
+    </body>
+</html>
