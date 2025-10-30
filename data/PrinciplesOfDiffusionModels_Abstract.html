@@ -1,0 +1,447 @@
+<!doctype html>
+<html lang="ja">
+    <head>
+        <script type="text/javascript" id="MathJax-script" async
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+        <meta charset="utf-8" />
+        <title>The Principles of Diffusion Models</title>
+        <style type="text/css">
+            p
+            {
+                padding-left: 2em;
+            }
+           .margin-abstract {
+               margin-left: 60px; /* 左マージンを広くする */
+               margin-right: 60px; /* 右マージンを広くする */
+           }
+        </style>
+    <style>
+        .styleRef { 
+            text-indent: -40px; /* 最初の行の字下げを逆方向に */
+            margin-left: 10px; /* 2行目以降の字下げを調整 */
+            ul {
+                  list-style-type: none; /* 箇条書き記号を非表示 */
+                  padding-left: 40px; /* 全体の左余白 */
+            }
+            li {
+            }
+        }
+    </style>
+    <style>
+        .styleBullet { 
+            text-indent: -20px; /* 最初の行の字下げを逆方向に */
+            margin-left: 30px; /* 2行目以降の字下げを調整 */
+            ul {
+                  list-style-type: none; /* 箇条書き記号を非表示 */
+                  padding-left: 20px; /* 全体の左余白 */
+            }
+            li {
+            }
+        }
+    </style>
+<style>
+.container {
+  display: flex;
+  flex-wrap: wrap;
+}
+.column {
+  flex: 0 25%; /* 幅を25%に設定して4列に */
+  box-sizing: border-box;
+  padding: 10px;
+}
+</style>
+
+    </head>
+    <body>
+        <h1><center>The Principles of Diffusion Models
+<br><span style="color:blue;">拡散モデルの原理</span></center></h1>
+
+<p>
+<center>Chieh-Hsin Lai<sup>1</sup>,　Yang Song<sup>2</sup>,　Dongjun Kim<sup>3</sup>,　Yuki Mitsufuji<sup>4</sup>　and　Stefano Ermon<sup>5</sup></center>
+</p>
+<p>
+<sup>1</sup> Sony AI; chieh-hsin.lai@sony.com / chiehhsinlai@gmail.com<br>
+<sup>2</sup> OpenAI∗; thusongyang@gmail.com<br>
+<sup>3</sup> Stanford University; dongjun@stanford.edu<br>
+<sup>4</sup> Sony Corporation, Sony AI; yuhki.mitsufuji@sony.com<br>
+<sup>5</sup> Stanford University; ermon@cs.stanford.edu<br>
+</p>
+
+<h2>ABSTRACT <span style="color:blue;">要旨</span></h2>
+<p> 
+This monograph focuses on the principles that have shaped the development of diffusion models, tracing their origins and showing how different formulations arise from common mathematical ideas. Diffusion modeling begins by specifying a forward corruption pro- cess that gradually turns data into noise. This forward process links the data distribution to a simple noise distribution by dening a continuous family of intermediate distributions. The core objective of a diffusion model is to construct another process that runs in the opposite direction, transforming noise into data while recov- ering the same intermediate distributions dened by the forward corruption process. 
+
+<br><span style="color:blue;">
+本書は、拡散モデルの開発を形作ってきた原理に焦点を当て、その起源をたどり、共通の数学的概念からどのように異なる定式化が生まれるかを示します。拡散モデリングは、データを徐々にノイズへと変化させる順方向の劣化プロセスを定義することから始まります。この順方向プロセスは、連続的な中間分布の系列を定義することによって、データ分布を単純なノイズ分布に結びつけます。拡散モデルの中核的な目的は、逆方向に動作する別のプロセスを構築することです。このプロセスは、ノイズをデータに変換しながら、順方向の劣化プロセスによって定義されたものと同じ中間分布を復元します。
+</span>
+
+</p><p>
+We describe three complementary ways to formalize this idea. The variational view , inspired by variational autoencoders, sees diffusion as learning to remove noise step by step, solving small denoising objectives that together teach the model to turn noise back into data. The score-based view , rooted in energy-based modeling, learns the gradient of the evolving data distribution, which indicates how to nudge samples toward more likely regions. The ‚ow-based view , related to normalizing ‚ows, treats generation as following a smooth path that moves samples from noise to data under a learned velocity eld. 
+
+<br><span style="color:blue;">
+このアイデアを形式化する3つの補完的な方法について説明します。変分オートエンコーダーにヒントを得た変分的な視点では、拡散過程を、ノイズを段階的に除去していく学習プロセスと捉え、小さなノイズ除去タスクを連続的に解くことで、モデルがノイズをデータへと変換することを学習します。エネルギーベースモデルに基づいたスコアベースの視点では、変化するデータ分布の勾配を学習し、サンプルをより可能性の高い領域へと誘導する方法を示します。正規化フローに関連するフローベースの視点では、生成過程を、学習された速度場の下でサンプルがノイズからデータへと滑らかな経路をたどるものとして扱います。
+</span>
+
+</p><p>
+These perspectives share a common backbone: a learned time- dependent velocity eld whose ‚ow transports a simple prior to the data. With this in hand, sampling amounts to solving a differential equation that evolves noise into data along a continuous generative trajectory. On this foundation, the monograph discusses guidance for controllable generation, advanced numerical solvers for efficient sampling, and diffusion-motivated ‚ow-map models that learn direct mappings between arbitrary times along this trajectory. This monograph is written for readers with a basic deep learning background who seek a clear, conceptual, and mathematically grounded understanding of diffusion models. It claries the the- oretical foundations, explains the reasoning behind their diverse formulations, and provides a stable footing for further study and research in this rapidly evolving eld. It serves both as a princi- pled reference for researchers and as an accessible entry point for learners. 
+
+<br><span style="color:blue;">
+これらの視点は共通の基盤を共有しています。それは、学習によって得られた時間依存の速度場であり、この速度場による流れが単純な事前分布をデータへと変換します。この基盤に基づき、サンプリングは、ノイズを連続的な生成軌道に沿ってデータへと進化させる微分方程式を解くことに相当します。本書は、この基礎の上に、制御可能な生成のためのガイダンス、効率的なサンプリングのための高度な数値解法、そしてこの軌道上の任意の時点間の直接マッピングを学習する拡散モデルに基づくフローマップモデルについて論じています。本書は、拡散モデルについて明確で概念的かつ数学的に根拠のある理解を求める、ディープラーニングの基礎知識を持つ読者を対象としています。本書は、理論的基盤を明確にし、多様な定式化の背後にある論理を説明し、この急速に発展する分野におけるさらなる学習と研究のための確固たる基盤を提供します。研究者にとっては原理に基づいた参考書として、学習者にとっては分かりやすい入門書として役立ちます。
+</span>
+
+</p>
+
+<h2><center>Acknowledgements <span style="color:blue;">謝辞</span></center></h2>
+
+<p>
+The authors are deeply grateful to Professor Dohyun Kwon from the Uni- versity of Seoul and KIAS for his generous time and effort in engaging with this work. He carefully reviewed parts of Chapter 7, helping to ensure the correctness of statements and proofs, and he contributed to several valuable discussions that claried the presentation. Beyond technical suggestions, his thoughtful feedback and willingness to share perspectives have been a source of encouragement throughout the writing of this monograph. We sincerely appreciate his support and collegial spirit, which have enriched the nal version. 
+
+<br><span style="color:blue;">
+著者一同は、ソウル大学および韓国高等科学院（KIAS）のクォン・ドヒョン教授が、本書の執筆に多大な時間と労力を割いてくださったことに深く感謝いたします。教授は第7章の一部を丁寧に査読してくださり、記述や証明の正確性を確保する上でご尽力いただきました。また、いくつかの貴重な議論にも参加していただき、本書の内容をより明確にするのに貢献してくださいました。技術的なご助言にとどまらず、教授の思慮深いフィードバックと、惜しみなくご自身の見解を共有してくださる姿勢は、本書執筆を通して私たちにとって大きな励みとなりました。教授のご支援と温かいご協力に心より感謝申し上げます。おかげさまで、本書の最終版はより充実したものとなりました。
+</span>
+</p>
+
+<h2><center>Preface and Roadmap <span style="color:blue;">序文とロードマップ</span></center></h2>
+
+<p> 
+Diffusion models have rapidly become a central paradigm in generative mod- eling, with a vast body of work spanning machine learning, computer vision, natural language processing, and beyond. This literature is dispersed across communities and highlights different dimensions of progress, including the- oretical foundations that concern modeling principles, training objectives, sampler design, and the mathematical ideas behind them; implementation advances that cover engineering practices and architectural choices; practical applications that adapt the models to specic domains or tasks; and sys- tem level optimizations that improve efficiency in computation, memory, and deployment. 
+
+<br><span style="color:blue;">
+拡散モデルは生成モデリングにおける中心的なパラダイムとして急速に台頭し、機械学習、コンピュータビジョン、自然言語処理など、幅広い分野で膨大な研究が行われています。これらの研究は様々なコミュニティに分散しており、進歩の多様な側面を浮き彫りにしています。具体的には、モデリング原理、学習目標、サンプラー設計、そしてそれらを支える数学的概念といった理論的基盤、エンジニアリング手法やアーキテクチャの選択を含む実装上の進歩、モデルを特定のドメインやタスクに適用する実用的な応用、そして計算、メモリ、デプロイメントにおける効率を向上させるシステムレベルの最適化などが挙げられます。
+</span>
+
+</p><p>
+This monograph sets out to provide a principled foundation of diffusion models, focusing on the following central themes: 
+
+<br><span style="color:blue;">
+本書は、拡散モデルの原理に基づいた基礎を確立することを目的としており、以下の中心的なテーマに焦点を当てています。
+</span>
+
+<div class="styleBullet">
+<ul><li>
+
+●We present the essential concepts and formulations that anchor diffusion model research, giving readers the core understanding needed to navigate the broader literature. We do not survey all variants or domain specic applications; instead we establish a stable conceptual foundation from which such developments can be understood. 
+
+<br><span style="color:blue;">
+本稿では、拡散モデル研究の基盤となる重要な概念と定式化について解説し、読者がより広範な文献を理解するために必要な基礎知識を提供します。あらゆるバリアントや特定の応用分野を網羅的に紹介するのではなく、それらの発展を理解するための確固たる概念的基盤を構築することを目指します。
+</span>
+
+</li><br><li>
+●Unlike classical generative models that learn a direct mapping from noise to data, diffusion models view generation as a gradual transformation over time, rening coarse structures into ne details. This central idea has been developed through three main perspectives, i.e., variational , score-based , and ‚ow-based methods, which offer complementary ways to understand and implement diffusion modeling. We focus on the core principles and foundations of these formulations, aiming to trace the origins of their key ideas, clarify the relations among different formu- lations, and develop a coherent understanding that connects intuitive insight with rigorous mathematical formulation. 
+
+<br><span style="color:blue;">
+ノイズからデータへの直接的なマッピングを学習する古典的な生成モデルとは異なり、拡散モデルは生成プロセスを時間経過に伴う段階的な変換として捉え、粗い構造を徐々に詳細な構造へと洗練させていきます。この中心的なアイデアは、変分法、スコアベース法、フローベース法という3つの主要な視点から発展してきました。これらの手法は、拡散モデリングを理解し実装するための補完的なアプローチを提供します。本稿では、これらの定式化における中核的な原理と基礎に焦点を当て、主要なアイデアの起源をたどり、異なる定式化間の関係を明確にし、直感的な洞察と厳密な数式表現を結びつけることで、一貫性のある理解を深めることを目指します。
+</span>
+
+</li><br><li>
+●Building on these foundations, we examine how diffusion models can be further developed to generate samples more efficiently, provide greater control over the generative process, and inspire standalone forms of generative modeling grounded in the principles of diffusion. 
+
+<br><span style="color:blue;">
+これらの基礎を踏まえ、拡散モデルをさらに発展させて、より効率的にサンプルを生成し、生成プロセスをより詳細に制御し、拡散の原理に基づいた独立した生成モデリングの手法を生み出す方法について検討する。
+</span>
+
+</li></ul></div></p>
+
+<p>
+This monograph is intended for researchers, graduate students, and practi- tioners who have a basic understanding of deep learning (for example, what a neural network is and how training works), or more specically, deep genera- tive modeling, and who wish to deepen their grasp of diffusion models beyond surface-level familiarity. By the end, readers will have a principled understand- ing of the foundations of diffusion modeling, the ability to interpret different formulations within a coherent framework, and the background needed to both apply existing models with condence and pursue new research directions. 
+
+<br><span style="color:blue;">
+本書は、ディープラーニング（例えば、ニューラルネットワークとは何か、学習はどのように行われるかなど）の基本的な理解、あるいはより具体的には深層生成モデリングに関する基礎知識を持ち、拡散モデルについて表面的な知識にとどまらず、より深く理解したいと考えている研究者、大学院生、実務家を対象としています。本書を読み終えることで、読者は拡散モデリングの基礎を原理的に理解し、様々な定式化を統一的なフレームワークの中で解釈する能力、そして既存のモデルを自信を持って応用し、新たな研究方向を追求するために必要な知識を身につけることができるでしょう。
+</span>
+</p>
+
+<h2><center>Roadmap of This Monograph <span style="color:blue;">本モノグラフの構成</span></center></h2>
+<p> 
+This monograph systematically introduces the foundations of diffusion models, tracing them back to their core underlying principles. 
+
+<br><span style="color:blue;">
+本書は、拡散モデルの基礎を体系的に解説し、その根底にある基本原理まで遡って説明するモノグラフである。
+</span>
+
+</p><p>
+<strong>Suggested Reading Path.</strong> We recommend reading this monograph in the presented order to build a comprehensive understanding. Sections marked as Optional can be skipped by readers already familiar with the fundamentals. For instance, those comfortable with deep generative models (DGM) may bypass the overview in Chapter 1. Similarly, prior knowledge of Variational Autoencoders (Section 2.1 ), Energy-Based Models (Section 3.1 ), or Normalizing Flows (Section 5.1 ) allows skipping these introductory sections. Other optional parts provide deeper insights into advanced or specialized topics and can be consulted as needed.
+
+<br><span style="color:blue;">
+<strong>推奨される読書順序。</strong>本書を包括的に理解するためには、提示されている順序で読み進めることをお勧めします。基本事項を既に理解している読者は、「オプション」とマークされたセクションを飛ばして読むことができます。例えば、深層生成モデル（DGM）に精通している方は、第1章の概要を省略できます。同様に、変分オートエンコーダー（2.1節）、エネルギーベースモデル（3.1節）、または正規化フロー（5.1節）に関する予備知識があれば、これらの導入部分を飛ばすことができます。その他のオプション部分は、高度なトピックや専門的なトピックに関するより深い洞察を提供しており、必要に応じて参照してください。
+</span>
+
+
+</p><p> 
+The monograph is organized into four main parts. 
+
+<br><span style="color:blue;">
+本書は主に4つの部分で構成されている。
+</span>
+
+</p><p> 
+<strong>Parts A & B:</strong> Foundations of Diffusion Models. This section traces the origins of diffusion models by reviewing three foundational perspectives that have shaped the eld. Figure 2 provides an overview of this part. 
+
+<br><span style="color:blue;">
+<strong>パートAおよびパートB：</strong>拡散モデルの基礎。このセクションでは、拡散モデルの起源をたどり、この分野を形成してきた3つの基本的な視点について概説します。図2はこのパートの概要を示しています。
+</span>
+
+
+</p><p>
+Part A: Introduction to Deep Generative Modeling (DGM). We begin in Chapter 1 with a review of the fundamental goals of deep generative mod- eling. Starting from a collection of data examples, the aim is to build a model that can produce new examples that appear to come from the same underlying, and generally unknown, data distribution. Many approaches achieve this by learning how the data are distributed, either explicitly through a probability model or implicitly through a learned transformation. We then explain how such models represent the data distribution with neural networks, how they learn from examples, and how they generate new samples. The chapter con- cludes with a taxonomy of major generative frameworks, highlighting their central ideas and key distinctions. 
+
+<br><span style="color:blue;">
+パートA：深層生成モデリング（DGM）入門。第1章では、深層生成モデリングの基本的な目標について概説します。データサンプルの集合から出発して、目的は、同じ基となる（一般的には未知の）データ分布から生成されたように見える新しいサンプルを生成できるモデルを構築することです。多くの手法は、確率モデルを通して明示的に、あるいは学習された変換を通して暗黙的に、データの分布を学習することによってこれを実現します。次に、これらのモデルがニューラルネットワークを用いてデータ分布をどのように表現するのか、どのようにサンプルから学習するのか、そしてどのように新しいサンプルを生成するのかを説明します。章の最後では、主要な生成モデルフレームワークを分類し、それぞれの中心的な考え方と重要な違いを明らかにします。
+</span>
+</p>
+<center><img src="images/PrinciplesOfDiffusionModels_fig1.svg"></center>
+<p>
+Figure 1: Timeline of diffusion model perspectives. Each group shares the same color. In Chapter 2, Variational Autoencoder (VAE) (Kingma and Welling, 2013 ) → Diffusion Probabilistic Models (DPM) (Sohl-Dickstein et al., 2015 ) → DDPM (Ho et al., 2020 ). In Chapters 3 and 4, Energy-Based Model (EBM) (Ackley et al., 1985 ) → Noise Conditional Score Network (NCSN) (Song and Ermon, 2019 ) → Score SDE (Song et al. , 2020c ). In Chapter 5, Normalizing Flow (NF) (Rezende and Mohamed, 2015 ) → Neural ODE (NODE) (Chen et al., 2018 ) → Flow Matching (FM) (Lipman et al. , 2022 ). 
+
+<br><span style="color:blue;">
+図1：拡散モデルの視点のタイムライン。各グループは同じ色で示されています。<br>
+<br>
+・第2章では、変分オートエンコーダー（VAE）（Kingma and Welling、2013）→拡散確率モデル（DPM）（Sohl-Dickstein et al.、2015）→DDPM（Ho et al.、2020）。<br>
+<br>
+・第3章と第4章では、エネルギーベースモデル（EBM）（Ackley et al.、1985）→ノイズ条件付きスコアネットワーク（NCSN）（Song and Ermon、2019）→スコアSDE（Song et al.、2020c）。<br>
+<br>
+・第5章では、正規化フロー（NF）（Rezende and Mohamed、2015）→ニューラルODE（NODE）（Chen et al.、2018）→フローマッチング（FM）（Lipman et al.、2022）。
+</span> 
+
+</p><p>
+<strong>Part B: Core Perspectives on Diffusion Models.</strong> Having outlined the general goals and mechanisms of deep generative modeling, we now turn to diffusion models, a class of methods that realize generation as a gradual transformation from noise to data. We examine three interconnected frame- works, each characterized by a forward process that gradually adds noise and a reverse-time process approximated by a sequence of models performing gradual denoising: 
+
+<br><span style="color:blue;">
+<strong>パートB：拡散モデルに関する主要な視点。</strong>ディープ生成モデリングの一般的な目標とメカニズムを概説したところで、次に、ノイズからデータへの段階的な変換として生成を実現する手法である拡散モデルについて考察します。ここでは、相互に関連する3つのフレームワークを検討します。それぞれのフレームワークは、ノイズを徐々に加えていく順方向プロセスと、段階的なノイズ除去を行う一連のモデルによって近似される逆時間プロセスによって特徴づけられます。
+</span> 
+<div class="styleBullet">
+<ul><li>
+
+●<strong>Variational View</strong> (Chapter 2): Originating from Variational Autoen- coders (VAEs) (Kingma and Welling, 2013), it frames diffusion as learn- ing a denoising process through a variational objective, giving rise to Denoising Diffusion Probabilistic Models (DDPMs) (Sohl-Dickstein et al. , 2015; Ho et al. , 2020). 
+
+<br><span style="color:blue;">
+<strong>変分的な視点</strong>（第2章）：変分オートエンコーダー（VAE）（Kingma and Welling、2013）に由来するこの視点では、拡散過程を変分目的関数を通してノイズ除去プロセスを学習するものとして捉え、これによりノイズ除去拡散確率モデル（DDPM）（Sohl-Dickstein et al.、2015; Ho et al.、2020）が誕生した。
+</span> 
+
+</li><br><li>
+●<strong>Score-Based View</strong> (Chapter 3): Rooted in Energy-Based Models (EBMs) (Ackley et al. , 1985) and developed into Noise Conditional Score Networks (NCSN) (Song and Ermon, 2019). It learns the score function, the gradient of the log data density, which guides how to gradually remove noise from samples. In continuous time, Chapter 4 introduces the Score SDE framework , which describes this denoising process as a Stochastic Differential Equation (SDE) and its deterministic counterpart as an Ordinary Differential Equation (ODE). This view connects diffusion modeling with classical differential equation theory, providing a clear mathematical basis for analysis and algorithm design. 
+
+<br><span style="color:blue;">
+<strong>スコアベースのアプローチ</strong>（第3章）：エネルギーベースモデル（EBM）（Ackleyら、1985年）に端を発し、ノイズ条件付きスコアネットワーク（NCSN）（SongとErmon、2019年）へと発展したアプローチです。このアプローチでは、データの対数密度関数の勾配であるスコア関数を学習します。このスコア関数は、サンプルからノイズを段階的に除去する方法を導きます。連続時間においては、第4章でスコアSDEフレームワークが導入され、このノイズ除去プロセスを確率微分方程式（SDE）として、またその決定論的な対応物を常微分方程式（ODE）として記述します。このアプローチは、拡散モデルと古典的な微分方程式理論を結びつけ、解析とアルゴリズム設計のための明確な数学的基盤を提供します。
+</span> 
+
+</li><br><li>
+●<strong>Flow-Based View</strong> (Chapter 5): Building on Normalizing Flows (Rezende and Mohamed, 2015) and generalized by Flow Matching (Lipman et al. , 2022), this view models generation as a continuous transformation that transports samples from a simple prior toward the data distribution. The evolution is governed by a velocity eld through an ODE, which explicitly denes how probability mass moves over time. This ‚ow-based formulation naturally extends beyond prior-to-data generation to more general distribution-to-distribution translation problems, where one seeks to learn a ‚ow connecting any pair of source and target distributions.
+
+<br><span style="color:blue;">
+<strong>フローベースの視点</strong>（第5章）：正規化フロー（Rezende and Mohamed, 2015）を基盤とし、フローマッチング（Lipman et al., 2022）によって一般化されたこの視点では、生成プロセスを、単純な事前分布からデータ分布へとサンプルを輸送する連続的な変換としてモデル化します。この変換は、常微分方程式（ODE）によって定義される速度場によって制御され、確率質量が時間とともにどのように移動するかを明示的に記述します。このフローベースの定式化は、事​​前分布からデータ分布への生成だけでなく、より一般的な分布間変換問題にも自然に拡張できます。そこでは、任意のソース分布とターゲット分布を結ぶフローを学習することが目的となります。
+</span>  
+</li></ul></div>
+
+
+</p><p>
+Although these perspectives may seem different at rst, Chapter 6 shows that they are deeply connected. Each uses a conditioning strategy that turns the learning objective into a tractable regression problem. At a deeper level, they all describe the same temporal evolution of probability distributions, from the prior toward the data. This evolution is governed by the Fokker–Planck equation , which can be viewed as the continuous-time change of variables for densities, ensuring consistency between the stochastic and deterministic formulations. 
+
+<br><span style="color:blue;">
+これらの視点は一見異なっているように見えるかもしれませんが、第6章ではそれらが深く関連していることを示します。それぞれが、学習目標を扱いやすい回帰問題に変換する条件付け戦略を用いています。さらに深く掘り下げると、これらはすべて、事前分布からデータへと向かう確率分布の同じ時間的変化を記述していることがわかります。この変化はフォッカー・プランク方程式によって支配されており、この方程式は確率的定式化と決定論的定式化の間の一貫性を確保する、確率密度の連続時間における変数変換とみなすことができます。
+</span> 
+</p><p>
+Since diffusion models can be viewed as approaches for transporting one dis- tribution to another, Chapter 7 develops their connections to classical optimal transport and the Schrödinger bridge, interpreted as optimal transport with entropy regularization. We review both the static and dynamic formulations and explain their relations to the continuity equation and the Fokker–Planck perspective. This chapter is optional for readers focused on practical aspects, but it provides rigorous mathematical background and pointers to the classical literature for those who wish to study these links in depth. 
+
+<br><span style="color:blue;">
+拡散モデルは、ある分布を別の分布へと変換するアプローチとみなせるため、第7章では、これらのモデルと古典的な最適輸送およびエントロピー正則化を伴う最適輸送として解釈されるシュレーディンガーブリッジとの関連性について詳述します。静的な定式化と動的な定式化の両方を確認し、連続の方程式およびフォッカー・プランク方程式との関係を説明します。この章は、実践的な側面に重点を置く読者にとっては任意ですが、これらの関連性を深く研究したい読者のために、厳密な数学的背景と古典的な文献への参照を提供します。
+</span> 
+</p><p>
+<strong>Part C & D: Controlling and Accelerating the Diffusion Sampling.</strong> With the foundational principles unied, we now turn to practical aspects of utilizing diffusion models for efficient generation. Sampling from a diffusion model corresponds to solving a differential equation. However, this procedure is typically computationally expensive. Parts C and D focus on improving generation quality, controllability, and efficiency through enhanced sampling and learned acceleration techniques. 
+
+<br><span style="color:blue;">
+<strong>パートCおよびD：拡散サンプリングの制御と高速化。</strong>基礎となる原理を統一したところで、次に拡散モデルを効率的な生成に活用するための実践的な側面について説明します。拡散モデルからのサンプリングは、微分方程式を解くことに相当します。しかし、この手順は一般的に計算コストが高くなります。パートCとDでは、サンプリング手法の改善と学習による高速化技術を通じて、生成品質、制御性、および効率性の向上に焦点を当てます。
+</span> 
+</p>
+
+<center><img src="images/PrinciplesOfDiffusionModels_fig2.svg"></center>
+
+<p>
+Figure 2: Part B. Unifying and Principled Perspectives on Diffusion Models. This dia- gram visually connects classical generative modeling approaches—Variational Autoencoders, Energy-Based Models, and Normalizing Flows—with their corresponding diffusion model for- mulations. Each vertical path illustrates a conceptual lineage, culminating in the continuous- time framework. The three views (Variational, Score-Based, and Flow-Based) offer distinct yet mathematically equivalent interpretations. 
+
+<br><span style="color:blue;">
+図2：パートB。拡散モデルに関する統一的かつ原理的な視点。この図は、古典的な生成モデリング手法（変分オートエンコーダー、エネルギーベースモデル、正規化フロー）と、それらに対応する拡散モデルの定式化を視覚的に結びつけています。それぞれの垂直方向の経路は概念的な系譜を示しており、最終的に連続時間フレームワークへとつながります。3つの視点（変分ベース、スコアベース、フローベース）は、それぞれ異なりながらも数学的には等価な解釈を提供します。
+</span> 
+</p><p>
+<strong>Part C: Sampling from Diffusion Models.</strong> The generation process of diffusion models exhibits a distinctive coarse-to-ne renement: noise is re- moved step by step, yielding samples with increasingly coherent structure and detail. This property comes with trade-offs. On the positive side, it affords ne-grained control; by adding a guidance term to the learned, time-dependent velocity eld, we can steer the ODE ‚ow to re‚ect user intent and make sam- pling controllable. On the negative side, the required iterative integration makes sampling slow compared with single-shot generators. This part focuses on improving the generative process at inference time, without retraining. 
+
+<br><span style="color:blue;">
+<strong>パートC：拡散モデルからのサンプリング。</strong> 拡散モデルの生成プロセスは、特徴的な粗密段階的な洗練過程を示します。ノイズが段階的に除去されることで、構造とディテールがますます整合性の高いサンプルが生成されます。この特性にはトレードオフがあります。良い点としては、きめ細やかな制御が可能になることです。学習済みの時間依存速度場にガイダンス項を追加することで、ODEの流れをユーザーの意図を反映するように誘導し、サンプリングを制御できます。悪い点としては、反復的な積分が必要となるため、シングルショット生成器と比較してサンプリングが遅くなることです。このパートでは、再学習を行うことなく、推論時における生成プロセスを改善することに焦点を当てます。
+</span> 
+<div class="styleBullet">
+<ul><li>
+●<strong> Steering Generation</strong> (Chapter 8): Techniques such as classier guidance and classier-free guidance make it possible to condition the generation process on user-dened objectives or attributes. Building on this, we next discuss how the use of a preference dataset can further align diffusion models with such preferences. 
+
+<br><span style="color:blue;">
+<strong>生成プロセスの制御</strong>（第8章）：分類器に基づくガイダンスや分類器不要のガイダンスといった手法を用いることで、ユーザーが定義した目標や属性に基づいて生成プロセスを制御することが可能になります。これを踏まえ、次に、選好データセットを使用することで、拡散モデルをこうした選好にさらに適合させる方法について説明します。
+</span> 
+</li><br><li>
+●<strong>Fast Generation with Numerical Solvers</strong> (Chapter 9): Sampling can be signicantly accelerated using advanced numerical solvers that approxi- mate the reverse process in fewer steps, reducing cost while preserving quality. 
+
+<br><span style="color:blue;">
+<strong>数値ソルバーを用いた高速生成</strong>（第9章）：高度な数値ソルバーを用いることで、逆プロセスをより少ないステップで近似することができ、サンプリングを大幅に高速化できる。これにより、品質を維持しながらコストを削減することが可能となる。
+</span> 
+</li></ul></div>
+
+</p><p>
+<strong>Part D: Learning Fast Generative Models.</strong> Beyond improving existing sampling algorithms, we investigate how to directly learn fast generators that approximate the diffusion process. 
+
+<br><span style="color:blue;">
+<strong>パートD：高速生成モデルの学習。</strong>既存のサンプリングアルゴリズムを改善するだけでなく、拡散プロセスを近似する高速生成モデルを直接学習する方法についても検討します。
+</span> 
+<div class="styleBullet">
+<ul><li>
+●<strong>Distillation-Based Methods</strong> (Chapter 10 ): This approach focuses on training a student model to imitate the behavior of a pre-trained, slow diffusion model (the teacher). Instead of reducing the teacher’s size, the goal is to reproduce its sampling trajectory or output distribution with far fewer integration steps, often only a few or even one. 
+
+<br><span style="color:blue;">
+<strong>蒸留ベースの手法</strong>（第10章）：このアプローチは、事前学習済みの低速拡散モデル（教師モデル）の振る舞いを模倣するように、生徒モデルを訓練することに重点を置いています。教師モデルのサイズを縮小するのではなく、はるかに少ない積分ステップ数（多くの場合、数ステップ、あるいはわずか1ステップ）で、そのサンプリング軌跡または出力分布を再現することを目標とします。
+</span> 
+</li><br><li>
+●<strong>Learning from Scratch</strong> (Chapter 11 ): Since sampling in diffusion models can be seen as solving an ODE, this approach learns the solution map (i.e., the ‚ow map) directly from scratch, without relying on a teacher model. The learned map can take noise directly to data, or more generally perform anytime-to-anytime jumps along the solution trajectory. 
+
+<br><span style="color:blue;">
+<strong>ゼロからの学習</strong>（第11章）：拡散モデルにおけるサンプリングは常微分方程式（ODE）を解くこととみなせるため、このアプローチでは、教師モデルに頼ることなく、解写像（すなわちフロー写像）をゼロから直接学習します。学習された写像は、ノイズを直接データに変換したり、より一般的には、解軌道に沿って任意の時点から任意の時点へのジャンプを実行したりすることができます。
+</span>
+</li></ul></div>
+
+</p><p>
+<strong>Appendices.</strong> To ensure our journey is accessible to all, the appendices provide background for foundational concepts. Chapter A offers a crash course on the differential equations that have become the language of diffusion models. 
+
+<br><span style="color:blue;">
+<strong>付録。</strong>すべての方に本書の内容を理解していただけるよう、付録では基礎となる概念に関する背景情報を提供します。付録Aでは、拡散モデルの共通言語となっている微分方程式について、入門的な解説を行います。
+</span> 
+</p><p>
+The core insight behind diffusion models, despite their varied perspectives and origins, lies in the change-of-variables formula . This foundation naturally extends to deeper concepts such as the Fokker–Planck equation and the continuity equation , which describe how probability densities transform and evolve under mappings dened by functions (discrete time) or differential equations (continuous time). Chapter B offers a gentle introduction that bridges these foundational ideas to more advanced concepts. In Chapter C, we present two powerful but often overlooked tools underlying diffusion models: Itô’s formula and Girsanov’s theorem , which provide rigorous support for the Fokker–Planck equation and the reverse-time sampling process. Finally, Chapter D gathers proofs of selected propositions and theorems discussed in the main chapters. 
+
+<br><span style="color:blue;">
+拡散モデルの根底にある核心的な洞察は、その多様な視点や起源にもかかわらず、変数変換の公式に集約​​されます。この基礎は、確率密度が関数（離散時間）または微分方程式（連続時間）によって定義される写像の下でどのように変換・発展するかを記述するフォッカー・プランク方程式や連続の方程式といった、より高度な概念へと自然に拡張されます。第B章では、これらの基礎的な考え方からより高度な概念へと繋がる、分かりやすい入門的な解説を提供します。第C章では、拡散モデルを支える強力でありながらしばしば見落とされがちな2つのツール、伊藤の公式とギルサノフの定理を紹介します。これらは、フォッカー・プランク方程式と逆時間サンプリングプロセスに厳密な理論的根拠を与えます。最後に、第D章では、主要な章で議論されたいくつかの命題と定理の証明をまとめています。
+</span> 
+
+</p><p>
+<strong>What This Monograph Covers and What It Does Not.</strong> We aim for durabil- ity. From a top-down viewpoint, this monograph begins with a single principle: construct continuous-time dynamics that transport a simple prior to the data distribution while ensuring that the marginal distribution at each time matches the marginal induced by a prescribed forward process from data to noise. From this principle, we develop the stochastic and deterministic ‚ows that enable sampling, show how to steer the trajectory (guidance), and explain how to accelerate it (numerical solvers). We then study diffusion-motivated fast generators, including distillation methods and ‚ow-map models. With these tools, readers can place new papers within a common template, understand why methods work, and design improved models. 
+
+<br><span style="color:blue;">
+<strong>本書の対象範囲と対象外となる内容。</strong>私たちは持続可能性を目指します。本書は、トップダウンの視点から、一つの基本原理から始まります。それは、単純な事前分布をデータ分布へと変換する連続時間ダイナミクスを構築することであり、同時に、各時点における周辺分布が、データからノイズへの所定の順方向プロセスによって誘導される周辺分布と一致することを保証することです。この原理に基づき、サンプリングを可能にする確率的および決定論的な流れを開発し、軌跡を制御する方法（ガイダンス）と、それを加速する方法（数値ソルバー）を説明します。次に、蒸留法やフローマップモデルを含む、拡散にヒントを得た高速生成モデルについて考察します。これらのツールを用いることで、読者は新しい論文を共通の枠組みの中に位置づけ、各手法が機能する理由を理解し、より優れたモデルを設計できるようになります。
+</span> 
+</p><p>
+We do not attempt to provide an exhaustive survey of the diffusion model literature, nor do we catalog architectures, training practices, hyperparameters, compare empirical results across methods, cover datasets and leaderboards, describe domain- or modality-specic applications, address system-level deploy- ment, provide recipes for large-scale training, or discuss hardware engineering. These topics evolve rapidly and are better covered by focused surveys, open repositories, and implementation guides.
+
+
+<br><span style="color:blue;">
+本稿では、拡散モデルに関する文献を網羅的に調査したり、アーキテクチャ、学習方法、ハイパーパラメータを一覧化したり、各手法の実験結果を比較したり、データセットやリーダーボードについて解説したり、ドメイン固有またはモダリティ固有のアプリケーションについて説明したり、システムレベルのデプロイメントについて論じたり、大規模学習のための手順を提供したり、ハードウェアエンジニアリングについて議論したりすることは意図していません。これらのトピックは急速に変化しており、より専門的な調査論文、オープンリポジトリ、および実装ガイドで詳しく解説されています。
+</span> 
+</p>
+
+<h2><center>Notations <span style="color:blue;">表記</span></center></h2>
+
+<p>
+
+
+\[
+\begin{array}{l l}
+数と配列 & \\
+\hline
+a & \text{スカラー} \\
+\mathbf{a} & \text{列ベクトル　(例: }a ∈ \mathbb{R}^D) \\ 
+A & \text{行列 (例: }A ∈ \mathbb{R}^{m×n}) \\
+A^⊤ & \text{行列 } A \text{ の転置行列} \\ 
+Tr(A) & \text{行列 } A \text{ のトレース}\\
+\mathbf{I}_D & \text{サイズ }D × D \text{ の単位行列}\\
+\mathbf{I} &  \text{単位行列。次元は文脈によって示される}\\
+diag(a) & \text{対角成分が } \mathbf{a} \text{ で与えられる対角行列}\\ 
+φ, θ & \text{学習可能なニューラルネットワークのパラメータ}\\
+φ^×, θ^× & \text{学習後のパラメータ (推論時は固定)}\\ 
+φ^∗, θ^∗ & \text{最適化問題における最適なパラメータ}\\ 
+\\
+微積分 & \\
+\hline
+
+\frac{\partial y}{\partial x} & y \text{ の } x \text{ に関する偏微分 (成分ごと)}\\
+
+\frac{dy}{dx}\; or\; Dy(x) & y \text{ の } x \text{ に関する全微分(またはフレシェ微分)}\\
+
+\nabla_x y & \text{スカラー関数 } y:\mathbb{R}^D→\mathbb{R} \text{ の勾配。} \mathbb{R}^D \text{ の列ベクトル} \\
+
+\frac{\partial \mathbf{F}}{\partial x}\;or\;\nabla_x \mathbf{F} & \mathbf{F}:\mathbb{R}^n→\mathbb{R}^m \text{ のヤコビ行列。形状は } m×n \\
+
+\nabla \cdot y & \text{ベクトル場 } y:\mathbb{R}^D→\mathbb{R}^D \text{ の発散。スカラー}\\
+
+\nabla_x^2f(x)\; or\; \mathbf{H}(f)(x) & f:\mathbb{R}^D→\mathbb{R} \text{ のヘッセ行列。形状は } D×D\\
+
+\int f(x)dx & \text{関数 } f \text{ を } x \text{ の定義域全体で積分したもの}\\
+\\
+確率と情報理論 & \\
+\hline
+p(\mathbf{a}) & \text{連続ベクトル } \mathbf{a} \text{ の確率密度/確率分布}\\
+
+p_{data} & \text{データ分布}\\
+
+p_{prior} & \text{事前分布 (例:正規分布)}\\
+
+p_{src} & \text{ソース分布}\\
+
+p_{tgt} & \text{ターゲット分布}\\
+
+\mathbf{a}\sim p & \text{確率ベクトル } a \text{ は } p \text{ に従って分布する}\\
+
+\mathbb{E}_{x\sim p}[f(x)] & \text{確率分布 } p(x) \text{ のもとでの } f(x) \text{ の期待値}\\
+
+\mathbb{E}[f(x)|z], & x \text{ が } p(･|z) \text{ の分布に従うとした場合の,}\\
+
+\quad or & \quad z \text{ が与えられたときの} f(x) \text{ の} \\
+
+\; \mathbb{E}_{x\sim p}[f(x)] & \quad \text{条件付き期待値}\\
+
+Var(f(x)) & \text{確率分布 } p(x) \text{ の下での分散}\\
+
+Cov(f(x),g(x)) & \text{確率分布 } p(x) \text{ の下での共分散}\\
+
+\mathcal{D}_{KL}(p||q) & q \text{ から } p \text{ へのカルバック・ライブラー情報量}\\
+
+\epsilon\sim\mathcal{N}(0,\mathbf{I}) & \text{標準積分布からのサンプル}\\
+
+\mathbf{N}(\mathbf{x};\mu,\Sigma) & \text{平均 } \mu \text{, 共分散行列 } \Sigma \text{ の} \mathbf{x} \text{ 上のガウス分布}
+
+\end{array}
+\]
+
+</p><p> 
+<strong>Clarion.</strong> We use the same symbol for a random vector and its realized value. This convention, common in deep learning and generative modeling, keeps notation compact and uncluttered. The intended meaning is determined by context. 
+
+<br><span style="color:blue;">
+<strong>注釈：</strong>ランダムベクトルとその実現値には同じ記号を使用します。この表記法は、ディープラーニングや生成モデリングにおいて一般的であり、表記を簡潔かつ分かりやすく保つことができます。意図する意味は文脈によって判断されます。
+</span>
+
+</p><p>
+For example, in expressions such as \(p(x)\), the symbol \(x\) serves as a dummy variable, and the expression denotes the distribution or density as a function of its input. Thus \(p(x)\) refers to the functional form rather than evaluation at a particular sample. When evaluation at a given point is intended, we state it explicitly (for instance, “evaluate \(p\) at the given point \(\mathbf{x}\)”). 
+
+<br><span style="color:blue;">
+例えば、\(p(x)\)のような表現では、記号\(x\)はダミー変数として機能し、この表現は入力の関数としての分布または密度を表します。したがって、\(p(x)\)は特定の標本点での値ではなく、関数形式そのものを指します。特定の点での評価を意図する場合は、その旨を明示的に述べます（例えば、「与えられた点\(\mathbf{x}\)における\(p\)の値を評価する」）。
+</span>
+
+</p><p>
+Conditional expressions are read by context. For \(p(x|y)\), fixing \(y\) makes it a density in \(x\); fixing \(x\) makes it a function of \(y\). 
+
+<br><span style="color:blue;">
+条件付き式は文脈によって解釈される。\(p(x|y)\) において、\(y\) を固定すると \(x\) に関する確率密度関数となり、\(x\) を固定すると \(y\) の関数となる。
+</span>
+
+</p><p>
+For conditional expectations, \(\mathbb{E}[f(x)|z]\) denotes a function of \(z\), giving the expected value of \(f(x)\) conditional on \(z\). When conditioning on a specic realized value, we write \(\mathbb{E}[f(x)|Z = z]\). Equivalently, this can be written as an integral with respect to the conditional distribution, 
+
+<br><span style="color:blue;">
+条件付き期待値の場合、$\mathbb{E}[f(x)|z]$ は $z$ の関数であり、$z$ を条件としたときの $f(x)$ の期待値を表します。特定の実現値 $z$ で条件付ける場合は、$\mathbb{E}[f(x)|Z = z]$ と表記します。これは、条件付き分布に関する積分として equivalently に記述することもできます。
+</span>
+
+\[
+\mathbb{E}_{x\sim p(·|z)}[f(x)] =\int f(x)p(x|z) dx
+\]
+ 
+This distinction claries whether z is treated as a variable dening a function, \(z \mapsto  \mathbb{E}[f(x)|z]\), or as a xed value at which that function is evaluated. 
+
+<br><span style="color:blue;">
+この区別によって、z が関数を定義する変数 \(z \mapsto \mathbb{E}[f(x)|z]\) として扱われるのか、それともその関数が評価される固定値として扱われるのかが明確になる。
+</span>
+</p>
+
+    </body>
+</html>
