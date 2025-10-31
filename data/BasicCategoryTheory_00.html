@@ -1,0 +1,610 @@
+<!doctype html>
+<html lang="ja">
+    <head>
+        <script type="text/javascript" id="MathJax-script" async
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+        <meta charset="utf-8" />
+        <title>Introduction</title>
+        <style type="text/css">
+            p
+            {
+                padding-left: 2em;
+            }
+           .margin-abstract {
+               margin-left: 60px; /* 左マージンを広くする */
+               margin-right: 60px; /* 右マージンを広くする */
+           }
+        </style>
+    <style>
+        .styleRef { 
+            text-indent: -40px; /* 最初の行の字下げを逆方向に */
+            margin-left: 10px; /* 2行目以降の字下げを調整 */
+            ul {
+                  list-style-type: none; /* 箇条書き記号を非表示 */
+                  padding-left: 40px; /* 全体の左余白 */
+            }
+            li {
+            }
+        }
+    </style>
+    <style>
+        .styleBullet { 
+            text-indent: -20px; /* 最初の行の字下げを逆方向に */
+            margin-left: 30px; /* 2行目以降の字下げを調整 */
+            ul {
+                  list-style-type: none; /* 箇条書き記号を非表示 */
+                  padding-left: 20px; /* 全体の左余白 */
+            }
+            li {
+            }
+        }
+    </style>
+<style>
+.container {
+  display: flex;
+  flex-wrap: wrap;
+}
+.column {
+  flex: 0 25%; /* 幅を25%に設定して4列に */
+  box-sizing: border-box;
+  padding: 10px;
+}
+</style>
+
+    </head>
+    <body>
+        <h1><center>Basic Category Theory <br><span style="color:blue;">圏論の基礎</span></center></h1>
+
+
+<h2><center>Introduction <span style="color:blue;">はじめに</span></center></h2>
+<p>
+Category theory takes a bird’s eye view of mathematics. From high in the sky, details become invisible, but we can spot patterns that were impossible to de- tect from ground level. How is the lowest common multiple of two numbers like the direct sum of two vector spaces? What do discrete topological spaces, free groups, and fields of fractions have in common? We will discover answers to these and many similar questions, seeing patterns in mathematics that you may never have seen before. 
+
+<br><span style="color:blue;">
+圏論は、数学全体を俯瞰する視点を提供します。高いところから見下ろすと、細部は見えなくなりますが、地上からは決して気づけなかったパターンが見えてきます。2つの数の最小公倍数は、2つのベクトル空間の直和とどのように似ているのでしょうか？離散位相空間、自由群、そして分数体には、どのような共通点があるのでしょうか？私たちは、これらの問いやその他多くの同様の問いに対する答えを見つけ、これまで気づかなかった数学における様々なパターンを発見していくでしょう。
+
+</p><p>
+The most important concept in this book is that of universal property . The further you go in mathematics, especially pure mathematics, the more universal properties you will meet. We will spend most of our time studying different manifestations of this concept. 
+
+<br><span style="color:blue;">
+本書で最も重要な概念は、普遍性という概念です。数学、特に純粋数学を深く学べば学ぶほど、この普遍性という概念に触れる機会が増えるでしょう。私たちは本書の大部分を、この概念の様々な側面を研究することに費やします。
+</span>
+</p><p>
+Like all branches of mathematics, category theory has its own special vo- cabulary, which we will meet as we go along. But since the idea of universal property is so important, I will use this introduction to explain it with no jargon at all, by means of examples.
+
+<br><span style="color:blue;">
+他のあらゆる数学分野と同様に、圏論にも独自の専門用語がありますが、それらは本書を読み進めるにつれて自然に理解できるようになるでしょう。しかし、普遍性という概念は非常に重要なので、この序論では専門用語を一切使わずに、例を通して説明したいと思います。
+</span>
+</p><p> 
+Our first example of a universal property is very simple. 
+
+<br><span style="color:blue;">
+普遍的性質の最初の例は非常にシンプルなものです。
+</span>
+</p><p>
+<strong>Example 0.1</strong> Let 1 denote a set with one element. (It does not matter what this element is called.) Then 1 has the following property: 
+
+<br><span style="color:blue;">
+<strong>例 0.1</strong> 1 を要素が 1 つだけの集合とします。 (その要素の名前は何でも構いません) すると、1 は次の性質を持ちます。
+</span>
+</p><p>
+for all sets \(X\), there exists a unique map from 
+\(X\) to \(1\).
+
+<br><span style="color:blue;">
+すべての集合 \(X\) に対して、\(X\) から \(1\) への写像がただ一つ存在する。
+</span>
+</p><p> 
+(In this context, the words ‘map’, ‘mapping’ and ‘function’ all mean the same thing.) 
+
+<br><span style="color:blue;">
+ (この文脈においては、「写像」「マッピング」「関数」という言葉はすべて同じ意味です。) 
+</span>
+</p><p>
+Indeed, let \(X\) be a set. There exists a map \(X → 1\), because we can define \(f : X → 1\) by taking \(f(x)\) to be the single element of \(1\) for each \(x ∈ X\). This is the unique map \(X → 1\), because there is no choice in the matter: any map \(X → 1\) must send each element of \(X\) to the single element of \(1\). 
+
+<br><span style="color:blue;">
+実際、\(X\)を集合とする。写像 \(X → 1\) は存在する。なぜなら、各 \(x ∈ X\) に対して \(f(x)\) を集合 \(1\) の唯一の要素と定めることで、写像 \(f : X → 1\) を定義できるからである。これは唯一の写像 \(X → 1\) である。なぜなら、他に選択肢がないからだ。どのような写像 \(X → 1\) であっても、\(X\) の各要素を集合 \(1\) の唯一の要素に写像しなければならない。
+</span>
+</p><p>
+Phrases of the form ‘there exists a unique such-and-such satisfying some condition’ are common in category theory. The phrase means that there is one and only one such-and-such satisfying the condition. To prove the existence part, we have to show that there is at least one. To prove the uniqueness part, we have to show that there is at most one; in other words, any two such-and- suches satisfying the condition are equal. 
+
+
+<br><span style="color:blue;">
+「ある条件を満たすような、ただ一つだけの何々が存在する」という形式の表現は、圏論においてよく用いられます。この表現は、その条件を満たすような何々が一つしか存在しないことを意味します。存在部分を証明するには、少なくとも一つ存在することを示す必要があります。一意性部分を証明するには、多くても一つしか存在しないことを示す必要があります。言い換えれば、その条件を満たすような任意の二つの何々は等しいことを示せばよいのです。
+</span>
+</p><p>
+Properties such as this are called ‘universal’ because they state how the ob- ject being described (in this case, the set 1) relates to the entire universe in which it lives (in this case, the universe of sets). The property begins with the words ‘ for all sets \(X\)’, and therefore says something about the relationship between \(1\) and every set \(X\): namely, that there is a unique map from \(X\) to \(1\). 
+
+<br><span style="color:blue;">
+このような性質は「普遍的」と呼ばれます。なぜなら、それらは記述されている対象 (この場合は集合1) が、それが存在する全体宇宙 (この場合は集合の宇宙) とどのように関係しているかを示しているからです。この性質は「すべての集合 \(X\) に対して」という言葉で始まっており、したがって、1とすべての集合 \(X\) との関係について述べています。具体的には、\(X\) から \(1\) への写像がただ一つ存在するということを述べています。
+</span>
+</p><p>
+<strong>Example 0.2</strong> This example involves rings, which in this book are always taken to have a multiplicative identity, called 1. Similarly, homomorphisms of rings are understood to preserve multiplicative identities. 
+
+<br><span style="color:blue;">
+<strong>例 0.2</strong> この例は環に関するものであり、本書では環は常に乗法単位元 (1と呼ばれる) を持つものとみなします。同様に、環準同型写像は乗法単位元を保存するものとします。
+</span>
+</p><p>
+The ring \(\mathbb{Z}\) has the following property: for all rings \(R\), there exists a unique homomorphism \(\mathbb{Z} → R\). 
+
+<br><span style="color:blue;">
+環 \(\mathbb{Z}\) は以下の性質を持つ。すなわち、すべての環 \(R\) に対して、一意的な準同型写像 \(\mathbb{Z} → R\) が存在する。<br>
+</span>
+<br><span style="color:purple;">
+●蛇足<br>
+　・環(ring)：足し算、引き算、掛け算に関して閉じている集合<br>
+　・準同型(homomorphism)：代数の演算の構造を保つ写像<br>
+　　例：\(f(a+b)=f(a)+f(b)\)<br>
+　　　　足してから写像しても, 写像してから足しても結果は同じ<br>
+　　　　\(f(a×b)=f(a)×f(b)\)<br>
+　　　　掛けてから写像しても, 写像してから掛けても結果は同じ<br>
+(蛇足おわり)<br>
+</span>
+</p><p>
+To prove existence, let \(R\) be a ring. Define a function \(\phi: \mathbb{Z} → R\) by
+
+<br><span style="color:blue;">
+存在を証明するために、\(R\) を環とする。関数 \(\phi: \mathbb{Z} → R\) を次のように定義する。
+</span>
+
+\[
+\phi(n)=
+\begin{cases}
+\underbrace{1+\cdots +1}_{n} & if & n\gt 0 \\
+\\
+0 & if & n=0 \\
+\\ 
+-\phi(-n) & if & n \lt 0
+\end{cases}
+\]
+
+(\(n ∈ \mathbb{Z}\)). A series of elementary checks confirms that \(\phi\) is a homomorphism. 
+
+<br><span style="color:blue;">
+ (\(n ∈ \mathbb{Z}\)) 。いくつかの基本的な確認作業により、\(\phi\) が準同型写像であることが確認できる。
+</span>
+</p><p>
+To prove uniqueness, let \(R\) be a ring and let \(ψ: \mathbb{Z} → R\) be a homomorphism. We show that \(ψ\) is equal to the homomorphism \(\phi\) just defined. Since homomor- phisms preserve multiplicative identities, \(ψ(1) = 1\). Since homomorphisms preserve addition, 
+
+<br><span style="color:blue;">
+一意性を証明するために、\(R\) を環とし、\(ψ: \mathbb{Z} → R\) を準同型とする。\(ψ\) は先ほど定義した準同型 \(\phi\) と等しいことを示す。準同型は乗法恒等式を保存するので、\(ψ(1) = 1\) となる。準同型は加法を保存するので、
+</span>
+
+\[
+ψ(n) = ψ(\underbrace{1+\cdots +1}_{n}) 
+= \underbrace{ψ(1) +\cdots +ψ(1)}_{n} 
+= \underbrace{1+\cdots +1}_{n}= \phi(n) 
+\]
+
+for all \(n > 0\). Since homomorphisms preserve zero, \(ψ(0) = 0 = \phi(0)\). Finally, since homomorphisms preserve negatives, \(ψ(n) = −ψ(−n) = −\phi(−n) = \phi(n)\) whenever \(n \lt 0\).
+
+<br><span style="color:blue;">
+すべての \(n > 0\) に対して。準同型写像はゼロを保存するので、\(ψ(0) = 0 = \phi(0)\) となります。最後に、準同型写像は負の数を保存するので、\(n < 0\) のときは常に \(ψ(n) = −ψ(−n) = −\phi(−n) = \phi(n)\) となります。
+</span>
+</p><p> 
+Crucially, there can be essentially only one object satisfying a given universal property. The word ‘essentially’ means that two objects satisfying the same universal property need not literally be equal, but they are always isomorphic. For example: 
+
+<br><span style="color:blue;">
+重要な点として、与えられた普遍的性質を満たす対象は、実質的にただ一つしか存在しない。ここでいう「実質的に」とは、同じ普遍的性質を満たす二つの対象が文字通り等しい必要はないが、常に同型であるという意味である。例えば、
+</span>
+</p><p>
+<strong>Lemma 0.3</strong> Let \(A\) be a ring with the following property: for all rings \(R\), there exists a unique homomorphism \(A → R\). Then \(A \simeq \mathbb{Z}\). 
+
+<br><span style="color:blue;">
+<strong>補題 0.3</strong> 環 \(A\) が以下の性質を満たすとする。すなわち、任意の環 \(R\) に対し、準同型写像 \(A → R\) がただ一つ存在する。このとき、\(A \simeq \mathbb{Z}\) である。
+</span>
+</p><p>
+<strong>Proof</strong> Let us call a ring with this property ‘initial’. We are given that \(A\) is initial, and we proved in Example 0.2 that \(\mathbb{Z}\) is initial.
+
+<br><span style="color:blue;">
+<strong>証明</strong> この性質を持つ環を「始環」と呼ぶことにしよう。与えられた条件より、\(A\) は始環であり、例 0.2 で \(\mathbb{Z}\) も始環であることを証明した。
+</span>
+
+</p><p>
+Since \(A\) is initial, there is a unique homomorphism \(\phi: A → \mathbb{Z}\). Since \(\mathbb{Z}\) is initial, there is a unique homomorphism \(\phi^\prime: Z → A\). Now \(\phi^\prime ◦ \phi: A → A\) is a homomorphism, but so too is the identity map \(1_A: A → A\); hence, since \(A\) is initial, \(\phi^\prime ◦ \phi = 1_A\). (This follows from the uniqueness part of initiality, taking ‘\(R\)’ to be \(A\).) Similarly, \(\phi ◦ \phi^\prime = 1_Z\). So \(\phi\) and \(\phi^\prime\) are mutually inverse, and therefore define an isomorphism between \(A\) and \(\mathbb{Z}\).
+
+<br><span style="color:blue;">
+\(A\) は始環なので、一意の準同型 \(\phi: A → \mathbb{Z}\) が存在します。 \(\mathbb{Z}\) が始環なので、一意の準同型 \(\phi^\prime: Z → A\) が存在します。 ここで、\(\phi^\prime ◦ \phi: A → A\) は準同型ですが、恒等写像 \(1_A: A → A\) も準同型です。したがって、\(A\) が初期写像なので、\(\phi^\prime ◦ \phi = 1_A\) となります。 (これは、初期写像の一意性の部分から、‘\(R\)’ を \(A\) とするとわかります。) 同様に、\(\phi ◦ \phi^\prime = 1_Z\) となります。したがって、\(\phi\) と \(\phi^\prime\) は相互に逆であるため、\(A\) と \(\mathbb{Z}\) の間に同型性を定義します。
+</span>
+
+</p><p>  
+This proof has very little to do with rings. It really belongs at a higher level of generality. To properly understand this, and to convey more fully the idea of universal property, it will help to consider some more complex examples. 
+
+<br><span style="color:blue;">
+この証明は環論とはほとんど関係がありません。実際には、より一般的なレベルに属するものです。これを正しく理解し、普遍性という概念をより完全に伝えるためには、いくつかのより複雑な例を検討することが役立つでしょう。
+</span>
+
+</p><p>
+<strong>Example 0.4</strong> Let \(V\) be a vector space with a basis \((v_s)_{s∈S}\). (For example, if \(V\) is finite-dimensional then we might take \(S = \{1, ..., n\}\).) If \(W\) is another vector space, we can specify a linear map from \(V\) to \(W\) simply by saying where the ba- sis elements go. Thus, for any \(W\), there is a natural one-to-one correspondence between 
+
+<br><span style="color:blue;">
+<strong>例 0.4</strong> \(V\) を基底 \((v_s)_{s∈S}\) を持つベクトル空間とする。(例えば、\(V\) が有限次元であれば、\(S = \{1, ..., n\}\) とすることができる。) \(W\) が別のベクトル空間である場合、基底元がどこに置かれるかを指定するだけで、\(V\) から \(W\) への線型写像を指定できる。したがって、任意の \(W\) に対して、\(V\) と \(W\) の間には自然な一対一対応が存在する。
+</span>
+
+\[
+\text{線形写像 }V → W
+\]
+ 
+and 
+
+\[
+\text{関数 } S → W. 
+\]
+
+This is because any function defined on the basis elements extends uniquely to a linear map on \(V\).
+
+<br><span style="color:blue;">
+これは、基底要素に基づいて定義された任意の関数は、\(V\) 上の線形写像に一意的に拡張できるためである。
+</span>
+
+</p><p> 
+Let us rephrase this last statement. Define a function \(i: S → V\) by \(i(s) = v_s (s ∈ S)\). Then \(V\) together with \(i\) has the following universal property: 
+
+<br><span style="color:blue;">
+最後の記述を別の表現で言い換えてみましょう。関数 \(i: S → V\) を \(i(s) = v_s (s ∈ S)\) と定義します。このとき、\(V\) と \(i\) は以下の普遍性を持つ。
+</span>
+
+</p>
+
+<center><img src="images/BCT_04.svg"></center>
+
+<p>
+This diagram means that for all vector spaces \(W\) and all functions \(f : S → W\), there exists a unique linear map \(\overline{f}: V → W\) such that \(\overline{f}◦ i = f\). The symbol \(∀\) means ‘for all’, and the symbols \(∃!\) mean ‘there exists a unique’. 
+
+<br><span style="color:blue;">
+この図は、すべてのベクトル空間 \(W\) およびすべての関数 \(f : S → W\) に対して、\(\overline{f}◦ i = f\) を満たす線形写像 \(\overline{f}: V → W\) がただ一つ存在することを意味します。記号 \(∀\) は「すべての」を意味し、記号 \(∃!\) は「ただ一つ存在する」を意味します。
+</span>
+
+</p><p>
+Another way to say ‘ \(\overline{f}◦i = f\)’ is ‘ \(\overline{f}(v_s) = f(s)\) for all \(s ∈ S\)’. So, the diagram asserts that every function f defined on the basis elements extends uniquely to a linear map \(\overline{f}\) defined on the whole of \(V\). In other words still, the function 
+
+<br><span style="color:blue;">
+「\(\overline{f}◦i = f\)」を別の言い方で言うと、「\(\overline{f}(v_s) = f(s)\) がすべての\(s ∈ S\)に対して」となります。つまり、この図は、基底元上で定義されたすべての関数fが、\(V\)全体上で定義された線型写像\(\overline{f}\)に一意に拡張されることを主張しています。言い換えれば、関数
+</span>
+
+\[
+\begin{array}{c c c}
+\{\text{線形写像 }V → W\} & → & \{\text{関数 } S → W\}\\ 
+\overline{f} & \mapsto & \overline{f}◦ i
+\end{array}
+\]
+ 
+is bijective. 
+
+<br><span style="color:blue;">
+は, 全単射です。
+</span>
+
+</p><p>
+<strong>Example 0.5</strong> Given a set \(S\), we can build a topological space \(D(S)\) by equipping \(S\) with the discrete topology: all subsets are open. With this topology, any map from \(S\) to a space \(X\) is continuous. 
+
+<br><span style="color:blue;">
+<strong>例 0.5</strong> 集合 \(S\) が与えられたとき、\(S\) に離散位相を与えることで、位相空間 \(D(S)\) を構成できる。この位相では、すべての部分集合が開集合となる。この位相を用いると、\(S\) から任意の空間 \(X\) への写像はすべて連続となる。
+</span>
+
+</p><p>
+Again, let us rephrase this. Define a function \(i: S → D(S)\) by \(i(s) = s (s ∈ S)\). Then \(D(S)\) together with \(i\) has the following universal property: 
+
+<br><span style="color:blue;">
+改めてこれを言い換えてみましょう。関数 \(i: S → D(S)\) を \(i(s) = s (s ∈ S)\) と定義します。すると、\(D(S)\) は \(i\) とともに以下の普遍性を持つことになります。
+</span>
+
+</p>
+
+<center><img src="images/BCT_05.svg"></center>
+
+<p> 
+In other words, for all topological spaces \(X\) and all functions \(f: S → X\), there exists a unique continuous map \(\overline{f}: D(S) → X\) such that \(\overline{f}◦ i = f\). The continuous map \(\overline{f}\) is the same thing as the function \(f\), except that we are regarding it as a continuous map between topological spaces rather than a mere function between sets. 
+
+<br><span style="color:blue;">
+言い換えれば、すべての位相空間 \(X\) とすべての関数 \(f: S → X\) に対して、\(\overline{f}◦ i = f\) を満たす連続写像 \(\overline{f}: D(S) → X\) が一意的に存在する。この連続写像 \(\overline{f}\) は、単なる集合間の関数としてではなく、位相空間間の連続写像としてみなしている点を除けば、関数 \(f\) と本質的に同じものである。
+</span>
+
+</p><p>
+You may feel that this universal property is almost too trivial to mean any- thing. But if we change the definition of \(D(S)\) – say from the discrete to the indiscrete topology, in which the only open sets are \(∅\) and \(S\) – then the property becomes false. So this property really does say something about the discrete topology. What it says is that all maps out of a discrete space are continuous. 
+
+<br><span style="color:blue;">
+この普遍的な性質は、あまりにも自明すぎて何の意味もないように感じられるかもしれません。しかし、もし \(D(S)\) の定義を変えて、例えば離散位相から非離散位相 (開集合が \(∅\) と \(S\) のみである位相) に変更すると、この性質は成り立たなくなります。つまり、この性質は確かに離散位相について何かを述べているのです。それは、離散空間から出るすべての写像は連続であるということです。
+</span>
+
+</p><p>
+Indeed, given \(S\), the universal property determines \(D(S)\) and \(i\) uniquely (or rather, uniquely up to isomorphism; but who could want more?). The proof of this is similar to that of Lemma 0.3 above and Lemma 0.7 below. 
+
+<br><span style="color:blue;">
+実際、集合 \(S\) が与えられれば、普遍性によって \(D(S)\) と \(i\) は一意的に決定されます (より正確には、同型を除いて一意的ですが、それ以上のものを望む人がいるでしょうか？) 。この証明は、上記の補題0.3および下記の補題0.7の証明と同様です。
+</span>
+
+</p><p>
+<strong>Example 0.6</strong>  
+Given vector spaces \(U, V\) and \(W\), a <strong>bilinear map</strong> \(f : U×V → W\) is a function \(f\) that is linear in each variable:
+
+<br><span style="color:blue;">
+<strong>例 0.6</strong>
+ベクトル空間 \(U, V\) および \(W\) が与えられたとき、<strong>双線形写像</strong> \(f : U×V → W\) とは、各変数に関して線形である関数 \(f\) のことである。
+</span>
+
+\[
+\begin{align} 
+f(u,v_1 + λv_2) &= f(u,v_1) + λf(u,v_2) \\
+f(u_1 + λu_2,v) &= f(u_1,v) + λf(u_2,v)
+\end{align}
+\]
+ 
+for all \(u,u_1,u_2 ∈ U, v,v_1,v_2 ∈ V\), and scalars \(λ\). A good example is the scalar product (dot product), which is a bilinear map
+
+<br><span style="color:blue;">
+すべての \(u,u_1,u_2 ∈ U, v,v_1,v_2 ∈ V\) およびスカラー \(λ\) に対して成り立つ。良い例としては、双線形写像であるスカラー積 (内積) が挙げられる。
+</span>
+
+\[
+\begin{array}{c c c}
+\mathbb{R}^n × \mathbb{R}^n & → & \mathbb{R} \\
+(\mathbf{u},\mathbf{v}) & \mapsto & \mathbf{u}.\mathbf{v}
+\end{array}
+\]
+ 
+of real vector spaces. The vector product (cross product) \(\mathbb{R}^3 ×\mathbb{R}^3 → \mathbb{R}^3\) is also bilinear.
+
+<br><span style="color:blue;">
+実ベクトル空間について。ベクトル積 (外積) \(\mathbb{R}^3 ×\mathbb{R}^3 → \mathbb{R}^3\)もまた双線形である。
+</span>
+</p><p>
+ 
+Let \(U\) and \(V\) be vector spaces. It is a fact that there is a ‘universal bilinear map out of \(U × V^\prime\). In other words, there exist a certain vector space \(T\) and a certain bilinear map \(b: U × V → T\) with the following universal property:
+
+<br><span style="color:blue;">
+\(U\) と \(V\) をベクトル空間とする。実際には、\(U × V\) から出発する「普遍的な双線形写像」が存在する。言い換えれば、あるベクトル空間 \(T\) と、以下の普遍性を満たすある双線形写像 \(b: U × V → T\) が存在する。
+</span>
+</p>
+
+<center><img src="images/BCT_06.svg"></center> 
+
+<p>
+Roughly speaking, this property says that bilinear maps out of \(U × V\) correspond one-to-one with linear maps out of \(T\). 
+
+<br><span style="color:blue;">
+おおまかに言うと、この性質は、\(U × V\) からの双線形写像が、\(T\) からの線形写像と 1 対 1 に対応することを示している。
+</span>
+
+</p><p>
+Even without knowing that such a \(T\) and \(b\) exist, we can immediately prove that this universal property determines T and b uniquely up to isomorphism. The proof is essentially the same as that of Lemma 0.3, but looks more com- plicated because of the more complicated universal property. 
+
+<br><span style="color:blue;">
+このような \(T\) と \(b\) が存在することを知らなくても、この普遍性によって \(T\) と \(b\) が同型を除いて一意的に定まることを直ちに証明できる。証明は本質的には補題0.3の証明と同じだが、普遍性の記述がより複雑になっているため、見た目はより複雑になっている。
+</span>
+
+</p><p>
+<strong>Lemma 0.7</strong> Let \(U\) and \(V\) be vector spaces. Suppose that \(b : U × V → T\) and \(b^\prime: U × V → T^\prime\) are both universal bilinear maps out of \(U × V\). Then \(T \simeq T^\prime\). More precisely, there exists a unique isomorphism \(j : T → T^\prime\) such that \(j ◦ b = b^\prime\).
+
+<br><span style="color:blue;">
+<b>補題 0.7</b> \(U\) と \(V\) をベクトル空間とする。\(b : U × V → T\) および \(b^\prime: U × V → T^\prime\) がともに \(U × V\) からの普遍双線形写像であるとする。このとき、\(T \simeq T^\prime\) である。より正確には、\(j ◦ b = b^\prime\) を満たす一意的な同型写像 \(j : T → T^\prime\) が存在する。
+</span>
+
+</p><p> 
+In the proof that follows, it does not actually matter what ‘bilinear’, ‘linear’ or even ‘vector space’ mean. The hard part is getting the logic straight. That done, you should be able to see that there is really only one possible proof. For instance, to use the universality of b, we will have to choose some bilinear map \(f\) out of \(U × V\). There are only two in sight, \(b\) and \(b^\prime\), and we use each in the appropriate place. 
+
+<br><span style="color:blue;">
+以下の証明では、「双線形」、「線形」、あるいは「ベクトル空間」といった用語の意味は実際には重要ではありません。重要なのは、論理を正しく組み立てることです。それができれば、証明方法は実質的に一つしかないことがわかるでしょう。例えば、\(b\) の普遍性を用いるには、\(U × V\) からの双線形写像fを選ぶ必要があります。候補となる双線形写像は \(b\) と \(b'\) の2つしかなく、それぞれ適切な箇所で使用します。
+</span>
+
+</p><p> 
+<strong>Proof</strong> In diagram (0.1), take \(\left(U×V \overset{f}{\longrightarrow} W\right)\) to be \(\left(U×V \overset{b^\prime}{\longrightarrow}T^\prime\right)\). This gives a linear map \(j: T → T^\prime\) satisfying \(j ◦ b = b^\prime\). Similarly, using the universality of \(b^\prime\), we obtain a linear map \(j^\prime: T^\prime → T\) satisfying \(j^\prime ◦ b^\prime = b\):
+
+<br><span style="color:blue;">
+<strong>証明</strong> 図(0.1)において、\(\left(U×V \overset{f}{\longrightarrow} W\right)\)を\(\left(U×V \overset{b^\prime}{\longrightarrow}T^\prime\right)\)とします。これにより、\(j ◦ b = b^\prime\) を満たす線型写像\(j: T → T^\prime\) が得られます。同様に、\(b^\prime\) の普遍性を用いて、\(j^\prime ◦ b^\prime = b\) を満たす線型写像 \(j^\prime: T^\prime → T\) を得ます。
+</span>
+
+</p>
+
+<center><img src="images/BCT_07.svg"></center> 
+  
+<p> 
+Now \(j^\prime ◦ j: T → T\) is a linear map satisfying \((j^\prime ◦ j) ◦ b = b\); but also, the identity map \(1_T : T → T\) is linear and satisfies \(1_T ◦ b = b\). So by the uniqueness part of the universal property of \(b\), we have \(j^\prime ◦ j = 1_T\). (Here we took the ‘ \(f\)’ of (0.1) to be \(b\).) Similarly, \(j ◦ j^\prime = 1_{T^\prime}\). So \(j\) is an isomorphism.  
+
+<br><span style="color:blue;">
+さて、\(j^\prime ◦ j: T → T\) は線形写像であり、\((j^\prime ◦ j) ◦ b = b\) を満たします。一方、恒等写像 \(1_T : T → T\) も線形写像であり、\(1_T ◦ b = b\) を満たします。したがって、\(b\) の普遍性の性質における一意性により、\(j^\prime ◦ j = 1_T\) が成り立ちます。 (ここでは、(0.1)式の「\(f\)」を \(b\) としました。) 同様に、\(j ◦ j^\prime = 1_{T^\prime}\) も成り立ちます。ゆえに、\(j\) は同型写像です。
+</span>
+
+</p><p>
+In Example 0.6, it was stated that given vector spaces \(U\) and \(V\), there exists a pair \((T,b)\) with the universal property of (0.1). We just proved that there is essentially only one such pair \((T,b)\). The vector space \(T\) is called the <strong>tensor product</strong> of \(U\) and \(V\), and is written as \(U ⊗ V\). Tensor products are very important in algebra. They reduce the study of bilinear maps to the study of linear maps, since a bilinear map out of \(U×V\) is really the same thing as a linear map out of \(U ⊗ V\).
+
+<br><span style="color:blue;">
+例0.6では、ベクトル空間\(U\)と\(V\)が与えられたとき、(0.1)の普遍性を持つ組\((T,b)\)が存在することが述べられていました。私たちは、そのような組\((T,b)\)は本質的にただ一つしか存在しないことを証明しました。このベクトル空間\(T\)は、\(U\)と\(V\)の<strong>テンソル積</strong>と呼ばれ、\(U ⊗ V\)と表記されます。テンソル積は代数学において非常に重要です。なぜなら、\(U×V\)からの双線形写像は、\(U ⊗ V\)からの線形写像と実質的に同じものであるため、双線形写像の研究を線形写像の研究に帰着させることができるからです。
+</span>
+
+</p><p> 
+However, tensor products will not be important in this book. The real lesson for us is that it is safe to speak of the tensor product, not just a tensor product, and the reason for that is Lemma 0.7. This is a general point that applies to anything satisfying a universal property. 
+
+<br><span style="color:blue;">
+しかし、テンソル積はこの本ではそれほど重要ではありません。ここで本当に重要なのは、単に「あるテンソル積」ではなく「そのテンソル積」と呼ぶことが許される、つまりテンソル積が一意に定まるという点であり、その理由は補題0.7にあります。これは、普遍性を満たすあらゆるものに当てはまる一般的な考え方です。
+</span>
+
+</p><p> 
+Once you know a universal property of an object, it often does no harm to forget how it was constructed. For instance, if you look through a pile of algebra books, you will find several different ways of constructing the ten- sor product of two vector spaces. But once you have proved that the tensor product satisfies the universal property, you can forget the construction. The universal property tells you all you need to know, because it determines the object uniquely up to isomorphism. 
+
+<br><span style="color:blue;">
+ある対象の普遍的な性質が分かれば、その構成方法を忘れてしまっても問題ない場合が多い。例えば、代数に関する書籍を何冊か見てみると、2つのベクトル空間のテンソル積を構成する方法がいくつか見つかるだろう。しかし、テンソル積が普遍的な性質を満たすことを証明してしまえば、その具体的な構成方法は忘れても構わない。普遍的な性質は、その対象を同型を除いて一意的に決定するため、必要な情報はすべて含まれているからだ。
+</span>
+
+</p><p> 
+<strong>Example 0.8</strong>
+Let \(θ: G → H\) be a homomorphism of groups. Associated with 
+\(θ\) is a diagram 
+
+<br><span style="color:blue;">
+<strong>例 0.8</strong>
+\(θ: G → H\) を群の準同型とする。\(θ\) に関連して、
+\(θ\) は図式である。
+</span>
+
+\[
+ker(θ) \overset{\subset}{}\hspace{-0.4em}\longrightarrow
+G \underset{\varepsilon}{\overset{θ}{\rightrightarrows}}H  \tag{0.2}
+\]
+
+where \(ι\) is the inclusion of \(ker(θ)\) into \(G\) and \(ε\) is the trivial homomorphism. ‘Inclusion’ means that \(ι(x) = x\) for all \(x ∈ ker(θ)\), and ‘trivial’ means that \(ε(g) = 1\) for all \(g ∈ G\). The symbol \(\overset{\subset}{}\hspace{-0.4em}\longrightarrow\) is often used for inclusions; it is a combination of a subset symbol \(⊂\) and an arrow.
+
+<br><span style="color:blue;">
+ここで、\(ι\) は \(ker(θ)\) から \(G\) への包含写像、\(ε\) は自明な準同型写像である。「包含写像」とは、すべての \(x ∈ ker(θ)\) に対して\(ι(x) = x\) となる写像を意味し、「自明な準同型写像」とは、すべての\(g ∈ G\) に対して \(ε(g) = 1\) となる写像を意味する。記号\(\overset{\subset}{}\hspace{-0.4em}\longrightarrow\) は包含写像を表すためによく用いられ、部分集合記号 \(⊂\) と矢印を組み合わせたものである。
+</span>
+
+</p><p>
+The map \(ι\) into \(G\) satisfies \(θ◦ι = ε◦ι\), and is universal as such. Exercise 0.11 asks you to make this precise. 
+Here is our final example of a universal property. 
+
+<br><span style="color:blue;">
+写像 \(ι\) から \(G\) への写像は \(θ◦ι = ε◦ι\) を満たし、そのような写像の中で普遍的な性質を持つ。演習問題0.11では、このことを厳密に証明することが求められている。
+これが普遍性に関する最後の例である。
+</span>
+
+</p><p>
+<strong>Example 0.9</strong> Take a topological space covered by two open subsets: \(X = U ∪ V\). The diagram
+
+<br><span style="color:blue;">
+<strong>例 0.9</strong> 2つの開集合\(X = U ∪ V\)で覆われた位相空間をとる。図
+</span>
+</p>
+
+<center><img src="images/BCT_09.svg"></center> 
+
+<p>
+of inclusion maps has a universal property in the world of topological spaces and continuous maps, as follows: 
+
+<br><span style="color:blue;">
+包含写像の族は、位相空間と連続写像の世界において、以下のような普遍的性質を持っている。
+</span>
+</p>
+
+<center><img src="images/BCT_092.svg"></center>
+
+<p> 
+The diagram means that given \(Y, f\) and \(g\) such that \(f ◦i = g◦ j\), there is exactly one continuous map \(h: X → Y\) such that \(h ◦ j^\prime = f\) and \(h ◦ i^\prime = g\).
+
+<br><span style="color:blue;">
+この図は、\(f ◦i = g◦ j\) を満たすような \(Y, f, g\) が与えられたとき、\(h ◦ j^\prime = f\) および \(h ◦ i^\prime = g\) を満たす連続写像 \(h: X → Y\) がただ一つ存在することを意味している。
+</span>
+
+</p><p> 
+Under favourable conditions, the induced diagram 
+
+<br><span style="color:blue;">
+好ましい条件下では、誘導ダイヤグラム(可換図式)
+</span>
+
+</p>
+
+<center><img src="images/BCT_093.svg"></center>
+
+<p>
+of fundamental groups has the same property in the world of groups and group homomorphisms. This is van Kampen’s theorem . In fact, van Kampen stated his theorem in a much more complicated way. Stating it transparently requires some categorical language, but he was working in the 1930s, before category theory had been born. 
+
+<br><span style="color:blue;">
+基本群の構成は、群と群準同型の世界においても同様の性質を持つ。これがファン・カンペンの定理である。実際、ファン・カンペンは自身の定理をはるかに複雑な形で述べた。それを分かりやすく表現するには圏論的な言葉遣いが必要となるが、彼は圏論が誕生する以前の1930年代に研究を行っていたのである。
+</span>
+
+</p><p>
+You have now seen several examples of universal properties. As this book progresses, we will develop different ways of talking about them. Once we have set up the basic vocabulary of categories and functors, we will study ad- joint functors, then representable functors , then limits. Each of these provides an approach to universal properties, and each places the idea in a different light. For instance, Examples 0.4 and 0.5 can most readily be described in terms of adjoint functors, Example 0.6 via representable functors, and Examples 0.1, 0.2, 0.8 and 0.9 in terms of limits. 
+
+<br><span style="color:blue;">
+ここまで、普遍性に関するいくつかの例を見てきました。本書が進むにつれて、これらの普遍性について様々な角度から考察していきます。まず、圏と関手の基本的な概念を確立した後、随伴関手、表現可能関手、そして極限について順に学習します。これらはそれぞれ普遍性への異なるアプローチを提供し、その概念を様々な視点から捉えることを可能にします。例えば、例0.4と0.5は随伴関手を用いて最も簡潔に記述でき、例0.6は表現可能関手、そして例0.1、0.2、0.8、0.9は極限を用いて記述できます。
+</span>
+</p>
+
+<h2><center>Exercises 演習</h2>
+<p> 
+<strong>0.10</strong> Let \(S\) be a set. The <strong>indiscrete</strong> topological space \(I(S)\) is the space whose set of points is \(S\) and whose only open subsets are \(∅\) and \(S\) itself. Imitating Example 0.5, find a universal property satisfied by the space \(I(S)\). 
+
+<br><span style="color:blue;">
+<strong>0.10</strong> \(S\)を集合とする。<strong>自明な</strong>位相空間 \(I(S)\) とは、点集合が\(S\)であり、開集合が\(∅\)と\(S\)自身のみであるような位相空間のことである。例0.5を参考に、空間\(I(S)\)が満たす普遍性質を見つけなさい。
+</span>
+</p><p>
+<strong>0.11</strong> Fix a group homomorphism 
+\(θ: G → H\). Find a universal property satis- fied by the pair \((ker(θ),ι)\) of diagram (0.2). (This property can – indeed, must – 
+make reference to \(θ\).)
+
+<br><span style="color:blue;">
+<strong>0.11</strong> 群準同型写像 \(θ: G → H\) を固定する。図 (0.2) における対 \((ker(θ),ι)\) が満たす普遍性質を見つけなさい。 (この性質は、実際には \(θ\) に言及する必要がある。) 
+</span>
+
+</p><p> 
+<strong>0.12</strong> Verify the universal property shown in diagram (0.3). 
+
+<br><span style="color:blue;">
+<strong>0.12</strong> 図(0.3)に示されている普遍的な性質を検証しなさい。
+</span>
+
+</p><p>
+<strong>0.13</strong> Denote by \(\mathbb{Z}[x]\) the polynomial ring over \(\mathbb{Z}\) in one variable.
+
+<br><span style="color:blue;">
+<strong>0.13</strong> \(\mathbb{Z}[x]\) で、整数係数の一変数多項式環を表す。
+</span>
+
+<div class="styleBullet">
+<ul><li>
+(a) Prove that for all rings \(R\) and all \(r ∈ R\), there exists a unique ring homomorphism \(\phi: \mathbb{Z}[x] → R\) such that \(\phi(x) = r\).
+
+<br><span style="color:blue;">
+すべての環 \(R\) およびすべての \(r ∈ R\) に対して、\(\phi(x) = r\) を満たす環準同型写像 \(\phi: \mathbb{Z}[x] → R\) がただ一つ存在することを証明せよ。
+</span>
+</li><br><li>
+(b) Let \(A\) be a ring and \(a ∈ A\). Suppose that for all rings \(R\) and all \(r ∈ R\), there
+exists a unique ring homomorphism \(ϕ: A → R\) such that \(ϕ(a) = r\). Prove
+that there is a unique isomorphism \(ι: \mathbb{Z}[x]→ A\) such that \(ι(x) = a\).
+
+<br><span style="color:blue;">
+\(A\)を環とし、\(a ∈ A\)とする。すべての環\(R\)とすべての\(r ∈ R\)に対して、\(ϕ(a) = r\)を満たす環準同型写像\(ϕ: A → R\)が一意的に存在すると仮定する。このとき、\(ι(x) = a\)を満たす同型写像\(ι: \mathbb{Z}[x]→ A\)が一意的に存在することを証明せよ。
+</span>
+</li></ul></div>
+
+</p><p>
+<strong>0.14</strong> Let \(X\) and \(Y\) be vector spaces. 
+
+<br><span style="color:blue;">
+<strong>0.14</strong> \(X\)と\(Y\)をベクトル空間とする。
+</span>
+
+<div class="styleBullet">
+<ul><li>
+(a) For the purposes of this exercise only, a cone is a triple \((V, f_1, f_2)\) consisting 
+of a vector space \(V\), a linear map \(f_1: V → X\), and a linear map \(f_2: V → Y\).
+Find a cone \((P, p_1, p_2)\) with the following property: for all cones \((V, f1, f2)\), 
+there exists a unique linear map \(f: V → P\) such that \(p_1 ◦ f = f_1\) and \(p_2 ◦ f = f_2\).
+
+<br><span style="color:blue;">
+この演習のためだけに、円錐とは、ベクトル空間 \(V\)、線形写像 \(f_1: V → X\)、および線形写像 \(f_2: V → Y\) からなる三つ組 \((V, f_1, f_2)\) のこととする。
+次の性質を満たす円錐 \((P, p_1, p_2)\) を見つけなさい。すなわち、すべての円錐 \((V, f_1, f_2)\) に対して、\(p_1 ◦ f = f_1\) および \(p_2 ◦ f = f_2\) を満たす線形写像 \(f: V → P\) が一意的に存在する。
+</span>
+</li><br><li>
+ 
+(b) Prove that there is essentially only one cone with the property stated in (a). 
+That is, prove that if \((P, p_1, p_2)\) and \(( P^\prime, p_1^\prime, p_2^\prime)\) both have this property then 
+there is an isomorphism \(i: P → P^\prime\) such that p_1^\prime ◦ i = p_1\) and \(p_2^\prime ◦ i = p_2\). 
+
+<br><span style="color:blue;">
+(a)で述べられた性質を持つ錐は本質的に一つしかないことを証明せよ。
+すなわち、もし\((P, p_1, p_2)\)と\((P^\prime, p_1^\prime, p_2^\prime)\)が両方ともこの性質を持つならば、
+\(p_1^\prime \circ i = p_1\)かつ\(p_2^\prime \circ i = p_2\)を満たす同型写像\(i: P → P^\prime\)が存在することを証明せよ。
+</span>
+</li><br><li>
+
+(c) For the purposes of this exercise only, a cocone is a triple \((V, f_1, f_2)\) consisting
+of a vector space \(V\), a linear map \(f_1: X → V\), and a linear map \(f_2: Y → V\). Find a cocone \((Q, q_1, q_2)\) with the following property: for all
+cocones \((V, f_1, f_2)\), there exists a unique linear map \(f: Q → V\) such that
+\(f ◦ q_1 = f_1\) and \(f ◦ q_2 = f_2\).
+
+<br><span style="color:blue;">
+この演習の目的のためだけに、ココーンとは、ベクトル空間 \(V\)、線形写像 \(f_1: X → V\)、および線形写像 \(f_2: Y → V\) からなる三つ組 \((V, f_1, f_2)\) のこととします。以下の性質を持つココーン \((Q, q_1, q_2)\) を見つけてください。すなわち、すべてのココーン \((V, f_1, f_2)\) に対して、\(f ◦ q_1 = f_1\) および \(f ◦ q_2 = f_2\) を満たす線形写像 \(f: Q → V\) が一意的に存在する。
+</span>
+</li><br><li>
+
+(d) Prove that there is essentially only one cocone with the property stated in (c), in a sense that you should make precise. 
+
+<br><span style="color:blue;">
+(c)に記載された性質を持つココーンは、本質的に一つしか存在しないことを証明せよ。ただし、ここで言う「本質的に一つ」の意味を明確にすること。
+</span>
+</li></ul></div>
+</p>
+    </body>
+</html>
