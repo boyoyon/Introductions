@@ -1,0 +1,536 @@
+<!doctype html>
+<html lang="ja">
+    <head>
+        <script type="text/javascript" id="MathJax-script" async
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+        <meta charset="utf-8" />
+        <title>1 Introduction</title>
+        <style type="text/css">
+            p
+            {
+                padding-left: 2em;
+            }
+           .margin-abstract {
+               margin-left: 60px; /* 左マージンを広くする */
+               margin-right: 60px; /* 右マージンを広くする */
+           }
+        </style>
+    <style>
+        .styleRef { 
+            text-indent: -40px; /* 最初の行の字下げを逆方向に */
+            margin-left: 10px; /* 2行目以降の字下げを調整 */
+            ul {
+                  list-style-type: none; /* 箇条書き記号を非表示 */
+                  padding-left: 40px; /* 全体の左余白 */
+            }
+            li {
+            }
+        }
+    </style>
+    <style>
+        .styleBullet { 
+            text-indent: -20px; /* 最初の行の字下げを逆方向に */
+            margin-left: 30px; /* 2行目以降の字下げを調整 */
+            ul {
+                  list-style-type: none; /* 箇条書き記号を非表示 */
+                  padding-left: 40px; /* 全体の左余白 */
+            }
+            li {
+            }
+        }
+    </style>
+<style>
+.container {
+  display: flex;
+  flex-wrap: wrap;
+}
+.column {
+  flex: 0 25%; /* 幅を25%に設定して4列に */
+  box-sizing: border-box;
+  padding: 10px;
+}
+</style>
+
+    </head>
+    <body>
+        <h1><center>An Introduction to Variational Autoencoders<br>
+<span style="color:blue;">変分オートエンコーダ入門</span></center></h1>
+
+<p style="text-align: right;">
+Diederik P. Kingma<br>
+Google<br>
+durk@google.com<br>
+<br>
+Max Welling<br>
+Universiteit van Amsterdam, Qualcomm<br>
+mwelling@qti.qualcomm.com
+</p>
+
+<h2><center>1<br>Introduction <span style="color:blue;">はじめに</span></h2> 
+<h3>1.1 Motivation <span style="color:blue;">動機</span></h3>
+<p> 
+One major division in machine learning is generative versus discrimi- native modeling. While in discriminative modeling one aims to learn a predictor given the observations, in generative modeling one aims to solve the more general problem of learning a joint distribution over all the variables. A generative model simulates how the data is generated in the real world. “Modeling” is understood in almost every science as unveiling this generating process by hypothesizing theories and testing these theories through observations. For instance, when meteorologists model the weather they use highly complex partial differential equations to express the underlying physics of the weather. Or when an astronomer models the formation of galaxies s/he encodes in his/her equations of motion the physical laws under which stellar bodies interact. The same is true for biologists, chemists, economists and so on. Modeling in the sciences is in fact almost always generative modeling. 
+
+<br><span style="color:blue;">
+機械学習における主要な区分の一つは、生成モデリングと判別モデリングです。判別モデリングでは観測結果に基づいて予測変数を学習することを目的とするのに対し、生成モデリングでは、すべての変数にわたる結合分布を学習するという、より一般的な問題を解決することを目的とします。生成モデルは、現実世界でデータがどのように生成されるかをシミュレートします。「モデリング」とは、ほぼすべての科学において、理論を立て、観測を通してそれらの理論を検証することで、この生成プロセスを明らかにすることと理解されています。例えば、気象学者が天気をモデル化する場合、彼らは天気の根底にある物理法則を表現するために、非常に複雑な偏微分方程式を使用します。また、天文学者が銀河の形成をモデル化する場合、彼らは恒星が相互作用する物理法則を運動方程式にコード化します。生物学者、化学者、経済学者などにも同じことが言えます。科学におけるモデリングは、実際にはほぼ常に生成モデリングです。
+</span>
+</p><p>
+There are many reasons why generative modeling is attractive. First, we can express physical laws and constraints into the generative process while details that we don’t know or care about, i.e. nuisance variables, are treated as noise. The resulting models are usually highly intuitive and interpretable and by testing them against observations we can conrm or reject our theories about how the world works. 
+
+<br><span style="color:blue;">
+生成モデリングが魅力的な理由は数多くあります。まず、物理法則や制約を生成プロセスに組み込むことができ、私たちが知らない、あるいは気にしない詳細、つまり不要な変数はノイズとして扱われます。生成されるモデルは通常、非常に直感的で解釈しやすく、観察結果と照らし合わせて検証することで、世界の仕組みに関する理論を検証したり、否定したりすることができます。
+</span>
+</p><p>
+Another reason for trying to understand the generative process of data is that it naturally expresses causal relations of the world. Causal relations have the great advantage that they generalize much better to new situations than mere correlations. For instance, once we understand the generative process of an earthquake, we can use that knowledge both in California and in Chile. 
+
+<br><span style="color:blue;">
+データの生成プロセスを理解しようとするもう一つの理由は、それが世界の因果関係を自然に表現するからです。因果関係は、単なる相関関係よりも新しい状況にはるかによく一般化できるという大きな利点があります。例えば、地震の生成プロセスを理解すれば、その知識をカリフォルニアとチリの両方で活用できます。
+</span>
+</p><p>
+To turn a generative model into a discriminator, we need to use Bayes rule. For instance, we have a generative model for an earthquake of type A and another for type B, then seeing which of the two describes the data best we can compute a probability for whether earthquake A or B happened. Applying Bayes rule is however often computationally expensive. 
+
+<br><span style="color:blue;">
+生成モデルを識別器に変換するには、ベイズ則を使用する必要があります。例えば、タイプAの地震とタイプBの地震の生成モデルがあり、どちらがデータをよりよく表しているかを調べることで、地震AとBのどちらが発生したかの確率を計算できます。しかし、ベイズ則を適用するには、多くの場合、計算コストがかかります。
+</span>
+</p><p>
+In discriminative methods we directly learn a map in the same direction as we intend to make future predictions in. This is in the opposite direction than the generative model. For instance, one can argue that an image is generated in the world by rst identifying the object, then generating the object in 3D and then projecting it onto an pixel grid. A discriminative model takes these pixel values directly as input and maps them to the labels. While generative models can learn efficiently from data, they also tend to make stronger assumptions on the data than their purely discriminative counterparts, often leading to higher asymptotic bias (Banerjee, 2007) when the model is wrong. For this reason, if the model is wrong (and it almost always is to some degree!), if one is solely interested in learning to discriminate, and one is in a regime with a sufficiently large amount of data, then purely discriminative models typically will lead to fewer errors in discriminative tasks. Nevertheless, depending on how much data is around, it may pay off to study the data generating process as a way to guide the training of the discriminator, such as a classier. For instance, one may have few labeled examples and many more unlabeled examples. In this semi- supervised learning setting, one can use the generative model of the data to improve classication (Kingma et al. , 2014; Sønderby et al. , 2016a). 
+
+<br><span style="color:blue;">
+識別的手法では、将来の予測を行う方向と同じ方向の地図を直接学習します。これは生成モデルとは逆の方向です。例えば、画像が世界の中で生成されるのは、まず物体を識別し、次にその物体を3Dで生成し、それをピクセルグリッドに投影することによってである、と主張できます。識別モデルはこれらのピクセル値を直接入力として受け取り、ラベルにマッピングします。生成モデルはデータから効率的に学習できますが、純粋に識別的なモデルよりもデータに対して強い仮定を置く傾向があり、モデルが間違っている場合、漸近バイアス（Banerjee, 2007）が大きくなることがよくあります。このため、モデルが間違っている場合（そしてほとんどの場合、ある程度は間違っています！）、識別を学習することのみに関心があり、十分な量のデータがある状況では、純粋に識別的なモデルの方が識別タスクにおけるエラーが少なくなるのが一般的です。しかしながら、データの量によっては、分類器などの識別器の学習を導く方法として、データ生成プロセスを研究することが効果的である場合があります。例えば、ラベル付きの例が少なく、ラベルなしの例が多い場合があります。このような半教師あり学習の設定では、データの生成モデルを用いて分類を向上させることができます (Kingma et al. , 2014; Sønderby et al. , 2016a)。
+</span>
+</p><p>
+Generative modeling can be useful more generally. One can think of it as an auxiliary task. For instance, predicting the immediate future may help us build useful abstractions of the world that can be used for multiple prediction tasks downstream. This quest for disentangled, semantically meaningful, statistically independent and causal factors of variation in data is generally known as unsupervised representation learning, and the variational autoencoder (VAE) has been extensively employed for that purpose. Alternatively, one may view this as an implicit form of regularization: by forcing the representations to be meaningful for data generation, we bias the inverse of that process, which maps from input to representation, into a certain mould. The auxiliary task of predicting the world is used to better understand the world at an abstract level and thus to better make downstream predictions. 
+
+<br><span style="color:blue;">
+生成モデリングはより一般的に有用であり、補助的なタスクと考えることもできます。例えば、近い将来を予測することは、後続の複数の予測タスクに使用できる、世界の有用な抽象化を構築するのに役立つ可能性があります。データの変動について、もつれがなく、意味的に意味があり、統計的に独立で、因果関係のある要因を探求するこの手法は、一般に教師なし表現学習と呼ばれ、変分オートエンコーダ（VAE）がこの目的で広く利用されてきました。あるいは、これを暗黙的な正則化と見ることもできます。つまり、表現がデータ生成にとって意味を持つように強制することで、入力から表現へとマッピングするプロセスの逆を特定の型にバイアスするのです。世界を予測するという補助的なタスクは、抽象的なレベルで世界をより深く理解し、それによって後続の予測をより適切に行うために使用されます。
+</span>
+</p><p>
+The VAE can be viewed as two coupled, but independently parame- terized models: the encoder or recognition model, and the decoder or generative model. These two models support each other. The recogni- tion model delivers to the generative model an approximation to its posterior over latent random variables, which it needs to update its parameters inside an iteration of “expectation maximization” learning. Reversely, the generative model is a scaffolding of sorts for the recogni- tion model to learn meaningful representations of the data, including possibly class-labels. The recognition model is the approximate inverse of the generative model according to Bayes rule. 
+
+<br><span style="color:blue;">
+VAEは、2つの結合した、しかし独立にパラメータ化されたモデル、すなわちエンコーダー（認識モデル）とデコーダー（生成モデル）として捉えることができます。これら2つのモデルは互いに補完し合います。認識モデルは、潜在確率変数に関する事後分布の近似値を生成モデルに渡します。生成モデルは、この近似値を用いて、「期待値最大化」学習の反復処理の中でパラメータを更新します。逆に、生成モデルは、認識モデルがデータの意味のある表現（場合によってはクラスラベルも含む）を学習するための一種の足場となります。認識モデルは、ベイズ則に従って、生成モデルの近似的な逆モデルとなります。
+</span>
+</p><p>
+One advantage of the VAE framework, relative to ordinary Varia- tional Inference (VI), is that the recognition model (also called inference model) is now a (stochastic) function of the input variables. This in contrast to VI where each data-case has a separate variational distribu- tion, which is inefficient for large data-sets. The recognition model uses one set of parameters to model the relation between input and latent variables and as such is called “amortized inference”. This recognition model can be arbitrary complex but is still reasonably fast because by construction it can be done using a single feedforward pass from input to latent variables. However the price we pay is that this sampling induces sampling noise in the gradients required for learning. Perhaps the greatest contribution of the VAE framework is the realization that we can counteract this variance by using what is now known as the “reparameterization trick”, a simple procedure to reorganize our gradient computation that reduces variance in the gradients. 
+
+<br><span style="color:blue;">
+通常の変分推論 (VI) と比較した VAE フレームワークの利点の 1 つは、認識モデル (推論モデルとも呼ばれる) が入力変数の (確率的) 関数になったことです。これは、各データ ケースが個別の変分分布を持つ VI とは対照的です。これは、大規模なデータ セットでは非効率的です。認識モデルは、1 セットのパラメーターを使用して入力変数と潜在変数の関係をモデル化するため、「償却推論」と呼ばれます。この認識モデルは任意の複雑さになる可能性がありますが、構造上、入力から潜在変数への単一のフィードフォワード パスを使用して実行できるため、それでもかなり高速です。ただし、このサンプリングにより、学習に必要な勾配にサンプリング ノイズが発生するという代償があります。VAE フレームワークの最大の貢献は、現在「再パラメーター化トリック」として知られているもの、つまり勾配の分散を減らす勾配計算を再編成する簡単な手順を使用して、この分散を打ち消すことができるという認識であると考えられます。
+</span>
+</p><p>
+The VAE is inspired by the Helmholtz Machine (Dayan et al. , 1995) which was perhaps the rst model that employed a recognition model. However, its wake-sleep algorithm was inefficient and didn’t optimize a single objective. The VAE learning rules instead follow from a single approximation to the maximum likelihood objective. 
+
+<br><span style="color:blue;">
+VAEは、おそらく認識モデルを採用した最初のモデルであるヘルムホルツマシン（Dayan et al., 1995）に着想を得ています。しかし、その覚醒・睡眠アルゴリズムは非効率的で、単一の目的関数を最適化していませんでした。VAEの学習規則は、最大尤度目的関数への単一の近似値から学習します。
+</span>
+</p><p>
+VAEs marry graphical models and deep learning. The generative model is a Bayesian network of the form \(p(x|z)p(z)\), or, if there are multiple stochastic latent layers, a hierarchy such as \(p(x|z_L)p(z_L|z_{L−1})...p(z_1|z_0)\). Similarly, the recognition model is also a conditional Bayesian network of the form \(q(z|x)\) or as a hierarchy, such as \(q(z_0|z_1)...q(z_L|X)\). But inside each conditional may hide a complex (deep) neural network, e.g. \(z|x \sim f(x,ε)\), with \(f\) a neural network mapping and \(ε\) a noise random variable. Its learning algorithm is a mix of classical (amortized, variational) expectation maximization but through the reparameteri- zation trick ends up backpropagating through the many layers of the deep neural networks embedded inside of it. 
+
+<br><span style="color:blue;">
+VAEはグラフィカルモデルとディープラーニングを融合させたものです。生成モデルは\(p(x|z)p(z)\)という形式のベイジアンネットワーク、または複数の確率的潜在層がある場合は\(p(x|z_L)p(z_L|z_{L−1})...p(z_1|z_0)\)のような階層構造となります。同様に、認識モデルも\(q(z|x)\)という形式の条件付きベイジアンネットワーク、または\(q(z_0|z_1)...q(z_L|X)\)のような階層構造となります。ただし、各条件式の内部には複雑な（ディープ）ニューラルネットワークが隠れている場合があります。例えば\(z|x \sim f(x,ε)\)のように、\(f\) はニューラルネットワークのマッピング、\(ε\)はノイズランダム変数です。その学習アルゴリズムは、古典的な（償却、変分）期待値最大化を組み合わせたものですが、再パラメータ化トリックにより、内部に埋め込まれたディープ ニューラル ネットワークの多くの層を通じて逆伝播することになります。
+</span>
+</p><p>
+Since its inception, the VAE framework has been extended in many directions, e.g. to dynamical models (Johnson et al. , 2016), models with attention (Gregor et al. , 2015), models with multiple levels of stochastic latent variables (Kingma et al. , 2016), and many more. It has proven itself as a fertile framework to build new models in. More recently, another generative modeling paradigm has gained signicant attention: the generative adversarial network (GAN) (Goodfellow et al. , 2014). VAEs and GANs seem to have complementary properties: while GANs can generate images of high subjective perceptual quality, they tend to lack full support over the data (Grover et al. , 2018), as opposed to likelihood-based generative models. VAEs, like other likelihood-based models, generate more dispersed samples, but are better density models in terms of the likelihood criterion. As such many hybrid models have been proposed to try to represent the best of both worlds (Dumoulin et al. , 2017; Grover et al. , 2018; Rosca et al. , 2018). 
+
+<br><span style="color:blue;">
+VAE フレームワークは、その発端以来、動的モデル (Johnson et al. 、2016)、注意を伴うモデル (Gregor et al. 、2015)、複数レベルの確率的潜在変数を伴うモデル (Kingma et al. 、2016) など、さまざまな方向に拡張されてきました。これは、新しいモデルを構築するための豊かなフレームワークであることが証明されています。最近では、別の生成モデリングパラダイムが大きな注目を集めています。生成的敵対ネットワーク (GAN) (Goodfellow et al. 、2014) です。VAE と GAN は補完的な特性を持っているようです。GAN は主観的な知覚品質の高い画像を生成できますが、尤度ベースの生成モデルとは対照的に、データに対する完全なサポートが不足する傾向があります (Grover et al. 、2018)。 VAEは、他の尤度ベースモデルと同様に、より分散したサンプルを生成しますが、尤度基準の観点からはより優れた密度モデルです。そのため、両方の長所を兼ね備えたハイブリッドモデルが数多く提案されています（Dumoulin et al. , 2017; Grover et al. , 2018; Rosca et al. , 2018）。
+</span>
+</p><p>
+As a community we seem to have embraced the fact that generative models and unsupervised learning play an important role in building intelligent machines. We hope that the VAE provides a useful piece of that puzzle. 
+
+<br><span style="color:blue;">
+コミュニティとして、生成モデルと教師なし学習が知能機械の構築において重要な役割を果たすという事実を私たちは受け入れてきたようです。VAEがそのパズルの有用なピースとなることを願っています。
+</span>
+</p>
+
+<h3>1.2 Aim <span style="color:blue;">目的</span></h3>
+<p> 
+The framework of variational autoencoders (VAEs) (Kingma and Welling, 2014; Rezende et al. , 2014) provides a principled method for jointly learning deep latent-variable models and corresponding inference models using stochastic gradient descent. The framework has a wide array of applications from generative modeling, semi-supervised learning to representation learning. 
+
+<br><span style="color:blue;">
+変分オートエンコーダ（VAE）のフレームワーク（Kingma and Welling, 2014; Rezende et al., 2014）は、確率的勾配降下法を用いて深層潜在変数モデルとそれに対応する推論モデルを共同学習するための原理的な手法を提供します。このフレームワークは、生成モデリング、半教師あり学習、表現学習など、幅広い応用が可能です。
+</span>
+</p><p>
+This work is meant as an expanded version of our earlier work (Kingma and Welling, 2014), allowing us to explain the topic in ner detail and to discuss a selection of important follow-up work. This is not aimed to be a comprehensive review of all related work. We assume that the reader has basic knowledge of algebra, calculus and probability theory. 
+
+<br><span style="color:blue;">
+本稿は、私たちの先行研究（Kingma and Welling, 2014）の拡張版として、このテーマをより詳細に解説し、重要なフォローアップ研究のいくつかを論じることを目的としている。本稿は、関連するすべての研究を包括的にレビューすることを目的としたものではない。読者は代数、微積分、確率論の基礎知識を有していることを前提としている。
+</span>
+</p><p>
+In this chapter we discuss background material: probabilistic models, directed graphical models, the marriage of directed graphical models with neural networks, learning in fully observed models and deep latent- variable models (DLVMs). In chapter 2 we explain the basics of VAEs. In chapter 3 we explain advanced inference techniques, followed by an explanation of advanced generative models in chapter 4. Please refer to section A.1 for more information on mathematical notation. 
+
+<br><span style="color:blue;">
+この章では、確率モデル、有向グラフィカルモデル、有向グラフィカルモデルとニューラルネットワークの融合、完全観測モデルにおける学習、深層潜在変数モデル（DLVM）といった背景情報について解説します。第2章ではVAEの基礎について説明します。第3章では高度な推論手法について説明し、第4章では高度な生成モデルについて説明します。数学的表記法の詳細については、セクションA.1を参照してください。
+</span>
+</p>
+
+<h3>1.3 Probabilistic Models and Variational Inference <span style="color:blue;">確率モデルと変分推論</span></h3>
+<p>
+In the eld of machine learning, we are often interested in learning prob- abilistic models of various natural and articial phenomena from data. Probabilistic models are mathematical descriptions of such phenomena. They are useful for understanding such phenomena, for prediction of unknowns in the future, and for various forms of assisted or automated decision making. As such, probabilistic models formalize the notion of knowledge and skill, and are central constructs in the eld of machine learning and AI. 
+
+<br><span style="color:blue;">
+機械学習の分野では、データから様々な自然現象や人工現象の確率モデルを学習することに関心が寄せられています。確率モデルとは、こうした現象を数学的に記述したものです。これらのモデルは、こうした現象の理解、将来の未知の事象の予測、そして様々な形態の支援型または自動型の意思決定に役立ちます。このように、確率モデルは知識とスキルの概念を形式化し、機械学習とAIの分野における中心的な構成要素となっています。
+</span>
+</p><p>
+As probabilistic models contain unknowns and the data rarely paints a complete picture of the unknowns, we typically need to assume some level of uncertainty over aspects of the model. The degree and nature of this uncertainty is specied in terms of (conditional) probability distributions. Models may consist of both continuous-valued variables and discrete-valued variables. The, in some sense, most complete forms of probabilistic models specify all correlations and higher-order dependen- cies between the variables in the model, in the form of a joint probability distribution over those variables. 
+
+<br><span style="color:blue;">
+確率モデルには未知数が含まれており、データが未知数の全体像を描き出すことは稀であるため、通常、モデルの様々な側面について、ある程度の不確実性を想定する必要があります。この不確実性の程度と性質は、（条件付き）確率分布によって規定されます。モデルは、連続値変数と離散値変数の両方で構成される場合があります。ある意味で、最も完全な確率モデルは、モデル内の変数間のすべての相関関係と高次依存関係を、それらの変数間の結合確率分布の形で規定します。
+</span>
+</p><p>
+Let’s use \(x\) as the vector representing the set of all observed variables whose joint distribution we would like to model. Note that for notational simplicity and to avoid clutter, we use lower case bold (e.g. \(x\)) to denote the underlying set of observed random variables, i.e. ‚attened and concatenated such that the set is represented as a single vector. See section A.1 for more on notation. 
+
+<br><span style="color:blue;">
+観測変数の集合を表すベクトルとして、\(x\) を用い、その共分布をモデル化します。表記を簡潔にし、煩雑さを避けるため、観測確率変数の集合を表すには小文字の太字（例：\(x\)）を使用します。つまり、集合が単一のベクトルとして表されるように、観測確率変数を連結します。表記法の詳細については、セクションA.1を参照してください。
+</span>
+</p><p>
+We assume the observed variable \(x\) is a random sample from an unknown underlying process , whose true (probability) distribution \(p^∗(x)\) is unknown. We attempt to approximate this underlying process with a chosen model \(p_θ(x)\), with parameters \(\mathbf{θ}\): 
+
+<br><span style="color:blue;">
+観測変数 \(x\) は未知の基礎過程からのランダムサンプルであると仮定する。その真の（確率）分布 \(p^∗(x)\) は未知である。この基礎過程を、パラメータ \(\mathbf{θ}\) を持つ選択されたモデル \(p_θ(x)\) で近似しようとする。
+</span>
+
+\[
+x \sim p_θ(x) \tag{1.1} 
+\]
+
+Learning is, most commonly, the process of searching for a value of the parameters \(\mathbf{θ}\) such that the probability distribution function given by the model, \(p_θ(x)\), approximates the true distribution of the data, denoted by \(p^∗(x)\), such that for any observed \(\mathbf{x}\): 
+
+<br><span style="color:blue;">
+学習とは、一般的には、モデルによって与えられた確率分布関数 \(p_θ(x)\) が、観測された任意の \(\mathbf{x}\) に対して、データの真の分布 \(p^∗(x)\) に近似するようなパラメータ \(\mathbf{θ}\) の値を探すプロセスです。
+</span>
+
+\[
+p_θ(x) \approx p^∗(\mathbf{x})  \tag{1.2} 
+\]
+
+</p><p>
+Naturally, we wish \(p_θ(\mathbf{x})\) to be sufficiently ‚exible to be able to adapt to the data, such that we have a chance of obtaining a sufficiently accurate model. At the same time, we wish to be able to incorporate knowledge about the distribution of data into the model that is known a priori. 
+
+<br><span style="color:blue;">
+当然のことながら、\(p_θ(\mathbf{x})\) がデータに適応できるほど十分に柔軟であり、十分に正確なモデルが得られる可能性が望まれます。同時に、事前にわかっているデータの分布に関する知識をモデルに組み込むことも望まれます。
+</span>
+</p>
+
+<h4>1.3.1 Conditional Models <span style="color:blue;">条件付きモデル</span></h4>
+<p>
+Often, such as in case of classication or regression problems, we are not interested in learning an unconditional model \(p_θ(\mathbf{x})\), but a conditional model \(p_θ(y|\mathbf{x})\) that approximates the underlying conditional distribution \(p^∗(y|\mathbf{x})\): a distribution over the values of variable \(y\), conditioned on the value of an observed variable \(\mathbf{x}\). In this case, \(\mathbf{x}\) is often called the input of the model. Like in the unconditional case, a model \(p_θ(y|\mathbf{x})\) is chosen, and optimized to be close to the unknown underlying distribution, such that for any \(\mathbf{x}\) and \(y\): 
+
+<br><span style="color:blue;">
+分類問題や回帰問題などでは、無条件モデル \(p_θ(\mathbf{x})\) ではなく、基礎となる条件付き分布 \(p^∗(y|\mathbf{x})\) を近似する条件付きモデル \(p_θ(y|\mathbf{x})\) を学習することがしばしばあります。条件付き分布とは、観測変数 \(\mathbf{x}\) の値を条件とする、変数 \(y\) の値にわたる分布です。この場合、\(\mathbf{x}\) はモデルの入力と呼ばれることがよくあります。無条件の場合と同様に、モデル \(p_θ(y|\mathbf{x})\) が選択され、任意の \(\mathbf{x}\) および \(y\) に対して、次の式が成り立つように、未知の基礎分布に近くなるように最適化されます。
+</span>
+
+\[
+p_θ(y|\mathbf{x}) \approx p^∗(y|\mathbf{x}) \tag{1.3} 
+\]
+
+A relatively common and simple example of conditional modeling is image classication, where \(\mathbf{x}\) is an image, and \(y\) is the image’s class, as labeled by a human, which we wish to predict. In this case, \(p_θ(y|\mathbf{x})\) is typically chosen to be a categorical distribution, whose parameters are computed from \(\mathbf{x}\). 
+
+<br><span style="color:blue;">
+条件付きモデリングの比較的一般的で単純な例として、画像分類が挙げられます。ここで、\(\mathbf{x}\) は画像、\(y\) は予測したい画像クラス（人間がラベル付けしたクラス）です。この場合、\(p_θ(y|\mathbf{x})\) は通常、カテゴリ分布として選択され、そのパラメータは \(\mathbf{x}\) から計算されます。
+</span>
+</p><p>
+Conditional models become more difficult to learn when the pre- dicted variables are very high-dimensional, such as images, video or sound. One example is the reverse of the image classication prob- lem: prediction of a distribution over images, conditioned on the class label. Another example with both high-dimensional input, and high- dimensional output, is time series prediction, such as text or video prediction. 
+
+<br><span style="color:blue;">
+条件付きモデルの学習は、予測対象変数が画像、動画、音声など、非常に高次元の場合、より困難になります。一例として、画像分類問題の逆問題、つまりクラスラベルを条件として画像全体の分布を予測することが挙げられます。高次元の入力と高次元の出力の両方を持つ別の例としては、テキスト予測や動画予測などの時系列予測が挙げられます。
+</span>
+</p><p>
+To avoid notational clutter we will often assume unconditional mod- eling, but one should always keep in mind that the methods introduced in this work are, in almost all cases, equally applicable to conditional models. The data on which the model is conditioned, can be treated as inputs to the model, similar to the parameters of the model, with the obvious difference that one doesn’t optimize over their value. 
+
+<br><span style="color:blue;">
+表記の煩雑さを避けるため、無条件モデリングを前提とすることが多いですが、本研究で紹介する手法は、ほぼすべてのケースにおいて条件付きモデルにも同様に適用できることを常に念頭に置いておく必要があります。モデルの条件付け対象となるデータは、モデルのパラメータと同様に、モデルへの入力として扱うことができますが、その値に関して最適化を行わないという明らかな違いがあります。
+</span>
+</p>
+
+<h3>1.4 Parameterizing Conditional Distributions with Neural Networks <span style="color:blue;">ニューラルネットワークによる条件付き分布のパラメータ化</span></h3>
+<p>
+Differentiable feed-forward neural networks, from here just called neural networks , are a particularly ‚exible and computationally scalable type of function approximator. Learning of models based on neural networks with multiple ’hidden’ layers of articial neurons is often referred to as deep learning (Goodfellow et al. , 2016; LeCun et al. , 2015). A particularly interesting application is probabilistic models, i.e. the use of neural networks for probability density functions (PDFs) or probability mass functions (PMFs) in probabilistic models. Probabilistic models based on neural networks are computationally scalable since they allow for stochastic gradient-based optimization which, as we will explain, allows scaling to large models and large datasets. We will denote a deep neural network as a vector function: NeuralNet (.). 
+
+<br><span style="color:blue;">
+微分可能フィードフォワード ニューラル ネットワーク (以降、単にニューラル ネットワークと呼ぶ) は、特に柔軟で計算的にスケーラブルなタイプの関数近似器です。人工ニューロンの複数の「隠れた」層を持つニューラル ネットワークに基づくモデルの学習は、しばしばディープ ラーニングと呼ばれます (Goodfellow ら、2016 年、LeCun ら、2015 年)。特に興味深いアプリケーションは確率モデル、つまり確率モデルにおける確率密度関数 (PDF) または確率質量関数 (PMF) にニューラル ネットワークを使用することです。ニューラル ネットワークに基づく確率モデルは、確率的勾配ベースの最適化が可能であるため計算的にスケーラブルであり、後述するように、大規模モデルや大規模データセットへのスケーリングが可能です。ディープ ニューラル ネットワークをベクトル関数 NeuralNet (.) として表します。
+</span>
+</p><p>
+At the time of writing, deep learning has been shown to work well for
+a large variety of classification and regression problems, as summarized
+in (LeCun et al., 2015; Goodfellow et al., 2016). In case of neuralnetwork
+based image classification LeCun et al., 1998, for example,
+neural networks parameterize a categorical distribution \(p_θ(y|\mathbf{x})\) over a class label \(y\), conditioned on an image \(\mathbf{x}\).
+
+<br><span style="color:blue;">
+本稿執筆時点では、ディープラーニングは、(LeCun et al., 2015; Goodfellow et al., 2016) にまとめられているように、様々な分類問題や回帰問題に有効であることが示されています。例えば、ニューラルネットワークベースの画像分類（LeCun et al., 1998）の場合、ニューラルネットワークは、画像 \(\mathbf{x}\) を条件として、クラスラベル \(y\) 上のカテゴリ分布 \(p_θ(y|\mathbf{x})\) をパラメータ化します。
+</span>
+
+\[
+\begin{align}
+\mathbf{p} &= NeuralNet(\mathbf{x})  \tag{1.4} \\
+\\
+p_θ(y|\mathbf{x}) &= Categorical(y;\mathbf{p})  \tag{1.5}
+\end{align}
+\]
+ 
+where the last operation of NeuralNet(.) is typically a softmax() function
+such that \(\sum_i pi=1\).
+
+<br><span style="color:blue;">
+ここで、NeuralNet(.) の最後の演算は通常、softmax() 関数であり、
+\(\sum_i pi=1\) となります。
+</span>
+</p>
+
+<h3>1.5 Directed Graphical Models and Neural Networks <span style="color:blue;">有向グラフィカルモデルとニューラルネットワーク</span></h3>
+<p>
+We work with directed 
+probabilistic models, also called directed proba- bilistic graphical models (PGMs), or Bayesian networks . Directed graph- ical models are a type of probabilistic models where all the variables are topologically organized into a directed acyclic graph. The joint distribution over the variables of such models factorizes as a product of 
+prior and conditional distributions: 
+
+<br><span style="color:blue;">
+我々は有向確率モデル（有向確率グラフィカルモデル（PGM）またはベイジアンネットワークとも呼ばれる）を扱っています。有向グラフィカルモデルは、すべての変数が位相的に有向非巡回グラフに編成された確率モデルの一種です。このようなモデルの変数間の結合分布は、事前分布と条件付き分布の積として因数分解されます。
+</span>
+
+\[
+p_θ(\mathbf{x}_1,...,\mathbf{x}_M) = \prod_{j=1 }^M p_θ(\mathbf{x}_j|P_a(\mathbf{x}_j))  \tag{1.6} 
+\]
+
+where \(P_a(\mathbf{x}_j)\) is the set of parent variables of node \(j\) in the directed graph. For non-root-nodes, we condition on the parents. For root nodes, the set of parents is the empty set, such that the distribution is unconditional. 
+
+<br><span style="color:blue;">
+ここで、\(P_a(\mathbf{x}_j)\) は有向グラフにおけるノード \(j\) の親変数の集合です。ルートノード以外のノードについては、親変数を条件とします。ルートノードについては、親変数の集合は空集合であるため、分布は無条件となります。
+</span>
+</p><p>
+
+Traditionally, each conditional probability distribution \(p_θ(\mathbf{x}_j|P_a (\mathbf{x}_j))\) is parameterized as a lookup table or a linear model (Koller and Fried- man, 2009). As we explained above, a more ‚exible way to parameterize such conditional distributions is with neural networks. In this case, neural networks take as input the parents of a variable in a directed graph, and produce the distributional parameters \(\mathbf{η}\) over that variable: 
+
+<br><span style="color:blue;">
+伝統的に、各条件付き確率分布 \(p_θ(\mathbf{x}_j|P_a (\mathbf{x}_j))\) は、ルックアップテーブルまたは線形モデルとしてパラメータ化されます (Koller and Friedman, 2009)。上で説明したように、このような条件付き分布をパラメータ化するより柔軟な方法は、ニューラルネットワークを用いることです。この場合、ニューラルネットワークは有向グラフ内の変数の親変数を入力として受け取り、その変数の分布パラメータ \(\mathbf{η}\) を生成します。
+</span>
+
+\[
+\begin{align}
+\mathbf{η} &= NeuralNet (P_a(\mathbf{x})) \tag{1.7} \\
+\\
+p_θ(\mathbf{x}|P_a(\mathbf{x})) &= p_θ(\mathbf{x}|\mathbf{η})  \tag{1.8}
+\end{align} 
+\]
+
+</p><p>
+We will now discuss how to learn the parameters of such models, if all the variables are observed in the data. 
+
+<br><span style="color:blue;">
+ここでは、データ内のすべての変数が観測される場合に、そのようなモデルのパラメータを学習する方法について説明します。
+</span>
+</p>
+
+<h3>1.6 Learning in Fully Observed Models with Neural Nets <span style="color:blue;">ニューラルネットを用いた完全観測モデルによる学習</span></h3>
+<p>
+If all variables in the directed graphical model are observed in the data, then we can compute and differentiate the log-probability of the data under the model, leading to relatively straightforward optimization. 
+
+<br><span style="color:blue;">
+有向グラフィカル モデルのすべての変数がデータ内で観測される場合、モデルの下でのデータの対数確率を計算して微分化することができ、比較的簡単な最適化につながります。
+</span>
+</p>
+
+<h4>1.6.1 Dataset <span style="color:blue;">データセット</span></h4>
+<p>
+We often collect a dataset \(\mathcal{D}\) consisting of \(N \geq 1\) datapoints: 
+
+<br><span style="color:blue;">
+多くの場合、\(N \geq 1\) 個のデータポイントで構成されるデータセット \(\mathcal{D}\) を収集します。
+</span>
+
+\[
+\mathcal{D} = \{\mathbf{x}^{(1)},\mathbf{x}^{(2)}, ..., \mathbf{x}^{(N)}\} ≡ \{\mathbf{x}^{(i)}\}_{i=1}^N ≡ \mathbf{x}^{(1:N)}  \tag{1.9} 
+\]
+
+The datapoints are assumed to be independent samples from an un- changing underlying distribution. In other words, the dataset is assumed to consist of distinct, independent measurements from the same (un- changing) system. In this case, the observations \(\mathcal{D} = \{\mathbf{x}^{(i)}\}_{i=1}^N\) are said to be i.i.d. , for independently and identically distributed . Under the i.i.d. assumption, the probability of the datapoints given the parame- ters factorizes as a product of individual datapoint probabilities. The log-probability assigned to the data by the model is therefore given by: 
+
+<br><span style="color:blue;">
+データポイントは、不変の基礎分布からの独立したサンプルであると仮定されます。言い換えれば、データセットは同じ（不変の）システムからの異なる独立した測定値で構成されていると仮定されます。この場合、観測値 \(\mathcal{D} = \{\mathbf{x}^{(i)}\}_{i=1}^N\) は、独立かつ同一に分布しているため、i.i.d. であると言われます。i.i.d. 仮定の下では、パラメータが与えられた場合のデータポイントの確率は、個々のデータポイントの確率の積として因数分解されます。したがって、モデルによってデータに割り当てられる対数確率は、次のように表されます。
+</span>
+
+\[
+\log p_θ(\mathcal{D}) = \sum_{x\in\mathcal{D}}\log p_θ(\mathbf{x})  \tag{1.10}
+\] 
+
+</p>
+
+<h4>1.6.2 Maximum Likelihood and Minibatch SGD <span style="color:blue;">最大尤度法とミニバッチSGD</span></h4>
+<p>
+The most common criterion for probabilistic models is maximum log- likelihood (ML). As we will explain, maximization of the log-likelihood criterion is equivalent to minimization of a Kullback Leibler divergence between the data and model distributions. 
+
+<br><span style="color:blue;">
+確率モデルにおいて最も一般的な基準は最大対数尤度（ML）です。後述するように、対数尤度基準の最大化は、データ分布とモデル分布間のカルバック・ライブラー・ダイバージェンスの最小化と等価です。
+</span>
+</p><p>
+Under the ML criterion, we attempt to nd the parameters \(\mathbf{θ}\) that maximize the sum, or equivalently the average, of the log-probabilities assigned to the data by the model. With i.i.d. dataset \(\mathcal{D}\) of size \(N_{\mathcal{D}}\), the maximum likelihood objective is to maximize the log-probability given by equation (1.10). 
+
+<br><span style="color:blue;">
+最尤基準の下では、モデルによってデータに割り当てられた対数確率の合計、あるいはそれと等価な平均を最大化するパラメータ\(\mathbf{θ}\)を見つけようとします。サイズ\(N_{\mathcal{D}}\)の独立同値データセット\(\mathcal{D}\)において、最尤法の目的関数は式(1.10)で与えられる対数確率を最大化することです。
+</span>
+</p><p>
+Using calculus’ chain rule and automatic differentiation tools, we can efficiently compute gradients of this objective, i.e. the rst derivatives of the objective w.r.t. its parameters \(\mathbf{θ}\). We can use such gradients to iteratively hill-climb to a local optimum of the ML objective. If we compute such gradients using all datapoints, \(∇_θ\log p_θ(\mathcal{D})\), then this is known as batch gradient descent. Computation of this derivative is, however, an expensive operation for large dataset size \(N_{\mathcal{D}}\), since it scales 
+linearly with \(N_{\mathcal{D}}\). 
+
+
+<br><span style="color:blue;">
+微積分の連鎖律と自動微分ツールを用いることで、この目的関数の勾配、すなわち目的関数のパラメータ\(\mathbf{θ}\)に関する最初の導関数を効率的に計算することができる。このような勾配を用いて、ML目的関数の局所最適値への山登り法を反復的に実行することができる。このような勾配をすべてのデータポイントを用いて計算する場合、\(∇_θ\log p_θ(\mathcal{D})\)、これはバッチ勾配降下法と呼ばれる。しかし、この導関数の計算は、\(N_{\mathcal{D}}\)のような大規模なデータセットサイズでは、\(N_{\mathcal{D}}\)に比例して増加するため、非常に高価な演算となる。
+</span>
+</p><p>
+A more efficient method for optimization is stochastic gradient descent (SGD) (section A.3 ), which uses randomly drawn minibatches 
+of data \(M ⊂ D\) of size \(N_{\mathcal{M}}\). With such minibatches we can form an unbiased estimator of the ML criterion: 
+
+<br><span style="color:blue;">
+より効率的な最適化手法は、確率的勾配降下法（SGD）（セクションA.3）です。これは、ランダムに抽出されたデータ\(M ⊂ D\)のミニバッチ（サイズ\(N_{\mathcal{M}}\)）を使用します。このようなミニバッチを用いて、ML基準の不偏推定値を形成できます。
+</span>
+
+\[
+\frac{1}{N_{\mathcal{D}}}\log p_θ(\mathcal{D}) ≃ \frac{1}{N_{\mathcal{M}}}\log p_θ(\mathcal{M}) =\frac{1}{N_{\mathcal{M}}}\sum_{x\in\mathcal{M}} \log p_θ(\mathbf{x}) \tag{1.11} 
+\]
+
+The \(\simeq\) symbol means that one of the two sides is an unbiased estimator of the other side. So one side (in this case the right-hand side) is a random variable due to some noise source, and the two sides are equal when averaged over the noise distribution. The noise source, in this case, is the randomly drawn minibatch of data \(\mathcal{M}\). The unbiased estimator \(\log p_θ(\mathcal{M})\) is differentiable, yielding the unbiased stochastic gradients: 
+
+<br><span style="color:blue;">
+\(\simeq\) という記号は、2辺のうちの一方が他方の不偏推定値であることを意味します。つまり、片側（この場合は右辺）は何らかのノイズ源によるランダム変数であり、ノイズ分布全体で平均すると2辺は等しくなります。この場合のノイズ源は、ランダムに抽出されたデータのミニバッチ \(\mathcal{M}\) です。不偏推定値 \(\log p_θ(\mathcal{M})\) は微分可能であり、不偏確率勾配が得られます。
+</span>
+
+\[
+\frac{1}{N_{\mathcal{D}}}∇_θ \log p_θ(\mathcal{D}) \simeq \frac{1}{N_{\mathcal{M}}}∇_θ\log p_θ(\mathcal{M}) =\frac{1}{N_{\mathcal{M}}}\sum_{x\in\mathcal{M}}∇_θ \log p_θ(\mathbf{x})  \tag{1.12} 
+\]
+
+These gradients can be plugged into stochastic gradient-based optimizers; see section A.3 for further discussion. In a nutshell, we can optimize the objective function by repeatedly taking small steps in the direction of 
+the stochastic gradient. 
+
+<br><span style="color:blue;">
+これらの勾配は、確率的勾配ベースの最適化器に組み込むことができます。詳細については、セクションA.3を参照してください。簡単に言えば、確率的勾配の方向に小さなステップを繰り返し実行することで、目的関数を最適化できます。
+</span>
+</p>
+
+<h4>1.6.3 Bayesian inference <span style="color:blue;">ベイズ推論</span></h4>
+<p>
+From a Bayesian perspective, we can improve upon ML through maxi- mum a posteriori (MAP) estimation (section section 
+A.2.1 ), or, going even further, inference of a full approximate posterior distribution over the parameters (see section A.1.4 ).
+
+<br><span style="color:blue;">
+ベイズの観点から見ると、最大事後確率（MAP）推定（セクションA.2.1）、あるいはさらに進んでパラメータの完全な近似事後分布の推論（セクションA.1.4を参照）によってMLを改良することができます。
+</span>
+</p> 
+<h3>1.7 Learning and Inference in Deep Latent Variable Models <span style="color:blue;">深層潜在変数モデルにおける学習と推論</span></h4> 
+<h4>1.7.1 Latent Variables <span style="color:blue;">潜在変数</span></h4>
+<p>
+We can extend fully-observed directed models, discussed in the previous section, into directed models with latent variables . Latent variables are variables that are part of the model, but which we don’t observe, and are therefore not part of the dataset. We typically use \(\mathbf{z}\) to denote such latent variables. In case of unconditional modeling of observed variable \(\mathbf{x}\), the directed graphical model would then represent a joint distribution \(p_θ(\mathbf{x},\mathbf{z})\) over both the observed variables \(\mathbf{x}\) and the latent variables \(\mathbf{z}\). The marginal distribution over the observed variables \(p_θ(\mathbf{x})\), is given by: 
+
+<br><span style="color:blue;">
+前のセクションで説明した完全観測有向モデルを、潜在変数を含む有向モデルに拡張できます。潜在変数とは、モデルの一部ではあるものの観測されない変数であり、したがってデータセットの一部ではありません。このような潜在変数を表すために、通常 \(\mathbf{z}\) を使用します。観測変数 \(\mathbf{x}\) の無条件モデリングの場合、有向グラフィカルモデルは観測変数 \(\mathbf{x}\) と潜在変数 \(\mathbf{z}\) の両方にわたる結合分布 \(p_θ(\mathbf{x},\mathbf{z})\) を表します。観測変数 \(p_θ(\mathbf{x})\) の周辺分布は次のように与えられます。
+</span>
+
+\[ 
+p_θ(\mathbf{x}) = \int p_θ(\mathbf{x},\mathbf{z})d\mathbf{z} \tag{1.13} 
+\]
+
+This is also called the (single datapoint) marginal likelihood or the model evidence , when taken as a function of \(\mathbf{θ}\). 
+
+<br><span style="color:blue;">
+これは、\(\mathbf{θ}\) の関数としてとられる場合、（単一データポイント）周辺尤度またはモデル証拠とも呼ばれます。
+</span>
+</p><p>
+Such an implicit distribution over x can be quite ‚exible. If \(\mathbf{z}\) is discrete and \(p_θ(\mathbf{x}|\mathbf{z})\) is a Gaussian distribution, then \(p_θ(\mathbf{x})\) is a mixture- of-Gaussians distribution. For continuous \(\mathbf{z}, p_θ(\mathbf{x})\) can be seen as an innite mixture, which are potentially more powerful than discrete mix- tures. Such marginal distributions are also called compound probability distributions. 
+
+<br><span style="color:blue;">
+このようなx上の暗黙的な分布は非常に柔軟です。\(\mathbf{z}\)が離散分布で、\(p_θ(\mathbf{x}|\mathbf{z})\)がガウス分布である場合、\(p_θ(\mathbf{x})\)はガウス混合分布です。連続 \(\mathbf{z}\) の場合、\(p_θ(\mathbf{x})\) は無限混合と見なすことができ、離散混合よりも潜在的に強力です。このような周辺分布は複合確率分布とも呼ばれます。
+</span>
+</p>
+<h4>1.7.2 Deep Latent Variable Models <span style="color:blue;">深層潜在変数モデル</span></h4>
+<p>
+We use the term deep latent variable model (DLVM) to denote a latent variable model \(p_θ(\mathbf{x},\mathbf{z})\) whose distributions are parameterized by neu- ral networks. Such a model can be conditioned on some context, like \(p_θ(\mathbf{x},\mathbf{z}|\mathbf{y})\). One important advantage of DLVMs, is that even when each factor (prior or conditional distribution) in the directed model is rela- tively simple (such as conditional Gaussian), the marginal distribution \(p_θ(\mathbf{x})\) can be very complex, i.e. contain almost arbitrary dependencies. This expressivity makes deep latent-variable models attractive for approximating complicated underlying distributions \(p^∗(\mathbf{x})\). 
+
+<br><span style="color:blue;">
+深層潜在変数モデル (DLVM) という用語は、分布がニューラル ネットワークによってパラメーター化される潜在変数モデル \(p_θ(\mathbf{x},\mathbf{z})\) を表します。このようなモデルは、\(p_θ(\mathbf{x},\mathbf{z}|\mathbf{y})\) などのコンテキストに条件付けることができます。DLVM の重要な利点の 1 つは、有向モデルの各因子 (事前分布または条件付き分布) が比較的単純な場合 (条件付きガウス分布など) でも、周辺分布 \(p_θ(\mathbf{x})\) は非常に複雑になる可能性があり、つまりほぼ任意の依存関係を含めることができることです。この表現力により、深層潜在変数モデルは複雑な基礎分布 \(p^∗(\mathbf{x})\) を近似するのに魅力的になります。
+</span>
+</p><p>
+Perhaps the simplest, and most common, DLVM is one that is specied as factorization with the following structure: 
+
+<br><span style="color:blue;">
+おそらく最も単純で最も一般的な DLVM は、次の構造を持つ因数分解として指定されるものです。
+</span>
+
+\[
+p_θ(\mathbf{x},\mathbf{z}) = p_θ(\mathbf{z})p_θ(\mathbf{x}|\mathbf{z})  \tag{1.14} 
+\]
+
+where \(p_θ(\mathbf{z})\) and/or \(p_θ(\mathbf{x}|\mathbf{z})\) are specied. The distribution \(p(\mathbf{z})\) is often called the prior distribution over \(\mathbf{z}\), since it is not conditioned on any observations. 
+
+<br><span style="color:blue;">
+ここで、\(p_θ(\mathbf{z})\)および/または\(p_θ(\mathbf{x}|\mathbf{z})\)が指定されます。分布\(p(\mathbf{z})\)は、観測値に依存しないため、しばしば\(\mathbf{z}\)上の事前分布と呼ばれます。
+</span>
+</p>
+
+<h4>1.7.3 Example DLVM for multivariate Bernoulli data <span style="color:blue;">多変量ベルヌーイデータに対するDLVMの例</span></h4>
+<p>
+A simple example DLVM, used in (Kingma and Welling, 2014) for binary data \(\mathbf{x}\), is with a spherical Gaussian latent space, and a factorized Bernoulli observation model: 
+
+<br><span style="color:blue;">
+バイナリデータ \(\mathbf{x}\) に対して (Kingma and Welling, 2014) で使用されている簡単な DLVM の例は、球面ガウス潜在空間と因数分解ベルヌーイ観測モデルを使用しています。
+</span>
+
+\[
+\begin{align}
+p(\mathbf{z}) &= \mathcal{N}(\mathbf{z}; 0 ,\mathbf{I})  \tag{1.15} \\
+\\ 
+\mathbf{p} &= DecoderNeuralNet_θ(\mathbf{z})  \tag{1.16} \\
+\\ 
+\log p(\mathbf{x}|\mathbf{z}) &= \sum_{j=1}^D \log p(x_j|\mathbf{z}) = \sum_{j=1}^D \log Bernoulli (x_j;p_j)  \tag{1.17} \\
+\\ 
+&= \sum_{j=1}^D x_j \log p_j + (1 − x_j) \log(1 − p_j) \tag{1.18}
+\end{align}
+\]
+ 
+where \(∀p_j ∈ \mathbf{p}: 0 \leq p_j \leq 1\) (e.g. implemented through a sigmoid nonlinearity as the last layer of the \(DecoderNeuralNet_θ(.))\), where 
+\(D\) is the dimensionality of \(\mathbf{x}\), and \(Bernoulli(.;p)\) is the probability mass function (PMF) of the Bernoulli distribution. 
+
+<br><span style="color:blue;">
+ここで、\(ڼp_j ∈ \mathbf{p}: 0 \leq p_j \leq 1\)（例えば、\(DecoderNeuralNet_θ(.))\)の最後の層としてシグモイド非線形性を通して実装される）、\(D\)は\(\mathbf{x}\)の次元であり、\(Bernoulli(.;p)\)はベルヌーイ分布の確率質量関数（PMF）である。
+</span>
+</p>
+
+<h3>1.8 Intractabilities <span style="color:blue;">扱いにくいもの</span></h3>
+<p>
+The main difficulty of maximum likelihood learning in DLVMs is that the marginal probability of data under the model is typically intractable. This is due to the integral in equation (1.13 
+) 
+for computing the marginal likelihood (or model evidence), \(p_θ(\mathbf{x}) =\int p_θ(\mathbf{x},\mathbf{z})d\mathbf{z}\), not having an analytic solution or efficient estimator. Due to this intractability, we cannot differentiate it w.r.t. its parameters and optimize it, as we can with fully observed models. 
+
+<br><span style="color:blue;">
+DLVMにおける最尤学習の主な難しさは、モデルにおけるデータの周辺確率が典型的に扱いにくいことです。これは、周辺尤度（またはモデルのエビデンス）を計算するための式(1.13)の積分\(p_θ(\mathbf{x}) =\int p_θ(\mathbf{x},\mathbf{z})d\mathbf{z}\)に、解析解や効率的な推定量が存在しないことに起因します。この扱いにくさのため、完全観測モデルの場合のように、パラメータに関して微分したり最適化したりすることができません。
+</span>
+</p><p>
+The intractability of \(p_θ(\mathbf{x})\), is related to the intractability of the posterior distribution pθ(z|x). Note that the joint distribution \(p_θ(\mathbf{x},\mathbf{z})\) is efficient to compute, and that the densities are related through the basic identity: 
+
+<br><span style="color:blue;">
+\(p_θ(\mathbf{x})\) の扱いにくさは、事後分布 pθ(z|x) の扱いにくさに関連しています。結合分布 \(p_θ(\mathbf{x},\mathbf{z})\) は計算が効率的であり、密度は基本恒等式によって関連していることに注意してください。
+</span>
+
+\[
+p_θ(\mathbf{z}|\mathbf{x}) =\frac{p_θ(\mathbf{x},\mathbf{z})}{p_θ(\mathbf{x})}  \tag{1.19} 
+\]
+
+Since \(p_θ(\mathbf{x},\mathbf{z})\) is tractable to compute, a tractable marginal likelihood \(p_θ(\mathbf{x})\) leads to a tractable posterior \(p_θ(\mathbf{z}|\mathbf{x})\), and vice versa. Both are intractable in DLVMs.
+
+<br><span style="color:blue;">
+\(p_θ(\mathbf{x},\mathbf{z})\) は計算が扱いやすいため、扱いやすい周辺尤度 \(p_θ(\mathbf{x})\) は扱いやすい事後分布 \(p_θ(\mathbf{z}|\mathbf{x})\) につながり、その逆も同様です。どちらも DLVM では扱いにくいです。
+</span>
+</p><p> 
+Approximate inference techniques (see also section A.2 ) allow us to approximate the posterior \(p_θ(\mathbf{z}|\mathbf{x})\) and the marginal likelihood \(p_θ(\mathbf{x})\) in DLVMs. Traditional inference methods are relatively expensive. Such methods, for example, often require a per-datapoint optimization loop, or yield bad posterior approximations. We would like to avoid such expensive procedures. 
+
+<br><span style="color:blue;">
+近似推論手法（セクションA.2も参照）を用いることで、DLVMにおける事後分布\(p_θ(\mathbf{z}|\mathbf{x})\)と周辺尤度\(p_θ(\mathbf{x})\)を近似することが可能です。従来の推論手法は比較的コストがかかります。例えば、このような手法では、データポイントごとの最適化ループが必要になったり、事後分布の近似値が不正確になったりすることがよくあります。このようなコストの高い手順は避けたいものです。
+</span>
+</p><p>
+Likewise, the posterior over the parameters of (directed models parameterized with) neural networks, \(p(\mathbf{θ}|\mathcal{D})\), is generally intractable to compute exactly, and requires approximate inference techniques. 
+
+<br><span style="color:blue;">
+同様に、ニューラル ネットワーク (でパラメーター化された有向モデル) のパラメーターの事後分布 \(p(\mathbf{θ}|\mathcal{D})\) は、正確に計算するのが一般的に困難であり、近似推論手法が必要になります。
+</span>
+
+</p>
+
+
+   </body>
+</html>
