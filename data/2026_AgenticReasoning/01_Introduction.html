@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="ja">
+    <head>
+        <script type="text/javascript" id="MathJax-script" async
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+        <meta charset="utf-8" />
+        <title>Agentic Reasoning for Large Language Models</title>
+        <style type="text/css">
+            p
+            {
+                padding-left: 2em;
+            }
+           .margin-abstract {
+               margin-left: 60px; /* 左マージンを広くする */
+               margin-right: 60px; /* 右マージンを広くする */
+           }
+        </style>
+    <style>
+        .styleRef { 
+            text-indent: -40px; /* 最初の行の字下げを逆方向に */
+            margin-left: 10px; /* 2行目以降の字下げを調整 */
+            ul {
+                  list-style-type: none; /* 箇条書き記号を非表示 */
+                  padding-left: 40px; /* 全体の左余白 */
+            }
+            li {
+            }
+        }
+    </style>
+    <style>
+        .styleBullet { 
+            text-indent: -20px; /* 最初の行の字下げを逆方向に */
+            margin-left: 30px; /* 2行目以降の字下げを調整 */
+            ul {
+                  list-style-type: none; /* 箇条書き記号を非表示 */
+                  padding-left: 40px; /* 全体の左余白 */
+            }
+            li {
+            }
+        }
+    </style>
+<style>
+.container {
+  display: flex;
+  flex-wrap: wrap;
+}
+.column {
+  flex: 0.50%; /* 幅を50%に設定して2列に */
+  box-sizing: border-box;
+  padding: 10px;
+}
+</style>
+
+    </head>
+    <body>
+        <h1><center>Agentic Reasoning for Large Language Models<br> ♢  Foundations  ·  Evolution  ·  Collaboration  ♢<br><span style="color:blue;">大規模言語モデルのためのエージェント推論<br> ♢ 基礎・進化・コラボレーション ♢</span></center></h1>
+
+<center>Tianxin Wei<sup>1†</sup>　Ting-Wei Li<sup>1†</sup>　Zhining Liu<sup>1†</sup>　Xuying Ning<sup>1</sup>　Ze Yang<sup>2</sup>　Jiaru Zou<sup>1</sup></center>
+
+<center>Zhichen Zeng<sup>1</sup>　Ruizhong Qiu<sup>1</sup>　Xiao Lin<sup>1</sup>　Dongqi Fu<sup>2</sup>　Zihao Li<sup>1</sup>　Mengting Ai<sup>1</sup>　Duo Zhou<sup>1</sup></center>
+
+<center>Wenxuan Bao<sup>1</sup>　Yunzhe Li<sup>1</sup>　Gaotang Li<sup>1</sup>　Cheng Qian<sup>1</sup>　Yu Wang<sup>5</sup>　Xiangru Tang<sup>6</sup>　Yin Xiao<sup>1</sup></center>
+
+<center>Liri Fang<sup>1</sup>　Hui Liu<sup>3</sup>　Xianfeng Tang<sup>3</sup>　Yuji Zhang<sup>1</sup>　Chi Wang<sup>4</sup>　Jiaxuan You<sup>1</sup>　Heng Ji<sup>1</sup></center>
+
+<center>Hanghang Tong<sup>1</sup>　Jingrui He<sup>1</sup></center>
+
+<br>
+
+<center><sup>1</sup> University of Illinois Urbana-Champaign　<sup>2</sup> Meta　<sup>3</sup> Amazon　<sup>4</sup> Google Deepmind</center>
+
+<center><sup>5</sup> UCSD　<sup>6</sup> Yale</center>
+<br>
+<center><sup>†</sup> Equal contribution,　Corresponding Author</center>
+
+<p class="margin-abstract">
+<strong>Abstract</strong>:　Reasoning is a fundamental cognitive process underlying inference, problem-solving, and decision-making.  While large language models (LLMs) demonstrate strong reasoning capabilities in closed-world settings, exemplified by standard benchmarks in mathematics and code, they struggle in open-ended and dynamic environments. The emergence of agentic reasoning marks a paradigm shift, bridging thought and action by reframing LLMs as autonomous agents that plan, act, and learn through continual interaction. In this survey, we provide a systematic roadmap by organizing agentic reasoning along three complementary dimensions. First, we characterize environmental dynamics through three layers: foundational agentic reasoning establishes core single-agent capabilities, including planning, tool use, and search, that operate in stable environments; self-evolving agentic reasoning examines how agents refine these capabilities through feedback, memory, and adaptation in evolving settings; and collective multi-agent reasoning extends intelligence to collaborative scenarios where multiple agents coordinate roles, share knowledge, and pursue shared goals. Across all layers, we analyze system constraints and optimization settings by distinguishing in-context reasoning, which scales test-time interaction through structured orchestration and adaptive workflow design, from post-training reasoning, which optimizes behaviors through reinforcement learning and supervised fine-tuning. We further review and contextualize agentic reasoning frameworks in real-world applications and benchmarks spanning science, robotics, healthcare, autonomous research, and math, illustrating how different reasoning mechanisms are instantiated and evaluated across domains. This survey synthesizes agentic reasoning methods into a unified roadmap that bridges thoughts and actions, offering actionable guidance for agentic systems across environmental dynamics, optimization settings, and agent interaction settings.  Finally, we outline open challenges and future directions, situating how agentic reasoning has developed while identifying what remains ahead: personalization, long-horizon interaction, world modeling, scalable multi-agent training, and governance frameworks for real-world deployment.
+
+<br><span style="color:blue;">
+<strong>要旨</strong>：　推論は、推定、問題解決、意思決定の基盤となる基本的な認知プロセスです。大規模言語モデル（LLM）は、数学やコードの標準ベンチマークに代表される閉世界環境では強力な推論能力を発揮しますが、制限のない動的な環境では苦戦します。エージェント推論の出現はパラダイムシフトであり、LLMを継続的な相互作用を通じて計画、行動、学習する自律エージェントとして再構成することで、思考と行動を橋渡しします。この調査では、エージェント推論を3つの補完的な次元に沿って体系的に整理し、体系的なロードマップを提供します。まず、環境のダイナミクスを3つの層で特徴付けます。基礎的なエージェント推論は、安定した環境で動作する計画、ツールの使用、検索などの中核的なシングルエージェント機能を確立します。自己進化型エージェント推論は、進化する環境でのフィードバック、記憶、適応を通じて、エージェントがこれらの機能をどのように改良するかを調べます。集合的マルチエージェント推論は、複数のエージェントが役割を調整し、知識を共有し、共通の目標を追求する協調シナリオに知能を拡張します。すべてのレイヤーにおいて、構造化オーケストレーションと適応型ワークフロー設計を通じてテスト時のインタラクションをスケーリングするコンテキスト内推論と、強化学習と教師あり微調整を通じて動作を最適化するトレーニング後推論を区別することにより、システムの制約と最適化設定を分析します。さらに、科学、ロボット工学、医療、自律研究、数学にわたる現実世界のアプリケーションとベンチマークにおけるエージェント推論フレームワークをレビューし、文脈化し、さまざまな推論メカニズムがドメイン間でどのようにインスタンス化され評価されるかを示します。この調査では、エージェント推論手法を統合し、思考と行動を橋渡しする統一ロードマップを作成し、環境ダイナミクス、最適化設定、エージェントインタラクション設定にわたるエージェントシステムに実用的なガイダンスを提供します。最後に、未解決の課題と将来の方向性を概説し、エージェント推論がどのように発展してきたかを位置づけながら、パーソナライゼーション、長期的なインタラクション、世界モデリング、スケーラブルなマルチエージェントトレーニング、現実世界での展開のためのガバナンスフレームワークなど、今後の課題を特定します。
+</span><br>
+<br>
+Keywords: Agentic AI, LLM Agent, Agentic Reasoning, Self-evolving<br>
+Github: https://github.com/weitianxin/Awesome-Agentic-Reasoning
+</p>
+
+<p>
+<center> Figure 1: An overview of agentic reasoning <span style="color:blue;">エージェント推論の概略</span></center>
+</p>
+
+<center><img src="images/fig1-1.svg"></center>
+<center><img src="images/fig1-2.svg"></center>
+<center><img src="images/fig1-3.svg"></center>
+<center><img src="images/fig1-4.svg"></center>
+
+<h2>1. Introduction <span style="color:blue;">はじめに</span></h2>
+<p>
+Reasoning lies at the core of intelligence, enabling logical inference, problem-solving, and decision-making across interactive and dynamic settings. Large language models (LLMs) have achieved remarkable gains in closed-world domains such as mathematical problem solving and code generation. Empirically, techniques that explicitize intermediate reasoning, such as Chain-of-Thought prompting, decomposition, and program-aided solving, have significantly bolstered inference performance [1, 2, 3, 4]. Yet, these approaches often assume static contexts and short-horizon reasoning. Conventional LLMs lack mechanisms to act, adapt, or improve in open-ended environments where information evolves over time.
+
+<br><span style="color:blue;">
+推論は知能の中核を成し、インタラクティブかつ動的な状況下における論理的推論、問題解決、意思決定を可能にします。大規模言語モデル（LLM）は、数学的問題解決やコード生成といった閉世界領域において顕著な成果を上げています。経験的には、思考連鎖（Chain-of-Thought）プロンプティング、分解、プログラム支援による解決といった中間推論を明示化する手法が推論性能を大幅に向上させています[1, 2, 3, 4]。しかし、これらのアプローチはしばしば静的な文脈と短期的な推論を前提としています。従来のLLMは、情報が時間とともに変化するオープンエンド環境において動作、適応、改善を行うメカニズムを欠いています。
+</span>
+</p><p>
+
+In this survey, we systematize this evolution under the framework of Agentic Reasoning: rather than passively generating sequences, LLMs are reframed as autonomous reasoning agents that plan, act, and learn through continual interaction with their environment.  This reframing unifies reasoning with acting, positioning reasoning as the organizing principle for perception, planning, decision, and verification. Systems such as ReAct [5] interleave deliberation with environment interaction, tool-use frameworks enable self-directed API calling, and workflow-based agents dynamically orchestrate sub-tasks and verifiable actions [5, 6, 7]. Conceptually, this parallels the shift from static, one-shot inference to sequential decision-making under uncertainty. Unlike simple input-output mapping, this paradigm requires agents to plan over long horizons, navigate partial observability, and actively improve through feedback [8, 9, 10].
+
+<br><span style="color:blue;">
+本調査では、この進化をエージェンティック推論の枠組みで体系化する。LLMは、受動的にシーケンスを生成するのではなく、環境との継続的な相互作用を通じて計画、行動、学習する自律的な推論エージェントとして再構成される。この再構成により、推論と行動が統合され、推論は知覚、計画、意思決定、検証の組織原理として位置付けられる。ReAct [5]などのシステムは、熟考と環境との相互作用を交互に実行し、ツール使用フレームワークは自己主導型のAPI呼び出しを可能にし、ワークフローベースのエージェントはサブタスクと検証可能なアクションを動的に編成する [5, 6, 7]。概念的には、これは静的なワンショット推論から不確実性下での順次的な意思決定への移行と平行している。単純な入出力マッピングとは異なり、このパラダイムでは、エージェントが長期的な計画を立て、部分的な観測可能性をナビゲートし、フィードバックを通じて積極的に改善することが求められる [8, 9, 10]。
+</span>
+</p>
+
+</p><p style="border: 2px solid rgb(10,165,165);background-color:rgb(206,237,237);margin:0;margin-left: 30px;padding:10px;">
+<strong>Definition of Agentic Reasoning　<span style="color:blue;">エージェント推論の定義</span></strong>
+</p>
+
+<p style="border: 1px solid rgb(10,165,165);background-color: rgb(217,243, 243);padding:10px; margin:0;margin-left: 30px;">
+<strong>Agentic reasoning</strong> positions reasoning as the central mechanism of intelligent agents, spanning founda-tional capabilities (planning, tool use, and search), self-evolving adaptation (feedback, and memory-driven adaptation), and collective coordination (multi-agent collaboration), realizable through either in-context orchestration or post-training optimization.
+
+<br><span style="color:blue;">
+<strong>エージェント推論</strong>は、推論をインテリジェントエージェントの中心的なメカニズムとして位置付け、基本機能 (計画、ツールの使用、検索)、自己進化適応 (フィードバック、メモリ駆動型適応)、および集団調整 (マルチエージェントコラボレーション) にまたがり、コンテキスト内オーケストレーションまたはトレーニング後の最適化を通じて実現可能です。</span>
+</p><p>
+
+To systematically characterize the environmental dynamics, we structure our survey around three comple-mentary scopes of agentic reasoning: foundational capabilities, self-evolution, and collective intelligence, spanning diverse interactive and dynamic settings. <strong>Foundational Agentic Reasoning</strong> establishes the bedrock of core single-agent capabilities, including planning, tool use, and search, that enable operations within stable, albeit complex, environments. Here, agents act by decomposing goals, invoking external tools, and verifying results through executable actions. For instance, program-aided reasoning [3] grounds logical derivations in code execution; repository-level systems such as OpenHands [11] integrate reasoning, planning, and testing into unified loops; and structured memory modules [12, 13] transform factual recall into procedural competence by persisting intermediate reasoning traces for reuse.
+
+<br><span style="color:blue;">
+環境のダイナミクスを体系的に特徴付けるために、我々はエージェント推論の3つの補完的なスコープ、すなわち基礎的能力、自己進化、集合知を中心に調査を構築し、多様なインタラクティブで動的な設定にまたがる。<strong>基礎的エージェント推論</strong>は、計画、ツールの使用、探索など、複雑ではあるものの安定した環境内での操作を可能にするコアとなるシングルエージェント能力の基盤を確立する。ここで、エージェントは目標を分解し、外部ツールを呼び出し、実行可能なアクションを通じて結果を検証することによって行動する。例えば、プログラム支援推論 [3] はコード実行における論理的導出を基盤とし、OpenHands [11] などのリポジトリレベルのシステムは推論、計画、テストを統一されたループに統合し、構造化メモリモジュール [12, 13] は中間推論の痕跡を再利用のために永続化することで事実の想起を手続き的能力に変換する。
+</span>
+</p><p>
+
+Building upon these foundations, <strong>Self-Evolving Agentic Reasoning</strong> enables agents to improve continually through cumulative experience. Encompassing task-specific self-improvement (e.g., via iterative critique), this paradigm extends adaptation to include persistent updates of internal states like memory and policy. Rather than following fixed reasoning paths, agents develop mechanisms for feedback integration and memory-driven adaptation to navigate evolving environments. Reflection-based frameworks such as Reflexion [14] allow agents to critique and refine their own reasoning processes, while reinforcement formulations such as RL-for-memory [15] formalize memory writing and retrieval as policy optimization.  Through these mechanisms, agents dynamically integrate inference-time reasoning with learning, progressively updating internal representations and decision policies without full retraining.   This continual adaptation links reasoning with learning, enabling models to accumulate competence, and generalize across tasks.
+
+<br><span style="color:blue;">
+これらの基盤の上に構築された<strong>自己進化型エージェント推論</strong>は、エージェントが累積的な経験を通じて継続的に改善することを可能にします。タスク固有の自己改善（例：反復的な批判による）を包含するこのパラダイムは、適応を拡張し、記憶やポリシーなどの内部状態の永続的な更新を含めます。エージェントは固定された推論経路に従うのではなく、フィードバック統合と記憶駆動型適応のメカニズムを開発して、進化する環境をナビゲートします。Reflection [14]などのリフレクションベースのフレームワークは、エージェントが自身の推論プロセスを批判し、改良することを可能にします。一方、RL-for-memory [15]などの強化学習は、記憶の書き込みと検索をポリシー最適化として形式化します。これらのメカニズムを通じて、エージェントは推論時の推論を学習と動的に統合し、完全な再訓練なしに内部表現と意思決定ポリシーを徐々に更新します。この継続的な適応は推論と学習を結び付け、モデルが能力を蓄積し、タスク間で一般化することを可能にします。
+</span>
+</p><p>
+
+Finally, <strong>Collective Multi-Agent Reasoning</strong> scales intelligence from isolated solvers to collaborative ecosystems. Rather than operating in isolation, multiple agents coordinate to achieve shared goals through explicit role assignment (e.g., manager–worker–critic), communication protocols, and shared memory systems [16, 17].  As agents specialize in subtasks and refine each other’s outputs, collaboration amplifies reasoning diversity, enabling systems to debate, resolve disagreements, and achieve consistency through natural language-based multi-turn interactions [18, 19]. However, this complexity also introduces challenges in stability, communication eficiency, and trustworthiness, necessitating structured coordination frameworks and rigorous evaluation standards [20, 21].
+
+<br><span style="color:blue;">
+最後に、<strong>集団的マルチエージェント推論</strong>は、知能を孤立したソルバーから協調的なエコシステムへと拡張します。複数のエージェントは、個別に動作するのではなく、明示的な役割の割り当て（例：管理者-作業者-批評家）、通信プロトコル、共有メモリシステムを通じて、共通の目標を達成するために連携します[16, 17]。エージェントがサブタスクに特化し、互いの出力を改良するにつれて、連携によって推論の多様性が増幅され、システムは議論し、意見の相違を解決し、自然言語ベースのマルチターンインタラクションを通じて一貫性を実現できるようになります[18, 19]。しかし、この複雑さは安定性、通信効率、信頼性の面で課題ももたらし、構造化された調整フレームワークと厳格な評価基準が必要になります[20, 21]。
+</span>
+</p><p>
+
+Across all layers, we analyze system constraints and optimization settings by distinguishing two comple-mentary modes, corresponding to inference-time orchestration [5, 14, 22, 23, 24, 25] and training-based capability optimization [26, 27, 28, 15].  <strong>In-context Reasoning</strong> focuses on scaling inference-time com-pute: through structured orchestration, search-based planning, and adaptive workflow design, it enables agents to navigate complex problem spaces dynamically without modifying model parameters. Conversely, <strong>Post-training Reasoning</strong> targets capability internalization: it consolidates successful reasoning patterns or tool-use strategies into the model’s weights via reinforcement learning and fine-tuning. Together, they provide an actionable roadmap for designing agents.
+
+<br><span style="color:blue;">
+すべてのレイヤーにおいて、推論時オーケストレーション [5, 14, 22, 23, 24, 25] とトレーニングベースの能力最適化 [26, 27, 28, 15] という2つの補完的なモードを区別することで、システムの制約と最適化設定を分析します。<strong>コンテキスト内推論</strong>は推論時コンピューティングのスケーリングに重点を置いています。構造化されたオーケストレーション、検索ベースのプランニング、適応型ワークフロー設計を通じて、エージェントがモデルパラメータを変更することなく複雑な問題空間を動的に移動できるようにします。一方、<strong>トレーニング後推論</strong>は能力の内在化をターゲットとしています。強化学習と微調整により、成功した推論パターンやツール使用戦略をモデルの重みに統合します。これらを組み合わせることで、エージェントを設計するための実用的なロードマップが提供されます。
+</span>
+</p><p>
+
+Building on the three-layer taxonomy, agentic reasoning has begun to underpin a wide range of practical applications, from mathematical exploration [29, 30] and vibe coding [11, 31, 32] to scientific discovery [33, 34, 35], embodied robotics [36, 37, 38], healthcare [39, 40], and autonomous web exploration [41, 42]. These applications expose distinct reasoning demands shaped by domain-specific data modalities, interaction constraints, and feedback loops, motivating diverse system designs [43, 44] that integrate planning, tool use, search, reflection, memory mechanisms, and multi-agent coordination. On the other hand, the benchmark landscape has emerged to evaluate agentic reasoning, ranging from targeted tests that isolate individual agentic capabilities to application-specific benchmarks that assess end-to-end behavior in domain-specific environments and scenarios [45, 46, 47, 48, 20, 21, 49, 50].
+
+<br><span style="color:blue;">
+3層構造の分類法を基盤として、エージェント推論は、数学的探究[29, 30]やバイブコーディング[11, 31, 32]から科学的発見[33, 34, 35]、具現化ロボット[36, 37, 38]、ヘルスケア[39, 40]、自律ウェブ探索[41, 42]に至るまで、幅広い実用アプリケーションの基盤となり始めています。これらのアプリケーションは、ドメイン固有のデータモダリティ、インタラクション制約、フィードバックループによって形成される明確な推論要求を明らかにし、計画、ツールの使用、探索、リフレクション、記憶メカニズム、マルチエージェント協調を統合した多様なシステム設計[43, 44]を促進しています。一方、エージェント推論を評価するためのベンチマーク環境が登場しており、個々のエージェント機能を分離するターゲットテストから、ドメイン固有の環境やシナリオでのエンドツーエンドの動作を評価するアプリケーション固有のベンチマークまで多岐にわたります[45、46、47、48、20、21、49、50]。
+
+</span>
+</p><p>
+
+</p><p style="border: 2px solid rgb(189, 194, 227);background-color:rgb(217, 229, 240);margin:0;margin-left: 30px;padding:5px;">
+<strong>Survey Scope　<span style="color:blue;">調査範囲</span></strong>
+</p>
+<p style="border: 1px solid rgb(189, 194, 227);background-color: rgb(232, 234, 246);padding:10px; margin:0;margin-left: 30px;">
+This survey reviews reasoning-empowered agentic systems where reasoning drives adaptive behavior. We analyze these systems through two complementary optimization modes:<br>
+<span style="color:blue;">
+この調査では、推論によって適応行動が駆動される、推論機能を備えたエージェントシステムを検証します。これらのシステムを、2つの相補的な最適化モードを用いて分析します。</span><br>
+<br>
+• <strong>In-context Reasoning</strong>: scales inference-time interaction through structured orchestration and plan-ning without parameter updates.
+
+<br><span style="color:blue;">
+　<strong>コンテキスト内推論</strong>:　パラメータを更新せずに、構造化されたオーケストレーションと計画を通じて推論時間のインタラクションを拡張します。
+</span><br>
+<br>
+• <strong>Post-training Reasoning</strong>: internalizes reasoning strategies into model parameters via reinforcement learning and fine-tuning.
+
+<br><span style="color:blue;">
+　<strong>トレーニング後の推論</strong>:　強化学習と微調整を通じて推論戦略をモデルパラメータに内部化します。
+</span><br>
+<br>
+
+Our scope covers methodologies embedding these modes into planning, memory, and self-improvement across single-agent and multi-agent contexts. This survey summarizes progress up to 2025.
+
+<br><span style="color:blue;">
+私たちの研究対象は、これらのモードを計画、記憶、そして自己改善に組み込む方法論を、シングルエージェントとマルチエージェントのコンテキストにわたって網羅しています。この調査は、2025年までの進捗状況をまとめたものです。
+</span>
+</p><p>
+
+Together, this survey synthesizes agentic reasoning methods into a unified roadmap that bridges reasoning and acting. We systematically characterize these methods across the complementary scopes of foundational, self-evolving, and collective reasoning, while distinguishing between in-context and post-training optimiza-tion modes.  We further contextualize this roadmap through representative applications and evaluation benchmarks, illustrating how different agentic reasoning mechanisms are instantiated and assessed across realistic domains and task settings. Finally, we outline open challenges and future directions, identifying key frontiers such as personalization, long-horizon interaction, world modeling, scalable multi-agent training, and governance frameworks for real-world deployment.
+
+<br><span style="color:blue;">
+本調査では、エージェント推論手法を統合し、推論と行動を橋渡しする統一ロードマップを提示します。これらの手法を、基礎推論、自己進化推論、集合推論という相補的な領域にわたって体系的に特徴づけ、コンテキスト内最適化モードとトレーニング後最適化モードを区別します。さらに、代表的なアプリケーションと評価ベンチマークを通してこのロードマップを文脈化し、様々なエージェント推論メカニズムが現実的な領域とタスク設定においてどのように具体化され評価されるかを示します。最後に、未解決の課題と今後の方向性を概説し、パーソナライゼーション、長期的なインタラクション、世界モデリング、スケーラブルなマルチエージェントトレーニング、実世界展開のためのガバナンスフレームワークといった主要なフロンティアを特定します。
+</span>
+</p>
+
+</p><p style="border: 2px solid rgb(255, 143, 0);background-color:rgb(255, 233, 204);margin:0;margin-left: 30px;padding:5px;">
+<strong>Contributions　<span style="color:blue;">貢献</span>
+</strong>
+</p>
+<p style="border: 1px solid rgb(255, 143, 0);background-color: rgb(255, 243, 224);padding:10px; margin:0;margin-left: 30px;">
+
+This survey makes the following contributions:
+
+<br><span style="color:blue;">
+この調査は次のような貢献をします。
+</span><br>
+<br>
+• <strong>Conceptual framing</strong>:  We formalize the paradigm of Agentic Reasoning, spanning foundational, self-evolving, and collective reasoning layers.
+
+<br><span style="color:blue;">
+　<strong>概念的枠組み</strong>:　基礎、自己進化、集合的推論のレイヤーにまたがるエージェント推論のパラダイムを形式化します。
+</span><br>
+<br>
+
+• <strong>Systematic review</strong>:  We analyze single-agent, adaptive, and multi-agent systems, emphasizing reasoning-centered workflow orchestration across in-context and post-training dimensions.
+
+<br><span style="color:blue;">
+　<strong>体系的レビュー</strong>:　コンテキスト内およびトレーニング後の次元全体にわたる推論中心のワークフロー オーケストレーションに重点を置き、シングルエージェント、適応型、およびマルチエージェント システムを分析します。
+</span>
+<br><br>
+
+• <strong>Applications and evaluation</strong>: We review real-world applications and benchmarks to illustrate the instantiation and evaluation of agentic reasoning mechanisms.
+
+<br><span style="color:blue;">
+　<strong>アプリケーションと評価</strong>:　エージェント推論メカニズムのインスタンス化と評価を説明するために、実際のアプリケーションとベンチマークをレビューします。
+</span>
+<br><br>
+
+• <strong>Future agenda</strong>: We identify emerging challenges in robustness, trustworthiness, and eficiency, outlining directions for the next generation of adaptive and collaborative agents.
+
+<br><span style="color:blue;">
+　<strong>今後の課題</strong>:　堅牢性、信頼性、効率性における新たな課題を特定し、次世代の適応型および協調型エージェントの方向性を概説します。
+</span>
+
+</p>
+    </body>
+</html>
