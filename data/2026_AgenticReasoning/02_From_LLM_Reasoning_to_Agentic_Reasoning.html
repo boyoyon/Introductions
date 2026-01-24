@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="ja">
+    <head>
+        <script type="text/javascript" id="MathJax-script" async
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+        <meta charset="utf-8" />
+        <title>Agentic Reasoning for Large Language Models</title>
+        <style type="text/css">
+            p
+            {
+                padding-left: 2em;
+            }
+           .margin-abstract {
+               margin-left: 60px; /* 左マージンを広くする */
+               margin-right: 60px; /* 右マージンを広くする */
+           }
+        </style>
+    <style>
+        .styleRef { 
+            text-indent: -40px; /* 最初の行の字下げを逆方向に */
+            margin-left: 10px; /* 2行目以降の字下げを調整 */
+            ul {
+                  list-style-type: none; /* 箇条書き記号を非表示 */
+                  padding-left: 40px; /* 全体の左余白 */
+            }
+            li {
+            }
+        }
+    </style>
+    <style>
+        .styleBullet { 
+            text-indent: -20px; /* 最初の行の字下げを逆方向に */
+            margin-left: 30px; /* 2行目以降の字下げを調整 */
+            ul {
+                  list-style-type: none; /* 箇条書き記号を非表示 */
+                  padding-left: 40px; /* 全体の左余白 */
+            }
+            li {
+            }
+        }
+    </style>
+<style>
+.container {
+  display: flex;
+  flex-wrap: wrap;
+}
+.column {
+  flex: 0.50%; /* 幅を50%に設定して2列に */
+  box-sizing: border-box;
+  padding: 10px;
+}
+</style>
+
+    </head>
+    <body>
+        <h1><center>Agentic Reasoning for Large Language Models<br> ♢  Foundations  ·  Evolution  ·  Collaboration  ♢<br><span style="color:blue;">大規模言語モデルのためのエージェント推論<br> ♢ 基礎・進化・コラボレーション ♢</span></center></h1>
+
+<h2>2. From LLM Reasoning to Agentic Reasoning <span style="color:blue;">LLM推論からエージェント推論へ</span></h2>
+<p>
+Traditional reasoning with large language models (LLMs) is typically formulated as a one-shot or few-shot prediction task over static inputs. These models rely on scaling test-time computation, improving accuracy by increasing model size or inference budget, but without the ability to interact, remember, or adapt to changing goals. Methods such as prompt engineering, in-context learning, and chain-of-thought prompting have made reasoning more explicit, yet conventional LLMs remain passive sequence predictors that operate within fixed prompts.
+
+<br><span style="color:blue;">
+大規模言語モデル（LLM）を用いた従来の推論は、通常、静的な入力に対するワンショットまたは数ショットの予測タスクとして定式化されます。これらのモデルは、テスト時の計算をスケーリングし、モデルサイズや推論予算を増やすことで精度を向上させることに依存していますが、対話、記憶、変化する目標への適応能力はありません。プロンプトエンジニアリング、文脈内学習、思考連鎖プロンプティングなどの手法によって推論はより明示的になりましたが、従来のLLMは依然として、固定されたプロンプト内で動作する受動的なシーケンス予測器のままです。
+</span>
+</p><p>
+
+Agentic reasoning, in contrast, emphasizes scaling test-time interaction. Instead of depending solely on internal parameters, agentic systems reason through action: invoking tools, exploring alternatives, updating memory, and integrating feedback. This transforms inference into an iterative process that includes decision steps, reflection, and learning from experience. Reasoning becomes a dynamic loop that connects the model, memory, and environment.
+
+<br><span style="color:blue;">
+対照的に、エージェント推論はテスト時のインタラクションのスケーリングを重視します。エージェントシステムは、内部パラメータのみに依存するのではなく、ツールの呼び出し、代替案の検討、記憶の更新、フィードバックの統合といった行動を通して推論を行います。これにより、推論は意思決定、反省、経験からの学習を含む反復的なプロセスへと変化します。推論は、モデル、記憶、環境を結びつける動的なループとなります。
+</span>
+</p><p>
+
+<center>Table 1: Contrasting capabilities of LLM reasoning and agentic reasoning.
+
+<br><span style="color:blue;">
+LLM 推論とエージェント推論の対照的な機能
+</span>
+</center>
+
+\[
+\begin{array}{c|c c c}
+\hline
+
+\textbf{次元} & \textbf{LLM推論} & \leftrightarrow & \textbf{エージェント推論} \\
+
+\hline 
+
+\textbf{パラダイム} & \text{受動} & \leftrightarrow & \text{対話的} \\
+& \text{静的入力} & \leftrightarrow & \text{動的コンテキスト} \\
+\hline
+\textbf{計算} & \text{単一パス} & \leftrightarrow & \text{複数パス} \\
+& \text{内部計算} & \leftrightarrow & \text{フィードバックあり} \\
+\hline
+\textbf{状態保持} & \text{コンテキストウィンドウ} & \leftrightarrow & \text{外部メモリー} \\
+& \text{永続記憶なし} & \leftrightarrow & \text{状態追跡} \\
+\hline
+\textbf{学習} & \text{オフライン事前学習} & \leftrightarrow & \text{継続改善} \\
+& \text{固定知識} & \leftrightarrow & \text{自己進化} \\
+\hline
+\textbf{ゴール方向付け} & \text{プロンプトベース} & \leftrightarrow & \text{明示的なゴール} \\
+& \text{反応的} & \leftrightarrow & \text{計画的} \\
+\end{array}
+\]
+
+</p><p>
+This transition marks a conceptual shift: reasoning no longer scales through static capacity, but through structured interaction that enables planning, adaptation, and collaboration across time and tasks.
+
+<br><span style="color:blue;">
+この移行は概念の転換を示しています。推論はもはや静的な能力を通じて拡張されるのではなく、時間とタスクにわたる計画、適応、コラボレーションを可能にする構造化されたインタラクションを通じて拡張されます。
+</span>
+</p>
+
+<h3>2.1. Positioning Our Survey <span style="color:blue;">本調査の位置づけ</span></h3>
+<p>
+While several recent surveys have examined LLM reasoning or agent architectures [51, 52, 53, 54, 55, 56, 57, 58, 59], our work focuses specifically on agentic reasoning as a unified paradigm for understanding reasoning as interaction. We position this survey at the intersection of model-centric reasoning and system-level intelligence, aiming to bridge prior discussions on reasoning mechanisms and agent architectures.
+
+<br><span style="color:blue;">
+近年のいくつかの調査では、LLM推論やエージェントアーキテクチャが検討されている[51, 52, 53, 54, 55, 56, 57, 58, 59]が、本研究では、推論をインタラクションとして理解するための統一パラダイムとしてのエージェント推論に特に焦点を当てている。本調査は、モデル中心推論とシステムレベル知能の交差点に位置づけ、推論メカニズムとエージェントアーキテクチャに関するこれまでの議論を橋渡しすることを目指している。
+</span>
+</p><p>
+
+<strong>Relation to LLM Reasoning Surveys</strong>.　Existing surveys on LLM reasoning mainly investigate how to elicit or enhance reasoning within a model's internal computation process.  For example, Huang and Chang [51], Chen et al. [52], Xu et al. [53], Ke et al. [54] summarize prompting and scaling techniques such as chain-of-thought, reinforcement post-training, and long-context reasoning, emphasizing how LLMs canlearn to reason better through inference-time supervision or post-training alignment. These works improve the internal expressiveness of reasoning traces but typically remain within static inference settings, where reasoning unfolds in a single forward pass without external interaction. In contrast, our survey examines how reasoning extends beyond text generation, encompassing dynamic planning, adaptive memory, and feedback-driven behavior during deployment.
+
+<br><span style="color:blue;">
+<strong>LLM推論調査との関係</strong>。LLM推論に関する既存の調査は、主にモデルの内部計算プロセス内で推論を引き出す、または強化する方法を調査しています。たとえば、Huang and Chang [51]、Chen et al. [52]、Xu et al. [53]、Ke et al. [54]は、思考の連鎖、トレーニング後の強化、長文脈推論などのプロンプトとスケーリングの手法をまとめ、推論時の監督やトレーニング後の調整を通じてLLMがどのように推論をより良く学習できるかを強調しています。これらの研究は、推論トレースの内部表現力を向上させますが、通常は静的な推論設定内にとどまり、推論は外部とのやり取りなしに単一のフォワードパスで展開されます。対照的に、私たちの調査では、推論がテキスト生成を超えて、動的計画、適応型メモリ、展開中のフィードバック駆動型の行動を網羅する方法を調べています。
+</span>
+</p><p>
+
+<strong>Relation to AI Agent Surveys</strong>.　Several contemporary surveys have begun to explore LLM-based agents from architectural or system perspectives [56, 57, 58, 59]. These works analyze how agents employ reinforcement learning, planning, and tool-use modules to operate in complex environments. For instance, Zhang et al. [56], Lin et al. [57] focus on reinforcement learning for agentic search and decision-making, while Fang et al. [58], Gao et al. [59] emphasize self-evolving and lifelong agentic systems that continuously learn from interaction. Our focus complements these perspectives by centering on the reasoning process that these architectures enable, specifically how interaction, feedback, and collaboration transform static inference into adaptive reasoning. Rather than viewing reasoning as an implicit by-product of architectural design, we treat it as the unifying mechanism that links single-agent reinforcement, multi-agent coordination, and self-evolving intelligence.
+
+<br><span style="color:blue;">
+<strong>AIエージェント調査との関係</strong>：いくつかの最近の調査では、LLMベースのエージェントをアーキテクチャまたはシステムの観点から調査し始めています[56, 57, 58, 59]。これらの研究は、エージェントが複雑な環境で動作するために強化学習、計画、およびツール使用モジュールをどのように採用しているかを分析しています。たとえば、Zhang et al. [56]、Lin et al. [57]はエージェントの探索と意思決定のための強化学習に焦点を当てており、Fang et al. [58]、Gao et al. [59]は、相互作用から継続的に学習する自己進化型および生涯エージェントシステムを強調しています。私たちの焦点は、これらのアーキテクチャが可能にする推論プロセス、具体的には、相互作用、フィードバック、およびコラボレーションが静的推論を適応型推論に変換する方法に焦点を合わせることで、これらの視点を補完します。推論をアーキテクチャ設計の暗黙の副産物と見なすのではなく、単一エージェントの強化、複数エージェントの調整、および自己進化型知能をリンクする統合メカニズムとして扱います。
+</span>
+</p><p>
+
+In summary, our survey provides a reasoning-centric lens on intelligent agency. We examine how foundational reasoning mechanisms, post-training adaptation, and long-term self-evolution jointly constitute the basis of agentic reasoning, illustrating the transition from static prediction to interactive, adaptive, and continually improving intelligence.
+
+<br><span style="color:blue;">
+要約すると、本調査は推論中心の視点から知的エージェンシーを考察するものである。基礎的な推論メカニズム、訓練後の適応、そして長期的な自己進化が、どのようにエージェンティック推論の基盤を構成しているかを検証し、静的な予測から、対話型で適応的かつ継続的に向上する知能への移行を示唆する。
+</span>
+</p>
+
+<h3>2.2. Preliminaries <span style="color:blue;">準備</span></h3>
+<p>
+This subsection formalizes the transition from static language modeling to agentic reasoning. To align with the <strong>three-layered dimensions</strong> (Foundational, Self-Evolving, Collaboration) outlined in the introduction, we unify these capabilities under a single control-theoretic framework.
+
+<br><span style="color:blue;">
+この節では、静的言語モデルからエージェント推論への移行を定式化します。序論で概説した<strong>三層構造の次元</strong>（基礎、自己進化、コラボレーション）に沿って、これらの機能を単一の制御理論的枠組みの下に統合します。
+</span>
+</p><p>
+
+<strong>Formalizing Agentic Reasoning: A Latent-Space View</strong>.　Standard approaches often conflate the agent's context with the environment state. We model the environment as a <strong>Partially Observable Markov Decision Process (POMDP)</strong> and introduce an internal reasoning variable to expose the “think–act” structure of agentic policies. Concretely, we consider the tuple \(⟨\mathcal{X,O,A,Z,M,T},Ω,\mathcal{R},γ⟩\), where \(\mathcal{X}\) is the latent environment state space (unobservable to the agent), \(\mathcal{O}\) is the observation space (e.g., user queries, API returns), \(\mathcal{A}\) is the external action space (e.g., tool invocation, final answer), \(\mathcal{Z}\) is a reasoning trace space (e.g., latent plans, optionally verbalized as chain-of-thought), and \(\mathcal{M}\) is the agent's internal memory/context space (e.g., a suficient statistic of interaction history). \(\mathcal{T}\)  and \(Ω\) denote the transition and observation kernels, \(\mathcal{R}\) the reward, and \(γ ∈ (0,1)\) the discount factor.
+
+<br><span style="color:blue;">
+<strong>エージェント推論の形式化：潜在空間視点</strong>。標準的なアプローチでは、エージェントのコンテキストと環境の状態が混同されることがよくあります。私たちは環境を<strong>部分観測マルコフ決定過程 (POMDP)</strong>としてモデル化し、内部推論変数を導入することで、エージェントのポリシーの「思考-行動」構造を明らかにします。具体的には、タプル \(⟨\mathcal{X,O,A,Z,M,T},Ω,\mathcal{R},γ⟩\) を検討します。ここで、 \(\mathcal{X}\) は潜在的な環境状態空間（エージェントには観測不可能）、 \(\mathcal{O}\) は観測空間（例：ユーザークエリ、API リターン）、 \(\mathcal{A}\) は外部アクション空間（例：ツールの呼び出し、最終回答）、 \(\mathcal{Z}\) は推論トレース空間（例：潜在的なプラン、オプションで思考の連鎖として言語化される）、 \(\mathcal{M}\) はエー​​ジェントの内部メモリ/コンテキスト空間（例：インタラクション履歴の十分な統計）です。 \(\mathcal{T}\)と\(Ω\)は遷移カーネルと観測カーネル、\(\mathcal{R}\)は報酬、\(γ∈(0,1)\)は割引率を表します。
+</span>
+</p><p>
+
+At timestep \(t\), the agent conditions on a history \(h_t  = (o_{\leq t},z_{\lt t}, a_{\lt t})\) (i.e., \(o_t\) is observed before generating \(z_t\) and then \(a_t\)). Equivalently, the history can be summarized by an internal memory state \(m_t  ∈ \mathcal{M}\). Crucially, we distinguish external actions from internal reasoning. We factorize the policy as
+
+<br><span style="color:blue;">
+タイムステップ\(t\)において、エージェントは履歴\(h_t = (o_{\leq t},z_{\lt t}, a_{\lt t})\)の条件を満たす（つまり、\(o_t\)は\(z_t\)を生成する前に観測され、その後\(a_t\)が観測される）。同様に、履歴は内部記憶状態\(m_t ∈ \mathcal{M}\)によって要約することができる。重要なのは、外部行動と内部推論を区別することである。ポリシーを次のように因数分解する。
+</span>
+
+\[
+π_θ(z_t, a_t|h_t) = \underbrace{π_{reason}(z_t|h_t)}_{内部思考}·\underbrace{π_{exec}(a_t|h_t,z_t)}_{外部行動}  \tag{1}
+\]
+
+This decomposition highlights the core shift in agentic systems: performing computation in \(\mathcal{Z}\) (thinking) be-fore committing to \(\mathcal{A}\) (acting). The objective remains maximizing the expected return \(J(θ) = \mathbb{E}_τ\left[\sum_{t≥0}γ^tr_t\right]\).
+
+<br><span style="color:blue;">
+この分解は、エージェントシステムにおける核心的な変化を浮き彫りにしている。すなわち、\(\mathcal{A}\)（行動）にコミットする前に、\(\mathcal{Z}\)（思考）で計算を実行することである。目標は、期待収益\(J(θ) = \mathbb{E}_τ\left[\sum_{t≥0}γ^tr_t\right]\)の最大化に留まる。
+</span>
+</p><p>
+
+<strong>In-Context Reasoning: Inference-Time Search</strong>.　In this regime, model parameters \(θ\) are frozen. The agent optimizes the reasoning trajectory by searching over \(\mathcal{Z}\) to maximize a heuristic value function \(\hat{v}(h_t,z)\). We model inference as selecting a trajectory \(τ= (h_0,z_0, a_0, h_1,z_1, a_1,...)\). Methods like ReAct [5] perform greedy decoding over alternating thoughts z and actions a. Tree-of-Thoughts (ToT [4]) and related MCTS-style approaches treat partial thoughts as nodes \(u ∈ \mathcal{U}\) (e.g., a representation derived from \((h_t,z_t)\)) and search for an optimal path:
+
+<br><span style="color:blue;">
+<strong>文脈内推論：推論時間探索</strong> この領域では、モデルパラメータ \(θ\) は固定されます。エージェントは、ヒューリスティックな価値関数 \(\hat{v}(h_t,z)\) を最大化するために \(\mathcal{Z}\) を探索することで推論軌道を最適化します。推論を軌道 \(τ= (h_0,z_0, a_0, h_1,z_1, a_1,...)\) を選択するものとしてモデル化します。ReAct [5] などの手法は、交互に変化する思考 z と行動 a に対して貪欲なデコードを実行します。Tree-of-Thoughts (ToT [4]) および関連する MCTS スタイルのアプローチでは、部分的な思考をノード \(u ∈ \mathcal{U}\) (例: \((h_t,z_t)\)) として扱い、最適なパスを探索します。
+</span>
+
+\[
+τ^⋆ ∈ \arg\max\limits_τ\sum_t\hat{v}_\phi(u_t)  \tag{2}
+\]
+
+where \(\hat{v}_\phi\)  is a heuristic evaluator or verifier. This corresponds to planning in Z without updating the policy parameters.
+
+<br><span style="color:blue;">
+ここで、\(\hat{v}_\phi\) はヒューリスティックな評価器または検証器です。これは、方策パラメータを更新せずに Z で計画することに対応します。
+</span>
+</p><p>
+
+<strong>Post-Training: Policy Optimization</strong>.　This paradigm optimizes \(θ\) to align the policy with long-horizon rewards \)r_t\) (e.g., correctness, safety), including reasoning models (e.g., DeepSeek-R1 [60]) and learning-to-search systems (e.g., Search-R1 [27], DeepRetrieval [61]) that train multi-turn reasoning or tool use with RL. While PPO [62] is standard, <strong>Group Relative Policy Optimization (GRPO)</strong> [63]-based methods are widely used for reasoning tasks. GRPO eliminates the value network by constructing advantages from group-relative rewards. For a group of \(G\) sampled outputs \(\{y_i\}_{i=1}^G\) from the same prompt \(q\), a common GRPO objective is:
+
+
+<br><span style="color:blue;">
+<strong>訓練後：方策の最適化</strong> このパラダイムは、方策を長期報酬 \)r_t\) (例えば、正確性、安全性) と一致させるために \(θ\) を最適化します。これには、強化学習でマルチターン推論やツール使用を訓練する推論モデル (例えば、DeepSeek-R1 [60]) や探索学習システム (例えば、Search-R1 [27]、DeepRetrieval [61]) が含まれます。PPO [62] が標準ですが、<strong>グループ相対方策最適化 (GRPO)</strong> [63] に基づく手法は推論タスクに広く使用されています。GRPO は、グループ相対報酬から利点を構築することで価値ネットワークを排除します。同じプロンプト\(q\)からの\(G\)個のサンプリングされた出力\(\{y_i\}_{i=1}^G\)のグループの場合、共通のGRPO目的は次のとおりです。
+</span>
+
+\[
+\mathcal{L}^{GRPO}(θ) = \mathbb{E}_{q\sim P(Q)}\left[︃\frac{1}{G} \sum_{i=1}^G\left(︀\min(︀ρ_i\hat{A}_i, clip(ρ_i,1 − ϵ,1 + ϵ)\hat{A}_i\right)︀ − β\mathbb{D}_{KL}(π_θ||π_{ref}))︀\right]︃  \tag{3}
+\]
+
+where \(ρ_i=\frac{π_θ(y_i|q)}{π_{old}(y_i|q)}\)  and the group-normalized advantage is
+
+<br><span style="color:blue;">
+ここで\(ρ_i=\frac{π_θ(y_i|q)}{π_{old}(y_i|q)}\)であり、グループ正規化された利点は
+</span>
+
+\[
+\hat{A}_i = \frac{r_i − µ}{σ+δ^\prime},\quad µ = \frac{1}{G}\sum_{j=1}^G r_j,\quad σ =\sqrt{\frac{1}{G}\sum_{j=1}^G(r_j − µ)^2}  \tag{4}
+\]
+
+with \(δ > 0\) a small constant for numerical stability. Advanced methods such as ARPO [64] and DAPO [65] extend this framework to handle sparse rewards and improve stability in complex tool-use environments (e.g., via replay/rollout strategies and decoupled clipping).
+
+<br><span style="color:blue;">
+ここで、\(δ > 0\)は数値安定性のための小さな定数である。ARPO [64]やDAPO [65]などの高度な手法は、この枠組みを拡張してスパース報酬を扱い、複雑なツール使用環境（例えば、リプレイ/ロールアウト戦略や分離クリッピングなど）における安定性を向上させる。
+</span>
+</p><p>
+
+<strong>Collective Intelligence: Multi-Agent Reasoning</strong>.　We extend the single-agent formulation to a decentralized partially observable multi-agent setting, commonly formalized as a Dec-POMDP. The core distinction lies in expanding each agent's observation to include a <strong>communication channel</strong> \(\mathcal{C}\). For a system of \(N\) agents, the joint policy \(π\) is composed of individual policies \(π^i\), where agent \(i\)'s observation \(o_t^i\)  explicitly includes communicative messages \(c_{t−1}^{-i}\) generated by peers. Crucially, in agentic MARL, communication is not merely
+signal transmission but an extension of the reasoning process: one agent's external action can act as a prompt that triggers another agent's internal reasoning chain. Existing frameworks like AutoGen [66] and CAMEL [67] represent static role-playing with fixed policies. Recent agentic RL advances (e.g., GPTSwarm [68], MaAS, agents trained via PPO/GRPO [69]) aim to optimize this joint reasoning distribution. The challenge shifts from single-agent planning to mechanism design:  optimizing the communication topology and incentive structures to align decentralized reasoning processes πreason toward a coherent global objective, often utilizing Centralized-Training/Decentralized-Execution (CTDE) paradigms to stabilize the emergence of cooperative behaviors.
+
+<br><span style="color:blue;">
+<strong>集合知：マルチエージェント推論</strong>。我々は、シングルエージェントの定式化を、一般的に Dec-POMDP として形式化される、分散型の部分観測マルチエージェント設定に拡張します。主な違いは、各エージェントの観測を <strong>通信チャネル</strong> \(\mathcal{C}\) を含むように拡張することです。\(N\) エージェントのシステムの場合、共同ポリシー \(π\) は個々のポリシー \(π^i\) で構成され、エージェント \(i\) の観測 \(o_t^i\) には、ピアによって生成された通信メッセージ \(c_{t−1}^{-i}\) が明示的に含まれます。重要なのは、エージェント MARL では、通信は単なる信号伝送ではなく、推論プロセスの拡張であるということです。つまり、あるエージェントの外部アクションは、別のエージェントの内部推論チェーンをトリガーするプロンプトとして機能することができます。 AutoGen [66] や CAMEL [67] といった既存のフレームワークは、固定されたポリシーを持つ静的なロールプレイングを表現する。近年のエージェント強化学習（GPTSwarm [68]、MaAS、PPO/GRPO [69] によって訓練されたエージェントなど）の進歩は、この共同推論の分布を最適化することを目指している。課題は単一エージェントの計画からメカニズム設計へと移行する。つまり、通信トポロジとインセンティブ構造を最適化し、分散型推論プロセスπreasonを一貫した全体的目標に向けさせる。これには、協調行動の出現を安定化させるために、集中型訓練／分散型実行（CTDE）パラダイムがしばしば活用される。
+</span>
+</p><p>
+
+<strong>Self-Evolving Agents: The Meta-Learning Loop</strong>.　While foundational agents optimize reasoning \(z\) within an episode, self-evolving agents optimize the agent system itself across episodes \(k = 1,...,K\). Let \(\mathcal{S}_k\) denote the evolvable system state (e.g., explicit memories, tool libraries, or code). A generic meta-update rule is
+
+<br><span style="color:blue;">
+<strong>自己進化エージェント：メタ学習ループ</strong>。基礎エージェントはエピソード内で推論 \(z\) を最適化するのに対し、自己進化エージェントはエピソード \(k = 1,...,K\) にわたってエージェントシステム自体を最適化する。\(\mathcal{S}_k\) は進化可能なシステム状態（例えば、明示的な記憶、ツールライブラリ、コード）を表すものとする。一般的なメタ更新規則は
+</span>
+
+\[
+\mathcal{S}_{k+1} ← \mathcal{U}(\mathcal{S}_k,τ_k,\mathcal{F}_k)  \tag{5}
+\]
+
+where \(\mathcal{F}_k\)  represents environmental feedback (rewards, execution errors) and \(\mathcal{S}_k\)  represents the evolvable state. We categorize self-evolution by the nature of \(\mathcal{S}\):
+
+<br><span style="color:blue;">
+ここで、\(\mathcal{F}_k\) は環境からのフィードバック（報酬、実行エラー）を表し、\(\mathcal{S}_k\) は進化可能な状態を表します。自己進化は、\(\mathcal{S}\) の性質によって以下のように分類されます。
+</span>
+<div class="styleBullet">
+<ul><li>
+• <strong>Verbal Evolution</strong>:　\(\mathcal{S}\) consists of textual reflections or guidelines. Methods like Reflexion [14] update \(\mathcal{S}\) by synthesizing error logs into linguistic cues that condition future reasoning policies.
+
+<br><span style="color:blue;">
+<strong>言語的進化</strong>：\(\mathcal{S}\)はテキストによる反射やガイドラインから構成される。Reflection [14]のような手法は、エラーログを将来の推論方針を条件付ける言語的手がかりに統合することで\(\mathcal{S}\)を更新する。
+</span>
+</li><br><li>
+
+• <strong>Procedural Evolution</strong>:　\(\mathcal{S}\) consists of a library of executable tools or skills. Agents like Voyager [36] evolve by synthesizing new code-based skills, expanding the action space \(\mathcal{A}\) permanently.
+
+<br><span style="color:blue;">
+<strong>手続き的進化</strong>：\(\mathcal{S}\)は実行可能なツールまたはスキルのライブラリで構成されています。Voyager [36]のようなエージェントは、新しいコードベースのスキルを合成することで進化し、行動空間\(\mathcal{A}\)を永続的に拡大します。
+</span>
+</li><br><li>
+
+• <strong>Structural Evolution</strong>:　\(\mathcal{S}\) consists of the agent's source code or architecture itself. Advanced methods like AlphaEvolve [70] treat the agent's code as a hypothesis space, using an LLM as a mutation operator to search for superior reasoning algorithms.
+
+<br><span style="color:blue;">
+<strong>構造進化</strong>：\(\mathcal{S}\)はエージェントのソースコードまたはアーキテクチャ自体から構成されます。AlphaEvolve [70]のような高度な手法では、エージェントのコードを仮説空間として扱い、LLMを突然変異演算子として用いて、より優れた推論アルゴリズムを探索します。
+</span>
+</li></ul></div>
+</p><p>
+
+This framework unifies these diverse approaches as gradient-free or gradient-based optimization steps over the agent's explicit memories and artifacts (and optionally parameters), closing the loop between experience and competence.
+
+<br><span style="color:blue;">
+このフレームワークは、エージェントの明示的な記憶と成果物 (およびオプションでパラメータ) に対する勾配フリーまたは勾配ベースの最適化手順としてこれらの多様なアプローチを統合し、経験と能力の間のループを閉じます。
+</span>
+</p>
+    </body>
+</html>
