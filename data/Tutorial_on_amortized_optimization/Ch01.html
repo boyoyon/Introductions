@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="ja">
+    <head>
+        <script type="text/javascript" id="MathJax-script" async
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+        <meta charset="utf-8" />
+        <title>Tutorial on amortized optimization Learning to optimize over continuous spaces</title>
+        <style type="text/css">
+            p
+            {
+                padding-left: 2em;
+            }
+           .margin-abstract {
+               margin-left: 60px; /* 左マージンを広くする */
+               margin-right: 60px; /* 右マージンを広くする */
+           }
+        </style>
+    <style>
+        .styleRef { 
+            text-indent: -40px; /* 最初の行の字下げを逆方向に */
+            margin-left: 10px; /* 2行目以降の字下げを調整 */
+            ul {
+                  list-style-type: none; /* 箇条書き記号を非表示 */
+                  padding-left: 40px; /* 全体の左余白 */
+            }
+            li {
+            }
+        }
+    </style>
+    <style>
+        .styleBullet { 
+            text-indent: -20px; /* 最初の行の字下げを逆方向に */
+            margin-left: 30px; /* 2行目以降の字下げを調整 */
+            ul {
+                  list-style-type: none; /* 箇条書き記号を非表示 */
+                  padding-left: 40px; /* 全体の左余白 */
+            }
+            li {
+            }
+        }
+    </style>
+<style>
+.container {
+  display: flex;
+  flex-wrap: wrap;
+}
+.column {
+  flex: 0.50%; /* 幅を50%に設定して2列に */
+  box-sizing: border-box;
+  padding: 10px;
+}
+</style>
+
+    </head>
+    <body>
+        <h1><center>Tutorial on amortized optimization <br>Learning to optimize over continuous spaces<br><span style="color:blue;">償却最適化のチュートリアル <br>連続空間での最適化の学習</span></center></h1>
+
+<center>Brandon Amos, Meta AI</center>
+
+<h2>Abstract <span style="color:blue;">要旨</span></h2>
+<p>
+Optimization is a ubiquitous modeling tool and is often deployed in settings which repeatedly solve similar instances of the same problem.   Amortized optimization methods use learning to predict the solutions to problems in these settings, exploiting the shared structure between similar problem instances. These methods have been crucial in variational inference and reinforcement learning and are capable of solving optimization problems many orders of magnitude faster than traditional optimization methods that do not use amortization. This tutorial presents an introduction to the amortized optimization foundations behind these advancements and overviews their applications in variational inference, sparse coding, gradient-based meta-learning, control, reinforcement learning, convex optimization, optimal transport, and deep equilibrium networks. The source code for this tutorial is available at https://github. com/facebookresearch/amortized-optimization-tutorial.
+
+<br><span style="color:blue;">
+最適化は広く普及しているモデリングツールであり、同じ問題の類似インスタンスを繰り返し解くような設定でよく導入されます。償却最適化法では、学習を用いてこうした設定における問題の解を予測し、類似問題インスタンス間の共通構造を活用します。これらの手法は変分推論や強化学習において極めて重要であり、償却を使用しない従来の最適化手法よりも桁違いに高速に最適化問題を解くことができます。このチュートリアルでは、これらの進歩の背後にある償却最適化の基礎を紹介し、変分推論、スパース符号化、勾配ベースメタ学習、制御、強化学習、凸最適化、最適輸送、深層平衡ネットワークへの応用について概説します。このチュートリアルのソースコードは https://github.com/facebookresearch/amortized-optimization-tutorial で入手できます。
+</span>
+</p>
+
+<h2>Chapter 1<br>
+Introduction <span style="color:blue;">はじめに</span></h2>
+
+<p>
+This  tutorial  studies  the  use  of  machine  learning  to  improve  repeated  solves  of parametric optimization problems of the form
+
+<br><span style="color:blue;">
+このチュートリアルでは、機械学習を使用して、次の形式のパラメトリック最適化問題の繰り返し解決を改善する方法を学びます。
+</span>
+
+\[
+y^⋆(x) ∈ \arg\min\limits_y f(y;x)  \tag{1.1}
+\]
+
+where the non-convex objective \(f: \mathcal{Y} × \mathcal{X} → \mathbb{R}\) takes a context or parameterization \(x ∈ \mathcal{X}\) which can be continuous or discrete, and the continuous, unconstrained domain of the problem is \(y ∈ \mathcal{Y} = \mathbb{R}^n\). Eq. (1.1) implicitly defines a solution \(y^⋆(x) ∈ \mathcal{Y}\). In most of the applications considered later in chapter 3, \(y^⋆(x)\) is unique and smooth, i.e., the solution continuously changes in a connected way as the context changes, as illustrated in fig. 1.1.
+
+<br><span style="color:blue;">
+ここで、非凸目的関数 \(f: \mathcal{Y} × \mathcal{X} → \mathbb{R}\) は連続または離散のコンテキストまたはパラメータ化 \(x ∈ \mathcal{X}\) を取り、問題の連続で制約のない領域は \(y ∈ \mathcal{Y} = \mathbb{R}^n\) です。式 (1.1) は暗黙的に解 \(y^⋆(x) ∈ \mathcal{Y}\) を定義します。第 3 章で後述するほとんどの応用において、\(y^⋆(x)\) は一意かつ滑らかです。つまり、図 1.1 に示すように、コンテキストが変化すると解は連続的に変化します。
+</span>
+</p>
+<center><img src="images/1_1.svg"></center>
+<p>
+Figure 1.1:  Illustration of the parametric optimization problem in eq. (1.1).  Each context \(x\) parameterizes an optimization problem that the objective \(f(y;x)\) depends on.  The contours show the values of the objectives where darker colors indicate higher values.  The objective is then minimized over y and the resulting solution \(y^⋆(x)\) is shown in red. In other words, each vertical slice is an optimization problem and this visualization shows a continuum of optimization problems.
+
+<br><span style="color:blue;">
+図1.1: 式(1.1)におけるパラメトリック最適化問題の図解。各コンテキスト\(x\)は、目的関数\(f(y;x)\)が依存する最適化問題をパラメータ化する。等高線は目的関数の値を示しており、色が濃いほど値が大きいことを示す。目的関数はyに対して最小化され、その結果得られる解\(y^⋆(x)\)は赤で示されている。言い換えれば、各垂直スライスは最適化問題であり、この視覚化は最適化問題の連続体を示している。
+</span>
+</p><p>
+
+Parametric optimization problems such as eq. (1.1) have been studied for decades [Bank et al., 1982, Fiacco and Ishizuka, 1990, Shapiro, 2003, Klatte and Kummer, 2006, Bonnans and Shapiro, 2013, Still, 2018, Fiacco, 2020] with a focus on sensitivity analysis. The general formulation in eq. (1.1) captures many tasks arising in physics, engineering, mathematics, control, inverse modeling, and machine learning.   For example, when controlling a continuous robotic system, \(\mathcal{X}\) is the space of observations or states, e.g., angular positions and velocities describing the configuration of the system,  the domain \(\mathcal{Y}:=  \mathcal{U}\) is the control  space,  e.g.,  torques to apply to each actuated joint, and \(f(u;x):= −Q(u,x)\) is the control cost or the negated \(Q\)-value of the state-action tuple \((x,u)\), e.g., to reach a goal location or to maximize the velocity. For every encountered state x, the system is controlled by solving an optimization problem in the form of eq. (1.1). While \(\mathcal{Y} = \mathbb{R}^n\) is over a deterministic real-valued space in eq. (1.1), the formulation can also capture stochastic optimization problems as discussed in section 2.3.1.   For example,  Section 3.1 optimizes over the (real-valued) parameters of a variational distribution and section 3.6 optimizes over the (real-valued) parameters of a stochastic policy for control and reinforcement learning.
+
+<br><span style="color:blue;">
+式(1.1)のようなパラメトリック最適化問題は、感度分析を中心に数十年にわたり研究されてきました[Bank et al., 1982, Fiacco and Ishizuka, 1990, Shapiro, 2003, Klatte and Kummer, 2006, Bonnans and Shapiro, 2013, Still, 2018, Fiacco, 2020]。式(1.1)の一般的な定式化は、物理学、工学、数学、制御、逆モデリング、機械学習などにおいて生じる多くの課題を捉えています。たとえば、連続ロボット システムを制御する場合、\(\mathcal{X}\) は観測または状態 (システムの構成を表す角度位置や速度など) の空間であり、ドメイン \(\mathcal{Y}:= \mathcal{U}\) は制御空間 (各作動ジョイントに適用するトルクなど) であり、\(f(u;x):= −Q(u,x)\) は制御コストまたは状態アクション タプル \((x,u)\) の負の \(Q\) 値 (ゴール位置への到達や速度の最大化など) です。発生するすべての状態 x について、システムは式 (1.1) の形式の最適化問題を解くことで制御されます。\(\mathcal{Y} = \mathbb{R}^n\) は式 (1.1) の決定論的な実数値空間上にあります。 (1.1) の定式化は、2.3.1 節で議論した確率的最適化問題も捉えることができます。例えば、3.1 節では変分分布の（実数値）パラメータを最適化し、3.6 節では制御学習と強化学習のための確率的方策の（実数値）パラメータを最適化します。
+</span>
+</p><p>
+
+Optimization problems such as eq. (1.1) quickly become a computational bottle-neck in systems they are a part of. These problems often do not have a closed-form analytic solution and are instead solved with approximate numerical methods which iteratively search for the solution.  This computational problem has led to many specialized solvers that leverage domain-specific insights to deliver fast solves. Spe-cialized algorithms are especially prevalent in convex optimization methods for linear programming, quadratic programming, cone programming, and control and use theo-retical insights of the problem structure to bring empirical gains of computational improvements and improved convergence [Boyd et al., 2004, Nocedal and Wright, 2006, Bertsekas, 2015, Bubeck et al., 2015, Nesterov et al., 2018].
+
+<br><span style="color:blue;">
+式（1.1）のような最適化問題は、それが含まれるシステムにおいてすぐに計算上のボトルネックになります。これらの問題は多くの場合、閉形式の解析解を持たず、代わりに解を反復的に探索する近似数値法で解かれます。この計算上の問題は、ドメイン固有の洞察を活用して高速に解決する多くの専用ソルバーを生み出しました。特殊なアルゴリズムは、線形計画法、二次計画法、円錐計画法、制御のための凸最適化法で特に普及しており、問題構造の理論的洞察を使用して、計算の改善と収束性の改善という経験的な利益をもたらします[Boyd et al., 2004、Nocedal and Wright, 2006、Bertsekas, 2015、Bubeck et al., 2015、Nesterov et al., 2018]。
+</span>
+</p><p>
+
+Mostly separate from optimization research and algorithmic advancements, the machine learning community has focused on developing generic function approxi-mation methods for estimating non-trivial high-dimensional mappings from data [Murphy, 2012, Salakhutdinov, 2014, Deisenroth et al., 2020]. While machine learn-ing models are often used to reconstruct mappings from data, e.g.  for supervised classification or regression where the targets are given by human annotations. Many computational advancements on the software and hardware have been developed in recent years to make the prediction time fast: the forward pass of a neural network generating a prediction can execute in milliseconds on a graphics processing unit.
+
+<br><span style="color:blue;">
+機械学習コミュニティは、最適化研究やアルゴリズムの進歩とはほとんど関係なく、データから非自明な高次元マッピングを推定するための汎用関数近似法の開発に重点を置いてきました[Murphy, 2012, Salakhutdinov, 2014, Deisenroth et al., 2020]。機械学習モデルは、データからマッピングを再構築するためによく用いられます。例えば、教師あり分類や回帰分析では、ターゲットは人間による注釈によって与えられます。近年、ソフトウェアとハ​​ードウェアの計算能力における多くの進歩により、予測時間の短縮が図られています。ニューラルネットワークによる予測生成は、グラフィックス・プロセッシング・ユニット（GPU）上で数ミリ秒単位で実行できます。
+</span>
+</p><p>
+
+<strong>Overview</strong>.　This tutorial studies the use of machine learning models to rapidly predict the solutions to the optimization problem in eq. (1.1), which is referred to as amortized optimization or learning to optimize. Amortized optimization methods are capable of significantly improving the computational time of classical algorithms on  a  focused  subset  of  problems.  This is because the model is able to learn about the solution mapping from \(x\) to \(y^⋆(x)\) that classical optimization methods usually do not assume access to. My goal in writing this is to explore a unified perspective of modeling approaches of amortized optimization in chapter 2 to help draw connections between the applications in chapter 3, e.g. between amortized variational inference, meta-learning, and policy learning for control and reinforcement learning, sparse coding,  convex  optimization,  optimal  transport,  and  deep  equilibrium  networks. These topics have historically been studied in isolation without connections between their amortization components. Chapter 4 presents a computational tour through source code for variational inference, policy learning, and a spherical optimization problem and chapter 5 concludes with a discussion of challenges, limitations, open problems, and related work.
+
+<br><span style="color:blue;">
+<strong>概要</strong>：このチュートリアルでは、機械学習モデルを用いて式(1.1)の最適化問題の解を迅速に予測する方法を研究します。これは、償却最適化または最適化学習と呼ばれます。償却最適化手法は、特定の問題に対する従来のアルゴリズムの計算時間を大幅に改善することができます。これは、従来の最適化手法では通常アクセスできない、\(x\)から\(y^⋆(x)\)への解のマッピングをモデルが学習できるためです。このチュートリアルの目的は、第2章で償却最適化のモデリング手法の統一的な視点を探り、第3章の応用例（償却変分推論、メタ学習、制御学習と強化学習のための方策学習、スパース符号化、凸最適化、最適輸送、深層平衡ネットワークなど）間の関連性を明らかにすることです。これらのトピックは、歴史的に償却コンポーネント間の関連性なく個別に研究されてきました。第 4 章では、変分推論、ポリシー学習、球面最適化問題のソース コードの計算ツアーを示し、第 5 章では、課題、制限、未解決の問題、および関連作業について説明します。
+</span>
+</p>
+
+<center><img src="images/1_2.svg"></center>
+
+<p>
+
+Figure 1.2:  An amortized optimization method learns a model \(\hat{y}\) to predict the minimum of an objective  \(f(y;x)\) to a parameterized optimization problem, as in eq. (1.1), which depends on a context \(x\). For example, in control, the context space \(\mathcal{X}\) is the state space of the system, e.g. angular positions and velocities describing the configuration of the system, the domain \(\mathcal{Y}:= \mathcal{U}\) is the control space, e.g. torques to apply to each actuated joint, the cost (or negated value) of a state-action pair is \(f(u;x) := −Q(x,u)\), and the state distribution is \(p(x)\). For an encountered state \(x\), many reinforcement learning policies \(π_θ(x) := \hat{y}_θ(x)\) amortize the solution to the underlying control problem with true solution \(y^⋆(x)\). This humanoid policy was obtained with the model-based stochastic value gradient in Amos et al. [2021].
+
+<br><span style="color:blue;">
+図 1.2: 償却最適化法は、式 (1.1) に示すように、コンテキスト \(x\) に依存するパラメーター化された最適化問題に対する目的関数 \(f(y;x)\) の最小値を予測するモデル \(\hat{y}\) を学習します。たとえば、制御では、コンテキスト空間 \(\mathcal{X}\) はシステムの状態空間 (たとえば、システムの構成を記述する角度位置と速度)、ドメイン \(\mathcal{Y}:= \mathcal{U}\) は制御空間 (たとえば、各駆動ジョイントに適用するトルク)、状態アクション ペアのコスト (または反転値) は \(f(u;x) := −Q(x,u)\)、状態分布は \(p(x)\) です。遭遇した状態\(x\)に対して、多くの強化学習ポリシー\(π_θ(x) := \hat{y}_θ(x)\)は、真の解\(y^⋆(x)\)を用いて、基礎となる制御問題の解を償却します。このヒューマノイドポリシーは、Amos et al. [2021]のモデルベースの確率的値勾配によって得られました。
+</span>
+</p><p>
+
+<strong>How much does amortization help?</strong>　Amortized optimization has been revo-lutionary to many fields, especially including variational inference and reinforcement learning. Figure 4.1 shows that the amortization component of a variational autoen-coder trained on MNIST is <strong>25000</strong> times faster (0.4ms vs. 8 seconds!) than solving a batch of 1024 optimization problems from scratch to obtain a solution of the same quality. These optimization problems are solved in every training iteration and can become a significant bottleneck if they are ineficiently solved. If the model is being trained for millions of iterations, then the difference between solving the optimization problem in 0.4ms vs. 8 seconds makes the difference between the entire training process finishing in a few hours or a month.
+
+<br><span style="color:blue;">
+<strong>償却はどの程度役立つか？</strong>　償却最適化は、特に変分推論と強化学習を含む多くの分野に革命をもたらしました。図4.1は、MNISTでトレーニングされた変分オートエンコーダの償却コンポーネントが、同じ品質のソリューションを得るために1024の最適化問題のバッチを最初から解くよりも<strong>25000</strong>倍高速（0.4ミリ秒対8秒！）であることを示しています。これらの最適化問題は、すべてのトレーニング反復で解決され、効率的に解決されない場合、重大なボトルネックになる可能性があります。モデルが数百万回の反復でトレーニングされている場合、最適化問題を0.4ミリ秒で解決するか8秒で解決するかの違いは、トレーニングプロセス全体が数時間で完了するか、1か月で完了するかの違いになります。
+</span>
+</p>
+<center><img src="images/4_1.svg"></center>
+<center>図4-1</center>
+<p>
+
+<strong>A historic note:  amortization in control and statistical inference</strong>.　Amor-tized optimization has arisen in many fields as a result to practical optimization problems being non-convex and not having easily computed, or closed-form solutions. Continuous control problems with linear dynamics and quadratic cost are convex and often easily solved with the linear quadratic regulator (LQR) and many non-convex extensions and iterative applications of LQR have been successful over the decades, but becomes increasingly infeasible on non-trivial systems and in reinforcement learn-ing settings where the policy often needs to be rapidly executed. For this reason, the reinforcement learning community almost exclusively amortizes control optimization problems with a learned policy [Sutton and Barto, 2018]. Related to this throughline in control and reinforcement learning, many statistical optimization problems have closed form solutions for known distributions such as Gaussians. For example, the original Kalman filter is defined with Gaussians and the updates take a closed form. The extended Kalman filter generalizes the distributions to non-Gaussians, but the updates are in general no longer available analytically and need to be computation-ally estimated.  Marino et al. [2018a] shows how amortization helps improve this computationally challenging step. Both of these control and statistical settings start with a simple setting with analytic solutions to optimization problems, generalize to more challenging optimization problems that need to be computationally estimated, and then add back some computational tractability with amortized optimization.
+
+<br><span style="color:blue;">
+<strong>歴史的ノート：制御と統計的推論における償却</strong>。償却最適化は、実用的な最適化問題が非凸であり、容易に計算できない、つまり閉形式の解を持たないことから、多くの分野で登場しました。線形ダイナミクスと二次コストを伴う連続制御問題は凸であり、多くの場合、線形二次レギュレータ（LQR）で容易に解けます。LQRの非凸拡張や反復応用は数十年にわたって成功を収めてきましたが、非自明なシステムや、ポリシーを迅速に実行する必要がある強化学習の設定では、ますます実行不可能になっています。このため、強化学習コミュニティは、学習済みポリシーを用いて制御最適化問題を償却することがほとんどです[Sutton and Barto, 2018]。制御と強化学習におけるこの一貫した流れに関連して、多くの統計的最適化問題は、ガウス分布などの既知の分布に対して閉形式の解を持ちます。例えば、元のカルマンフィルタはガウス分布で定義され、更新は閉形式をとります。拡張カルマンフィルタは分布を非ガウス分布に一般化しますが、更新は一般に解析的に利用できなくなり、計算によって推定する必要があります。Marinoら[2018a]は、この計算的に困難なステップを償却によってどのように改善できるかを示しています。これらの制御設定と統計設定はどちらも、最適化問題に対する解析解を用いた単純な設定から始まり、計算によって推定する必要があるより困難な最適化問題へと一般化し、償却最適化によって計算上の扱いやすさをある程度回復させます。
+</span>
+</p><p>
+
+
+</p>
+    </body>
+</html>
